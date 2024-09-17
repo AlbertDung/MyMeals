@@ -37,7 +37,7 @@ const FavoriteCard = ({ item, onPress }) => {
           </View>
         </View>
         <View style={styles.directionRow}>
-          <AppText text={item.description} customStyles={styles.textMedium} />
+          <AppText text={item.title} customStyles={styles.textMedium} />
           <AppText
             text={`$${item.price}.00`}
             customStyles={styles.textMedium}

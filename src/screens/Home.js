@@ -32,6 +32,7 @@ export default Home;
 
 const styles = StyleSheet.create({
   categories: {
-    height: 700,
+    
+    height: 685,
   },
 });

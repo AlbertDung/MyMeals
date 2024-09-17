@@ -3,14 +3,18 @@ import React from "react";
 import Screen from "../components/Screen/Screen";
 import AppHeader from "../components/AppHeader/AppHeader";
 import OrderCard from "../components/OrderCard/OrderCard";
-
+import { useNavigation } from '@react-navigation/native';
 import { foodItems } from "../data";
 import { colors } from "../theme/colors";
 
 const MyOrder = () => {
+  const navigation = useNavigation();
+  const handleGoBack = () => {
+    navigation.goBack();
+  };
   return (
     <Screen>
-      <AppHeader title="My Orders" customTitleStyles={{ marginLeft: "35%" }} />
+      <AppHeader onBackPress={handleGoBack} title="My Orders" customTitleStyles={{ marginLeft: "35%" }} />
       <ScrollView
         contentContainerStyle={{ flex: 1, paddingBottom: 30 }}
         showsVerticalScrollIndicator={false}

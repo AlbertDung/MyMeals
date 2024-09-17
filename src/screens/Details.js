@@ -173,8 +173,8 @@ const styles = StyleSheet.create({
   },
   description: {
     fontFamily: "Lato-Regular",
-    fontSize: 15,
-    color: colors.gray,
+    fontSize: 20,
+    color: colors.dark,
   },
   buttonContainer: {
     flexDirection: 'row',

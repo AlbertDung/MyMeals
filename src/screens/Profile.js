@@ -1,7 +1,6 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import AppNavigator from './AppNavigator';
 
 export default function ProfileView() {
   const navigation = useNavigation();
@@ -11,9 +10,9 @@ export default function ProfileView() {
       <View style={styles.header}>
         <Image
           style={styles.avatar}
-          source={{ uri: 'https://bootdey.com/img/Content/avatar/avatar1.png' }}
+          source={{ uri: 'https://bootdey.com/img/Content/avatar/avatar7.png' }}
         />
-        <Text style={styles.name}>John Doe</Text>
+        <Text style={styles.name}>Albert AnhDung</Text>
       </View>
 
       <View style={styles.body}>
@@ -28,7 +27,7 @@ export default function ProfileView() {
 
           <TouchableOpacity 
             style={styles.menuItem} 
-            onPress={() => navigation.navigate('MyOrders')}
+            onPress={() => navigation.navigate('MyOrder')}
           >
             <Text style={styles.menuText}>Đơn hàng của tôi</Text>
           </TouchableOpacity>
@@ -45,14 +44,14 @@ export default function ProfileView() {
           <Text style={styles.sectionTitle}>Trợ giúp</Text>
           <TouchableOpacity 
             style={styles.menuItem} 
-            onPress={() => navigation.navigate('Settings')}
+            onPress={() => alert('Chức năng Cài đặt chưa được triển khai')}
           >
             <Text style={styles.menuText}>Cài đặt</Text>
           </TouchableOpacity>
 
           <TouchableOpacity 
             style={styles.menuItem} 
-            onPress={() => navigation.navigate('Help')}
+            onPress={() => alert('Chức năng Hỗ trợ & Trợ giúp chưa được triển khai')}
           >
             <Text style={styles.menuText}>Hỗ trợ & Trợ giúp</Text>
           </TouchableOpacity>

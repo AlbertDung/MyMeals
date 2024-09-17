@@ -54,7 +54,9 @@ function UserStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="UserScreen" component={Profile} />
-      <Stack.Screen name="Details" component={Details} />
+      <Stack.Screen name="MyCart" component={MyCart} />
+      <Stack.Screen name="MyOrder" component={MyOrder} />
+      <Stack.Screen name="AddPayment" component={AddPayment} />
     </Stack.Navigator>
   );
 }

@@ -5,11 +5,16 @@ import AppHeader from "../components/AppHeader/AppHeader";
 import { paymentMethod } from "../data/paymentMethods";
 import PaymentMethod from "../components/PaymentMethod/PaymentMethod";
 import Button from "../components/Button/Button";
-
+import { useNavigation } from '@react-navigation/native';
 const AddPayment = () => {
+  const navigation = useNavigation();
+  const handleGoBack = () => {
+    navigation.goBack();
+  };
   return (
     <Screen>
       <AppHeader
+        onBackPress={handleGoBack}
         title="Add Payment Method"
         customTitleStyles={styles.headerTitleStyle}
       />

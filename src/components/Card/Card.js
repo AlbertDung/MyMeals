@@ -22,7 +22,7 @@ const Card = ({ item }) => {
       </View>
       <View style={styles.cardBody}>
         <AppText text={item.title} customStyles={styles.textBold} />
-        <AppText text={item.description} customStyles={styles.textMedium} />
+        <AppText text={item.title} customStyles={styles.textMedium} />
         <View style={[styles.directionRow, styles.cardFooter]}>
           <AppText
             text={`$${item.price}.00`}
