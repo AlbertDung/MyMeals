@@ -1,4 +1,4 @@
-import { StyleSheet, View } from "react-native";
+import { StyleSheet, View,StatusBar } from "react-native";
 import { useCallback } from "react";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
@@ -14,7 +14,10 @@ import Favorite from "./src/screens/Favorites";
 import MyCart from "./src/screens/MyCart";
 import MyOrder from "./src/screens/MyOrder";
 import Popular from "./src/screens/Popular";
+import Profile from "./src/screens/Profile";
 import { FavoritesProvider } from "./src/components/Context/FavoritesContext";
+SplashScreen.preventAutoHideAsync();
+
 SplashScreen.preventAutoHideAsync();
 
 const Tab = createBottomTabNavigator();
@@ -29,11 +32,38 @@ function HomeStack() {
   );
 }
 
+function FavoritesStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="FavoritesScreen" component={Favorite} />
+      <Stack.Screen name="Details" component={Details} />
+    </Stack.Navigator>
+  );
+}
+
+function PopularStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="PopularScreen" component={Popular} />
+      <Stack.Screen name="Details" component={Details} />
+    </Stack.Navigator>
+  );
+}
+
+function UserStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="UserScreen" component={Profile} />
+      <Stack.Screen name="Details" component={Details} />
+    </Stack.Navigator>
+  );
+}
 export default function App() {
   const [fontsLoaded] = useFonts({
     "Lato-Black": require("./assets/fonts/Lato-Black.ttf"),
     "Lato-Regular": require("./assets/fonts/Lato-Regular.ttf"),
     "Lato-Thin": require("./assets/fonts/Lato-Thin.ttf"),
+
     "Lato-Bold": require("./assets/fonts/Lato-Bold.ttf"),
   });
 
@@ -49,6 +79,7 @@ export default function App() {
 
   return (
     <FavoritesProvider>
+      <StatusBar barStyle="dark-content" backgroundColor="black" />
       <NavigationContainer>
         <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
           <Tab.Navigator 
@@ -58,11 +89,11 @@ export default function App() {
 
                 if (route.name === "Home") {
                   iconName = focused ? "home" : "home-outline";
-                } else if (route.name === "Favorite") {
-                  iconName = focused ? "love" : "love-outline";
+                } else if (route.name === "Favorites") {
+                  iconName = focused ? "heart" : "heart-outline";
                 } else if (route.name === "Popular") {
                   iconName = focused ? "star" : "star-outline";
-                } else if (route.name === "User") {
+                } else if (route.name === "Me") {
                   iconName = focused ? "person" : "person-outline";
                 }
 
@@ -74,9 +105,9 @@ export default function App() {
             })}
           >
             <Tab.Screen name="Home" component={HomeStack} />
-            <Tab.Screen name="Favorites" component={Favorite} />
-            <Tab.Screen name="Popular" component={Popular} />
-            <Tab.Screen name="User" component={MyOrder} />
+            <Tab.Screen name="Favorites" component={FavoritesStack} />
+            <Tab.Screen name="Popular" component={PopularStack} />
+            <Tab.Screen name="Me" component={UserStack} />
           </Tab.Navigator>
         </View>
       </NavigationContainer>

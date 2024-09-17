@@ -1,5 +1,6 @@
 export const foodItems = [
   {
+    id: 1,
     title: "Burger 1",
     description: "Fresh Burger 1",
     location: "Rabat",
@@ -9,6 +10,7 @@ export const foodItems = [
     category: "burger",
   },
   {
+    id: 2,
     title: "Burger 2",
     description: "Fresh Burger 2",
     location: "Rabat",
@@ -18,6 +20,7 @@ export const foodItems = [
     category: "burger",
   },
   {
+    id: 3,
     title: "Burger 3",
     description: "Fresh Burger 3",
     location: "Rabat",
@@ -27,6 +30,7 @@ export const foodItems = [
     category: "burger",
   },
   {
+    id: 4,
     title: "Burger 4",
     description: "Fresh Burger 4",
     location: "Rabat",
@@ -36,6 +40,7 @@ export const foodItems = [
     category: "burger",
   },
   {
+    id: 5,
     title: "Burger 5",
     description: "Fresh Burger 5",
     location: "Rabat",
@@ -45,6 +50,7 @@ export const foodItems = [
     category: "burger",
   },
   {
+    id: 6,
     title: "Burger 6",
     description: "Fresh Burger 6",
     location: "Rabat",
@@ -54,6 +60,7 @@ export const foodItems = [
     category: "burger",
   },
   {
+    id: 7,
     title: "Pizza 1",
     description: "Fresh Pizza 1",
     location: "Casablanca",
@@ -63,6 +70,7 @@ export const foodItems = [
     category: "pizza",
   },
   {
+    id: 8,
     title: "Pizza 2",
     description: "Fresh Pizza 2",
     location: "Casablanca",
@@ -72,6 +80,7 @@ export const foodItems = [
     category: "pizza",
   },
   {
+    id: 9,
     title: "Pizza 3",
     description: "Fresh Pizza 3",
     location: "Casablanca",
@@ -81,6 +90,7 @@ export const foodItems = [
     category: "pizza",
   },
   {
+    id: 10,
     title: "Pizza 4",
     description: "Fresh Pizza 4",
     location: "Casablanca",
@@ -90,6 +100,7 @@ export const foodItems = [
     category: "pizza",
   },
   {
+    id: 11,
     title: "Pizza 5",
     description: "Fresh Pizza 5",
     location: "Casablanca",
@@ -99,6 +110,7 @@ export const foodItems = [
     category: "pizza",
   },
   {
+    id: 12,
     title: "Pizza 6",
     description: "Fresh Pizza 6",
     location: "Casablanca",
@@ -108,6 +120,7 @@ export const foodItems = [
     category: "pizza",
   },
   {
+    id: 13,
     title: "Tacos 1",
     description: "Fresh Tacos 1",
     location: "Rabat",
@@ -117,6 +130,7 @@ export const foodItems = [
     category: "tacos",
   },
   {
+    id: 14,
     title: "Tacos 2",
     description: "Fresh Tacos 2",
     location: "Rabat",
@@ -126,6 +140,7 @@ export const foodItems = [
     category: "tacos",
   },
   {
+    id: 15,
     title: "Tacos 3",
     description: "Fresh Tacos 3",
     location: "Rabat",
@@ -135,6 +150,7 @@ export const foodItems = [
     category: "tacos",
   },
   {
+    id: 16,
     title: "Tacos 4",
     description: "Fresh Tacos 4",
     location: "Rabat",
@@ -144,6 +160,7 @@ export const foodItems = [
     category: "tacos",
   },
   {
+    id: 17,
     title: "Tacos 5",
     description: "Fresh Tacos 5",
     location: "Rabat",
@@ -153,6 +170,7 @@ export const foodItems = [
     category: "tacos",
   },
   {
+    id: 18,
     title: "Tacos 6",
     description: "Fresh Tacos 6",
     location: "Rabat",
@@ -162,6 +180,7 @@ export const foodItems = [
     category: "tacos",
   },
   {
+    id: 19,
     title: "Panini 1",
     description: "Fresh Panini 1",
     location: "Rabat",
@@ -171,6 +190,7 @@ export const foodItems = [
     category: "panini",
   },
   {
+    id: 20,
     title: "Panini 2",
     description: "Fresh Panini 2",
     location: "Rabat",
@@ -180,6 +200,7 @@ export const foodItems = [
     category: "panini",
   },
   {
+    id: 21,
     title: "Panini 3",
     description: "Fresh Panini 3",
     location: "Rabat",
@@ -189,6 +210,7 @@ export const foodItems = [
     category: "panini",
   },
   {
+    id: 22,
     title: "Panini 4",
     description: "Fresh Panini 4",
     location: "Rabat",
@@ -198,6 +220,7 @@ export const foodItems = [
     category: "panini",
   },
   {
+    id: 23,
     title: "Panini 5",
     description: "Fresh Panini 5",
     location: "Rabat",
@@ -207,6 +230,7 @@ export const foodItems = [
     category: "panini",
   },
   {
+    id: 24,
     title: "Panini 6",
     description: "Fresh Panini 6",
     location: "Rabat",

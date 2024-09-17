@@ -4,9 +4,15 @@ import { useFavorites } from '../components/Context/FavoritesContext';
 import FavoriteCard from '../components/FavoriteCard/FavoriteCard';
 import Screen from '../components/Screen/Screen';
 import AppHeader from '../components/AppHeader/AppHeader';
+import { useNavigation } from '@react-navigation/native';
 
 const Favorites = () => {
   const { favorites } = useFavorites();
+  const navigation = useNavigation();
+
+  const handleCardPress = (item) => {
+    navigation.navigate('Details', { item });
+  };
 
   if (favorites.length === 0) {
     return (
@@ -25,7 +31,9 @@ const Favorites = () => {
       <FlatList
         data={favorites}
         keyExtractor={(item) => item.id}
-        renderItem={({ item }) => <FavoriteCard item={item} />}
+        renderItem={({ item }) => (
+          <FavoriteCard item={item} onPress={() => handleCardPress(item)} />
+        )}
         contentContainerStyle={styles.listContainer}
       />
     </Screen>

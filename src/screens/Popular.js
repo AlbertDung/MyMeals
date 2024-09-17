@@ -11,11 +11,7 @@ import SectionTitle from "../components/SectionTitle/SectionTitle";
 const Popular = () => {
   return (
     <Screen customStyles={styles.container}>
-      <AppHeader
-        title="Popular"
-        customTitleStyles={{ marginLeft: "30%" }}
-        endButton={"See All"}
-      />
+      
       <ScrollView>
         <View style={styles.cardsContainer}>
           {foodItems.slice(0, 4).map((item) => (

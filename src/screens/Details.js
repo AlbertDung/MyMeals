@@ -1,7 +1,7 @@
 import { StyleSheet, Image, View, TouchableOpacity, Animated } from "react-native";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect  } from "react";
 import { Ionicons } from '@expo/vector-icons';
-
+import { useNavigation } from '@react-navigation/native';
 import AppHeader from "../components/AppHeader/AppHeader";
 import Screen from "../components/Screen/Screen";
 import AppText from "../components/AppText/AppText";
@@ -14,20 +14,42 @@ import { useFavorites } from "../components/Context/FavoritesContext";
 const Details = ({ route }) => {
   const { item } = route.params;
   const [quantity, setQuantity] = useState(1);
-  const { addFavorite, removeFavorite, isFavorite } = useFavorites();
-  const [isFav, setIsFav] = useState(isFavorite(item.id));
+  const { addFavorite, removeFavorite, isFavorite,favorites  } = useFavorites();
   const heartScale = useRef(new Animated.Value(1)).current;
   const lastTap = useRef(0);
+  const navigation = useNavigation();
+  
+  // Thay đổi cách quản lý isFav
+  const [isFav, setIsFav] = useState(false);  // Không cần trạng thái cục bộ nữa
 
+  useEffect(() => {
+    // Cập nhật trạng thái yêu thích mỗi khi món ăn thay đổi
+    setIsFav(isFavorite(item.id));
+  }, [item, isFavorite]);
+  
   const toggleFavorite = () => {
     if (isFav) {
       removeFavorite(item.id);
     } else {
       addFavorite(item);
     }
-    setIsFav(!isFav);
+    setIsFav(!isFav);  // Cập nhật trạng thái cục bộ để thay đổi ngay lập tức trên giao diện
     animateHeart();
   };
+  
+
+  const handleGoBack = () => {
+    navigation.goBack();
+  };
+
+  // const toggleFavorite = () => {
+  //   if (isFav) {
+  //     removeFavorite(item.id);
+  //   } else {
+  //     addFavorite(item);
+  //   }
+  //   animateHeart();
+  // };
 
   const animateHeart = () => {
     Animated.sequence([
@@ -62,7 +84,11 @@ const Details = ({ route }) => {
 
   return (
     <Screen>
-      <AppHeader title="Details" customTitleStyles={{ marginLeft: "35%" }} />
+      <AppHeader 
+        title="Details" 
+        customTitleStyles={{ marginLeft: "35%" }} 
+        onBackPress={handleGoBack}
+      />
       <TouchableOpacity onPress={handleDoubleTap} activeOpacity={0.8} style={styles.headerImage}>
         <Image source={item.image} style={styles.image} />
       </TouchableOpacity>
@@ -112,7 +138,6 @@ const Details = ({ route }) => {
 };
 
 export default Details;
-
 const styles = StyleSheet.create({
   headerImage: {
     flex: 0.3,

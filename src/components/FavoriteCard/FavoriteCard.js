@@ -1,14 +1,29 @@
-import { Image, StyleSheet, Text, View } from "react-native";
+import { Image, StyleSheet, Text, View, TouchableOpacity } from "react-native";
 import React, { useState } from "react";
 import { MaterialCommunityIcons } from "@expo/vector-icons";
 import AppText from "../AppText/AppText";
 import Quantity from "../Quantity/Quantity";
 import { colors } from "../../theme/colors";
 
-const FavoriteCard = ({ item }) => {
+const FavoriteCard = ({ item, onPress }) => {
   const [quantity, setQuantity] = useState(2);
+
+
+  const increaseQuantity = () => {
+    setQuantity((quantity) => quantity + 1);
+  };
+
+  const decreaseQuantity = () => {
+    setQuantity((quantity) => {
+      if (quantity === 1) {
+        return quantity;
+      } else {
+        return quantity - 1;
+      }
+    });
+  };
   return (
-    <View style={styles.container}>
+    <TouchableOpacity onPress={onPress} style={styles.container}>
       <Image source={item.image} style={styles.image} />
       <View style={styles.itemInformations}>
         <View style={styles.directionRow}>
@@ -36,10 +51,14 @@ const FavoriteCard = ({ item }) => {
               color={colors.primary}
             />
           </View>
-          <Quantity quantity={2} />
+          <Quantity
+            quantity={quantity}
+            increaseQuantity={increaseQuantity}
+            decreaseQuantity={decreaseQuantity}
+          />
         </View>
       </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 

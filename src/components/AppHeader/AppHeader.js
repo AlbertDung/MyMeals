@@ -7,10 +7,10 @@ import AppText from "../AppText/AppText";
 import Button from "../Button/Button";
 import { colors } from "../../theme/colors";
 
-const AppHeader = ({ title, customTitleStyles, endButton }) => {
+const AppHeader = ({ title, customTitleStyles, endButton, onBackPress }) => {
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.backButton} onPress={() => {}}>
+      <TouchableOpacity style={styles.backButton} onPress={onBackPress}>
         <Feather name="chevron-left" color={colors.primary} size={25} />
       </TouchableOpacity>
       <View style={styles.titleContainer}>
@@ -29,6 +29,7 @@ const AppHeader = ({ title, customTitleStyles, endButton }) => {
     </View>
   );
 };
+
 
 export default AppHeader;
 
