@@ -11,6 +11,8 @@ import Button from "../components/Button/Button";
 import Quantity from "../components/Quantity/Quantity";
 import MiniCard from "../components/MiniCard/MiniCard";
 import { useFavorites } from "../components/Context/FavoritesContext";
+import { useCart } from "../components/Context/CartContext"; // Import useCart
+
 
 const Details = ({ route }) => {
   const { item } = route.params;
@@ -22,6 +24,12 @@ const Details = ({ route }) => {
   
   const [isFav, setIsFav] = useState(false);
   const scrollY = useRef(new Animated.Value(0)).current;
+  const { addToCart } = useCart();
+
+  const handleAddToCart = () => {
+    addToCart({ ...item, quantity });
+    //navigation.navigate('MyCart');
+  };
 
   useEffect(() => {
     setIsFav(isFavorite(item.id));
@@ -63,7 +71,7 @@ const Details = ({ route }) => {
     outputRange: [0, 1],
     extrapolate: 'clamp',
   });
-
+  //console.log('handleAddToCart:', handleAddToCart);
   return (
     <Screen style={styles.screen}>
       <Animated.View style={[styles.animatedHeader, { opacity: headerOpacity }]}>
@@ -139,8 +147,13 @@ const Details = ({ route }) => {
           label="Add to Cart"
           customStyles={styles.addToCartButton}
           customLabelStyles={styles.buttonLabel}
-          onPress={() => {/* Add to cart logic */}}
+          onPressMe={handleAddToCart}
         />
+        {/* <TouchableOpacity onPress={handleAddToCart}>
+          <View style={styles.addToCartButton}>
+            <AppText text="Add to Cart" customStyles={styles.buttonLabel} />
+          </View>
+        </TouchableOpacity> */}
       </BlurView>
     </Screen>
   );
@@ -259,6 +272,7 @@ const styles = StyleSheet.create({
     fontSize: 20,
     fontWeight: 'bold',
     color: '#FFF',
+    textAlign: 'center',
   },
 });
 

@@ -1,11 +1,12 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-
+import Screen from '../components/Screen/Screen';
 export default function ProfileView() {
   const navigation = useNavigation();
 
   return (
+    <Screen>
     <View style={styles.container}>
       <View style={styles.header}>
         <Image
@@ -58,6 +59,7 @@ export default function ProfileView() {
         </View>
       </View>
     </View>
+    </Screen>
   );
 }
 

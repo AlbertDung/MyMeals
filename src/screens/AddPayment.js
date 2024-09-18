@@ -11,6 +11,9 @@ const AddPayment = () => {
   const handleGoBack = () => {
     navigation.goBack();
   };
+  const handlMasterCard = () => {
+    navigation.navigate("Payment");
+  };
   return (
     <Screen>
       <AppHeader
@@ -22,6 +25,7 @@ const AddPayment = () => {
         <PaymentMethod
           key={paymentMethod.title}
           paymentMethod={paymentMethod}
+          onCheckOutPress={handlMasterCard}
         />
       ))}
       <View style={styles.buttonContainer}>

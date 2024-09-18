@@ -4,9 +4,9 @@ import { Entypo, Fontisto, Ionicons } from "@expo/vector-icons";
 import { colors } from "../../theme/colors";
 import AppText from "../AppText/AppText";
 
-const PaymentMethod = ({ paymentMethod }) => {
+const PaymentMethod = ({ paymentMethod, onCheckOutPress }) => {
   return (
-    <TouchableOpacity style={styles.container}>
+    <TouchableOpacity style={styles.container} onPress={onCheckOutPress}>
       <View style={styles.iconContainer}>
         {paymentMethod.library === "Entypo" ? (
           <Entypo name={paymentMethod.icon} size={20} color={colors.primary} />

@@ -9,14 +9,19 @@ import AppText from "../components/AppText/AppText";
 import Input from "../components/Input/Input";
 import Button from "../components/Button/Button";
 import { colors } from "../theme/colors";
-
+import { useNavigation } from '@react-navigation/native';
 const PaymentScreen = () => {
   const [checked, setChecked] = useState(true);
+  const navigation = useNavigation();
+  const handleGoBack = () => {
+    navigation.goBack();
+  };
   return (
     <Screen customStyles={styles.container}>
       <AppHeader
         title={"Payment Screen"}
         customTitleStyles={{ marginLeft: "25%" }}
+        onBackPress={handleGoBack}
       />
       <CreditCard />
       <View style={styles.form}>

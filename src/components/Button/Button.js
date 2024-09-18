@@ -1,12 +1,12 @@
-import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { StyleSheet, TouchableOpacity } from "react-native";
 import React from "react";
 import AppText from "../AppText/AppText";
 import { colors } from "../../theme/colors";
 
-const Button = ({ label, customStyles, customLabelStyles }) => {
+const Button = ({ label, customStyles, customLabelStyles, onPressMe }) => {
   return (
     <TouchableOpacity
-      onPress={() => {}}
+      onPress={onPressMe}
       style={[styles.container, customStyles]}
     >
       <AppText customStyles={[styles.label, customLabelStyles]} text={label} />
