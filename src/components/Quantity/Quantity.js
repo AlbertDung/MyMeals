@@ -1,18 +1,19 @@
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import React from "react";
 import { Feather } from "@expo/vector-icons";
-
+import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { colors } from "../../theme/colors";
+import AppText from "../AppText/AppText";
 
 const Quantity = ({ quantity, increaseQuantity, decreaseQuantity }) => {
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.button} onPress={decreaseQuantity}>
-        <Feather name="minus" size={15} color={colors.primary} />
+      <TouchableOpacity onPress={decreaseQuantity} style={styles.button}>
+        <MaterialCommunityIcons name="minus" size={20} color="#FF4081" />
       </TouchableOpacity>
-      <Text style={styles.quantity}>{quantity}</Text>
-      <TouchableOpacity style={styles.button} onPress={increaseQuantity}>
-        <Feather name="plus" size={15} color={colors.primary} />
+      <AppText text={quantity} style={styles.quantity} />
+      <TouchableOpacity onPress={increaseQuantity} style={styles.button}>
+        <MaterialCommunityIcons name="plus" size={20} color="#FF4081" />
       </TouchableOpacity>
     </View>
   );

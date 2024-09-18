@@ -1,12 +1,13 @@
-import { StyleSheet, Image, View, TouchableOpacity, Animated } from "react-native";
-import React, { useState, useRef, useEffect  } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import { StyleSheet, Image, View, TouchableOpacity, Animated, ScrollView } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
+import { LinearGradient } from 'expo-linear-gradient';
+import { BlurView } from 'expo-blur';
 import AppHeader from "../components/AppHeader/AppHeader";
 import Screen from "../components/Screen/Screen";
 import AppText from "../components/AppText/AppText";
 import Button from "../components/Button/Button";
-import { colors } from "../theme/colors";
 import Quantity from "../components/Quantity/Quantity";
 import MiniCard from "../components/MiniCard/MiniCard";
 import { useFavorites } from "../components/Context/FavoritesContext";
@@ -14,16 +15,15 @@ import { useFavorites } from "../components/Context/FavoritesContext";
 const Details = ({ route }) => {
   const { item } = route.params;
   const [quantity, setQuantity] = useState(1);
-  const { addFavorite, removeFavorite, isFavorite,favorites  } = useFavorites();
+  const { addFavorite, removeFavorite, isFavorite } = useFavorites();
   const heartScale = useRef(new Animated.Value(1)).current;
   const lastTap = useRef(0);
   const navigation = useNavigation();
   
-  // Thay đổi cách quản lý isFav
-  const [isFav, setIsFav] = useState(false);  // Không cần trạng thái cục bộ nữa
+  const [isFav, setIsFav] = useState(false);
+  const scrollY = useRef(new Animated.Value(0)).current;
 
   useEffect(() => {
-    // Cập nhật trạng thái yêu thích mỗi khi món ăn thay đổi
     setIsFav(isFavorite(item.id));
   }, [item, isFavorite]);
   
@@ -33,23 +33,13 @@ const Details = ({ route }) => {
     } else {
       addFavorite(item);
     }
-    setIsFav(!isFav);  // Cập nhật trạng thái cục bộ để thay đổi ngay lập tức trên giao diện
+    setIsFav(!isFav);
     animateHeart();
   };
-  
 
   const handleGoBack = () => {
     navigation.goBack();
   };
-
-  // const toggleFavorite = () => {
-  //   if (isFav) {
-  //     removeFavorite(item.id);
-  //   } else {
-  //     addFavorite(item);
-  //   }
-  //   animateHeart();
-  // };
 
   const animateHeart = () => {
     Animated.sequence([
@@ -68,131 +58,208 @@ const Details = ({ route }) => {
     }
   };
 
-  const increaseQuantity = () => {
-    setQuantity((quantity) => quantity + 1);
-  };
-
-  const decreaseQuantity = () => {
-    setQuantity((quantity) => {
-      if (quantity === 1) {
-        return quantity;
-      } else {
-        return quantity - 1;
-      }
-    });
-  };
+  const headerOpacity = scrollY.interpolate({
+    inputRange: [0, 200],
+    outputRange: [0, 1],
+    extrapolate: 'clamp',
+  });
 
   return (
-    <Screen>
-      <AppHeader 
-        title="Details" 
-        customTitleStyles={{ marginLeft: "35%" }} 
-        onBackPress={handleGoBack}
-      />
-      <TouchableOpacity onPress={handleDoubleTap} activeOpacity={0.8} style={styles.headerImage}>
-        <Image source={item.image} style={styles.image} />
-      </TouchableOpacity>
-      <View style={styles.body}>
-        <View style={styles.directionRowSpaceBetween}>
-          <AppText text={item.title} customStyles={styles.title} />
-          <AppText text={"(109 Reviews)"} customStyles={styles.textMedium} />
-        </View>
-        <View style={styles.directionRowSpaceBetween}>
-          <Quantity
-            quantity={quantity}
-            increaseQuantity={increaseQuantity}
-            decreaseQuantity={decreaseQuantity}
+    <Screen style={styles.screen}>
+      <Animated.View style={[styles.animatedHeader, { opacity: headerOpacity }]}>
+        <BlurView intensity={100} style={StyleSheet.absoluteFill} />
+        <AppHeader 
+          title={item.title}
+          customTitleStyles={styles.headerTitle}
+          onBackPress={handleGoBack}
+        />
+      </Animated.View>
+      
+      <Animated.ScrollView
+        showsVerticalScrollIndicator={false}
+        onScroll={Animated.event(
+          [{ nativeEvent: { contentOffset: { y: scrollY } } }],
+          { useNativeDriver: true }
+        )}
+        scrollEventThrottle={16}
+      >
+        <TouchableOpacity onPress={handleDoubleTap} activeOpacity={0.9} style={styles.imageContainer}>
+          <Image source={item.image} style={styles.image} />
+          <LinearGradient
+            colors={['rgba(0,0,0,0.5)', 'transparent', 'rgba(0,0,0,0.5)']}
+            style={styles.gradient}
           />
-          <AppText text={`$${item.price.toFixed(2)}`} customStyles={styles.textMedium} />
+          <View style={styles.imageOverlay}>
+            <AppText text={`$${item.price.toFixed(2)}`} customStyles={styles.price} />
+            <Animated.View style={{ transform: [{ scale: heartScale }] }}>
+              <TouchableOpacity onPress={toggleFavorite} style={styles.favoriteButton}>
+                <Ionicons 
+                  name={isFav ? "heart" : "heart-outline"} 
+                  size={28} 
+                  color={isFav ? '#FF4081' : '#FFF'} 
+                />
+              </TouchableOpacity>
+            </Animated.View>
+          </View>
+        </TouchableOpacity>
+
+        <View style={styles.content}>
+          <View style={styles.header}>
+            <AppText text={item.title} customStyles={styles.title} />
+            {/* <AppText text={`(${item.reviews} Reviews)`} customStyles={styles.reviews} /> */}
+          </View>
+
+          <View style={styles.miniCardsContainer}>
+            <MiniCard icon="star" title={item.rating.toFixed(1)} subtitle="Rating" />
+            <MiniCard icon="clock" 
+              // title={`${item.cookTime} min`} 
+              subtitle="Cook Time" 
+            />
+            <MiniCard icon="home" title={item.servings} subtitle="Servings" />
+          </View>
+
+          <View style={styles.descriptionContainer}>
+            <AppText text="Description" customStyles={styles.sectionTitle} />
+            <AppText text={item.description} customStyles={styles.description} />
+          </View>
+
+          <View style={styles.quantityContainer}>
+            <AppText text="Quantity" customStyles={styles.sectionTitle} />
+            <Quantity
+              quantity={quantity}
+              increaseQuantity={() => setQuantity(q => q + 1)}
+              decreaseQuantity={() => setQuantity(q => q > 1 ? q - 1 : 1)}
+            />
+          </View>
         </View>
-        <View style={styles.directionRowSpaceBetween}>
-          <MiniCard icon={"star"} title={item.rating.toFixed(1)} subtitle={"Rating"} />
-          <MiniCard icon={"camera"} title={"40"} subtitle={"Photos"} />
-        </View>
-        <View style={styles.details}>
-          <AppText text="Food Details" customStyles={styles.title} />
-          <AppText
-            text={item.description}
-            customStyles={styles.description}
-          />
-        </View>
-        <View style={styles.buttonContainer}>
-          <Button
-            label={"Add to cart"}
-            customStyles={styles.button}
-            customLabelStyles={styles.buttonLabel}
-          />
-          <Animated.View style={{ transform: [{ scale: heartScale }] }}>
-            <TouchableOpacity onPress={toggleFavorite} style={styles.favoriteButton}>
-              <Ionicons 
-                name={isFav ? "heart" : "heart-outline"} 
-                size={30} 
-                color={isFav ? colors.primary : colors.medium} 
-              />
-            </TouchableOpacity>
-          </Animated.View>
-        </View>
-      </View>
+      </Animated.ScrollView>
+
+      <BlurView intensity={50} style={styles.footer}>
+        <Button
+          label="Add to Cart"
+          customStyles={styles.addToCartButton}
+          customLabelStyles={styles.buttonLabel}
+          onPress={() => {/* Add to cart logic */}}
+        />
+      </BlurView>
     </Screen>
   );
 };
 
-export default Details;
 const styles = StyleSheet.create({
-  headerImage: {
-    flex: 0.3,
-    paddingHorizontal: 30,
+  screen: {
+    backgroundColor: '#F8F8F8',
+  },
+  animatedHeader: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    zIndex: 1,
+  },
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  imageContainer: {
+    height: 300,
+    width: '100%',
+    position: 'relative',
   },
   image: {
-    width: "100%",
-    height: "100%",
-    borderRadius: 10,
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
   },
-  body: {
-    flex: 0.7,
-    paddingTop: 40,
-    paddingHorizontal: 15,
+  gradient: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    height: '100%',
   },
-  directionRowSpaceBetween: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-between",
-    marginVertical: 5,
-  },
-  details: {
-    marginTop: 20,
-  },
-  title: {
-    fontFamily: "Lato-Black",
-    fontSize: 20,
-    marginBottom: 10,
-  },
-  textMedium: {
-    fontFamily: "Lato-Black",
-    color: colors.medium,
-  },
-  description: {
-    fontFamily: "Lato-Regular",
-    fontSize: 20,
-    color: colors.dark,
-  },
-  buttonContainer: {
+  imageOverlay: {
+    position: 'absolute',
+    bottom: 30,
+    left: 16,
+    right: 16,
     flexDirection: 'row',
-    alignItems: 'center',
     justifyContent: 'space-between',
-    marginVertical: 20,
+    alignItems: 'center',
   },
-  button: {
-    width: "80%",
-    paddingVertical: 15,
-  },
-  buttonLabel: {
-    textAlign: "center",
-    fontSize: 20,
+  price: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#FFF',
+    textShadowColor: 'rgba(0, 0, 0, 0.75)',
+    textShadowOffset: {width: -1, height: 1},
+    textShadowRadius: 10
   },
   favoriteButton: {
-    backgroundColor: colors.light,
-    padding: 10,
-    borderRadius: 10,
+    backgroundColor: 'rgba(255,255,255,0.3)',
+    padding: 12,
+    borderRadius: 30,
+  },
+  content: {
+    padding: 20,
+    paddingTop:10,
+    backgroundColor: '#FFF',
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
+    marginTop: -20,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 20,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  reviews: {
+    fontSize: 16,
+    color: '#666',
+  },
+  miniCardsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 30,
+  },
+  sectionTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 12,
+  },
+  descriptionContainer: {
+    marginBottom: 30,
+  },
+  description: {
+    fontSize: 18,
+    color: '#666',
+    lineHeight: 28,
+  },
+  quantityContainer: {
+    marginBottom: 30,
+  },
+  footer: {
+    padding: 20,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(0,0,0,0.1)',
+  },
+  addToCartButton: {
+    backgroundColor: '#FF4081',
+    paddingVertical: 16,
+    borderRadius: 15,
+  },
+  buttonLabel: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#FFF',
   },
 });
+
+export default Details;

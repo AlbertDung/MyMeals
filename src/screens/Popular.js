@@ -66,7 +66,7 @@ const Popular = () => {
               .filter((item) => 
                 category === "Popular" ? true : item.category.toLowerCase() === category.toLowerCase()
               )
-              .slice(0, 3) // Increased to show more items
+              .slice(0, 4) // Increased to show more items
             }
           />
         ))}
@@ -78,7 +78,7 @@ const Popular = () => {
 const styles = StyleSheet.create({
   headerGradient: {
     //paddingTop: 40,
-    paddingBottom: 0,
+    paddingBottom: 10,
     paddingTop: 15,
   },
   headerTitle: {

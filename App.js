@@ -81,7 +81,7 @@ export default function App() {
 
   return (
     <FavoritesProvider>
-      <StatusBar barStyle="dark-content" backgroundColor="black" />
+      {/* <StatusBar barStyle="dark-content" backgroundColor="black" /> */}
       <NavigationContainer>
         <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
           <Tab.Navigator 

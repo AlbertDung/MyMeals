@@ -39,7 +39,7 @@ const Card = ({ item }) => {
           <View style={styles.directionRow}>
             <Ionicons name="star" size={15} color={colors.yellow} />
             <AppText
-              text={`(${item.rating}.0)`}
+              text={`(${item.rating})`}
               customStyles={styles.textMedium}
             />
           </View>
