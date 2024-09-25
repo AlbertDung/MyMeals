@@ -8,4 +8,5 @@ export const colors = {
   yellow: "#e4c56a",
   transparent: "transparent",
   gray: "gray",
+  completed:"#6EC207"
 };

@@ -20,7 +20,7 @@ const MyOrder = () => {
         showsVerticalScrollIndicator={false}
       >
         <Text style={styles.date}>Today</Text>
-        {foodItems.slice(0, 2).map((item) => (
+        {foodItems.slice(0, 5).map((item) => (
           <OrderCard key={item.title} item={item} />
         ))}
         <Text style={styles.date}>Yesterday</Text>

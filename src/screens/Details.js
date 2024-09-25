@@ -28,7 +28,7 @@ const Details = ({ route }) => {
 
   const handleAddToCart = () => {
     addToCart({ ...item, quantity });
-    //navigation.navigate('MyCart');
+    navigation.navigate('MyCart');
   };
 
   useEffect(() => {

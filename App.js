@@ -1,11 +1,11 @@
-import { StyleSheet, View,StatusBar } from "react-native";
-import { useCallback } from "react";
+import React, { useState, useCallback } from "react";
+import { StyleSheet, View, StatusBar } from "react-native";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createStackNavigator } from '@react-navigation/stack'; // Import StackNavigator
-import { Ionicons,MaterialIcons } from '@expo/vector-icons';
+import { createStackNavigator } from '@react-navigation/stack';
+import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 
 import AddPayment from "./src/screens/AddPayment";
 import Home from "./src/screens/Home";
@@ -15,19 +15,27 @@ import MyCart from "./src/screens/MyCart";
 import MyOrder from "./src/screens/MyOrder";
 import Popular from "./src/screens/Popular";
 import Profile from "./src/screens/Profile";
+import LoginScreen from "./src/screens/LoginScreens";
+import SignupScreen from "./src/screens/Signup";
+import ForgotPasswordScreen from "./src/screens/ForgotPassword";
+
+
+
 import { CartProvider } from "./src/components/Context/CartContext";
 import { FavoritesProvider } from "./src/components/Context/FavoritesContext";
 import Options from "./src/screens/Options";
 import PaymentScreen from "./src/screens/PaymentScreen";
+export const AuthContext = React.createContext();
 SplashScreen.preventAutoHideAsync();
 
-SplashScreen.preventAutoHideAsync();
+
+
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
+// User stack
 const UserScreens = ({ navigation }) => {
-  //const { colors } = useTheme();
   return (
     <Stack.Navigator initialRouteName="User">
       <Stack.Screen
@@ -43,7 +51,7 @@ const UserScreens = ({ navigation }) => {
             <MaterialIcons
               name="settings"
               size={24}
-              style={{ color: "blue", marginRight: 10 }}
+              style={{ color: "white", marginRight: 10 }}
               onPress={() => navigation.navigate("Options")}
             />
           ),
@@ -57,6 +65,7 @@ const UserScreens = ({ navigation }) => {
     </Stack.Navigator>
   );
 };
+
 function HomeStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -69,7 +78,7 @@ function HomeStack() {
 function FavoritesStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Favorites" component={Favorite} />
+      <Stack.Screen name="FavoritesScreen" component={Favorite} />
       <Stack.Screen name="Details" component={Details} />
     </Stack.Navigator>
   );
@@ -78,39 +87,90 @@ function FavoritesStack() {
 function PopularStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Popular" component={Popular} />
+      <Stack.Screen name="PopularScreen" component={Popular} />
       <Stack.Screen name="Details" component={Details} />
     </Stack.Navigator>
   );
 }
-function PaymentStack() 
-{
+
+function PaymentStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="AddPayment" component={AddPayment} />
+      <Stack.Screen name="AddPaymentScreen" component={AddPayment} />
       <Stack.Screen name="Payment" component={PaymentScreen} />
     </Stack.Navigator>
   );
 }
+
 function UserStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="UserScreen" component={Profile} />
+      <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen name="MyCart" component={MyCart} />
       <Stack.Screen name="MyOrder" component={MyOrder} />
       <Stack.Screen name="AddPayment" component={PaymentStack} />
+      {/* <Stack.Screen name="Signout" component={AuthStack} /> */}
     </Stack.Navigator>
   );
 }
 
+// StackNavigator cho màn hình đăng nhập
+function AuthStack() {
+  return (
+    <Stack.Navigator initialRouteName="Login">
+      <Stack.Screen
+        name="Login"
+        component={LoginScreen}
+        options={{ headerShown: false }}
+      />
+      <Stack.Screen
+        name="Signup"
+        component={SignupScreen}
+        options={{ title: "Sign up", headerStyle: { backgroundColor: '#FF5E62' }, headerTintColor: 'white', headerShown: false }}
+      />
+      <Stack.Screen
+        name="ForgotPassword"
+        component={ForgotPasswordScreen}
+        options={{ title: "Forgot Password", headerStyle: { backgroundColor: '#FF5E62' }, headerTintColor: 'white' , headerShown: false }}
+      />
+    </Stack.Navigator>
+  );
+}
+function RootNavigator() {
+  const { isLoggedIn } = React.useContext(AuthContext);
+  
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      {isLoggedIn ? (
+        <Stack.Screen name="Main" component={MainTabs} />
+      ) : (
+        <Stack.Screen name="Auth" component={AuthStack} />
+      )}
+    </Stack.Navigator>
+  );
+}
 export default function App() {
   const [fontsLoaded] = useFonts({
     "Lato-Black": require("./assets/fonts/Lato-Black.ttf"),
     "Lato-Regular": require("./assets/fonts/Lato-Regular.ttf"),
     "Lato-Thin": require("./assets/fonts/Lato-Thin.ttf"),
-
     "Lato-Bold": require("./assets/fonts/Lato-Bold.ttf"),
   });
+
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  const authContext = React.useMemo(
+    () => ({
+      signIn: () => {
+        setIsLoggedIn(true);
+      },
+      signOut: () => {
+        setIsLoggedIn(false);
+      },
+      isLoggedIn,
+    }),
+    [isLoggedIn]
+  );
 
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded) {
@@ -123,42 +183,52 @@ export default function App() {
   }
 
   return (
-    <CartProvider>
-      <FavoritesProvider>
-        <StatusBar barStyle="dark-content" backgroundColor="black" />
-        <NavigationContainer>
-          <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
-            <Tab.Navigator 
-              screenOptions={({ route }) => ({
-                tabBarIcon: ({ focused, color, size }) => {
-                  let iconName;
+    <AuthContext.Provider value={authContext}>
+      <CartProvider>
+        <FavoritesProvider>
+          <StatusBar barStyle="dark-content" backgroundColor="black" />
+          <NavigationContainer>
+            <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
+              <RootNavigator />
+            </View>
+          </NavigationContainer>
+        </FavoritesProvider>
+      </CartProvider>
+    </AuthContext.Provider>
+  );
 
-                  if (route.name === "Home") {
-                    iconName = focused ? "home" : "home-outline";
-                  } else if (route.name === "Favorites") {
-                    iconName = focused ? "heart" : "heart-outline";
-                  } else if (route.name === "Popular") {
-                    iconName = focused ? "star" : "star-outline";
-                  } else if (route.name === "Me") {
-                    iconName = focused ? "person" : "person-outline";
-                  }
+}
 
-                  return <Ionicons name={iconName} size={size} color={color} />;
-                },
-                tabBarActiveTintColor: 'tomato',
-                tabBarInactiveTintColor: 'gray',
-                headerShown: false,
-              })}
-            >
-              <Tab.Screen name="Home" component={HomeStack} />
-              <Tab.Screen name="Favorites" component={FavoritesStack} />
-              <Tab.Screen name="Popular" component={PopularStack} />
-              <Tab.Screen name="Me" component={UserScreens} />
-            </Tab.Navigator>
-          </View>
-        </NavigationContainer>
-      </FavoritesProvider>
-    </CartProvider>
+// Tab Navigator cho màn hình chính
+function MainTabs() {
+  return (
+    <Tab.Navigator 
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;
+
+          if (route.name === "Home") {
+            iconName = focused ? "home" : "home-outline";
+          } else if (route.name === "Favorites") {
+            iconName = focused ? "heart" : "heart-outline";
+          } else if (route.name === "Popular") {
+            iconName = focused ? "star" : "star-outline";
+          } else if (route.name === "Me") {
+            iconName = focused ? "person" : "person-outline";
+          }
+
+          return <Ionicons name={iconName} size={size} color={color} />;
+        },
+        tabBarActiveTintColor: 'tomato',
+        tabBarInactiveTintColor: 'gray',
+        headerShown: false,
+      })}
+    >
+      <Tab.Screen name="Home" component={HomeStack} />
+      <Tab.Screen name="Favorites" component={FavoritesStack} />
+      <Tab.Screen name="Popular" component={PopularStack} />
+      <Tab.Screen name="Me" component={UserScreens} />
+    </Tab.Navigator>
   );
 }
 

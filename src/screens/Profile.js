@@ -1,10 +1,18 @@
-import React from 'react';
+import React,{useContext} from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import Screen from '../components/Screen/Screen';
+import Button from '../components/Button/Button';
+import { BlurView } from 'expo-blur';
+import { AuthContext } from '../../App'; // Import AuthContext 
 export default function ProfileView() {
   const navigation = useNavigation();
 
+  const { signOut } = useContext(AuthContext); // Sử dụng AuthContext
+  
+  const handleSignOut = () => {
+    signOut(); // Gọi hàm signOut từ AuthContext
+  };
   return (
     <Screen>
     <View style={styles.container}>
@@ -13,6 +21,13 @@ export default function ProfileView() {
           style={styles.avatar}
           source={{ uri: 'https://bootdey.com/img/Content/avatar/avatar7.png' }}
         />
+        {/* <View className="w-16 h-16 border border-secondary rounded-lg flex justify-center items-center">
+              <Image
+                source={{ uri: user?.avatar }}
+                className="w-[90%] h-[90%] rounded-lg"
+                resizeMode="cover"
+              />
+            </View> */}
         <Text style={styles.name}>Albert AnhDung</Text>
       </View>
 
@@ -57,6 +72,16 @@ export default function ProfileView() {
             <Text style={styles.menuText}>Hỗ trợ & Trợ giúp</Text>
           </TouchableOpacity>
         </View>
+
+        <BlurView intensity={50} style={styles.footer}>
+        <Button
+          label="Đăng xuất"
+          customStyles={styles.addToCartButton}
+          customLabelStyles={styles.buttonLabel}
+          onPressMe={handleSignOut}
+        />
+        
+      </BlurView>
       </View>
     </View>
     </Screen>
@@ -112,5 +137,10 @@ const styles = StyleSheet.create({
   menuText: {
     fontSize: 16,
     color: '#333333',
+  },
+  footer: {
+    padding: 20,
+    borderTopWidth: 1,
+    borderTopColor: 'rgba(0,0,0,0.1)',
   },
 });
