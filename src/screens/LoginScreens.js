@@ -8,7 +8,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FontAwesome } from '@expo/vector-icons';
 import { AuthContext } from '../../App'; // Đảm bảo đường dẫn này chính xác
-
+import { onGoogleButtonPress } from '../../socialSignIn';
 import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -19,13 +19,13 @@ import * as AuthSession from 'expo-auth-session'; // Import AuthSession
 
 // Initialize Firebase
 const firebaseConfig = {
-  apiKey: "AIzaSyCdaC5MlHbpvtdsaO2Y-iy2ADPPAVOLvNc",
-  authDomain: "todosapp-df597.firebaseapp.com",
-  projectId: "todosapp-df597",
-  storageBucket: "todosapp-df597.appspot.com",
-  messagingSenderId: "756702315456",
-  appId: "1:756702315456:web:ac5da9055aa02102d8fe25",
-  measurementId: "G-49H0X06ZQC"
+  apiKey: "AIzaSyBiYg1McZL3iQPR_OkSOwmyh0HzDo0kme0",
+  authDomain: "mymeals-8c736.firebaseapp.com",
+  projectId: "mymeals-8c736",
+  storageBucket: "mymeals-8c736.appspot.com",
+  messagingSenderId: "815931171037",
+  appId: "1:815931171037:web:ee62118b6af33e96c37b34",
+  measurementId: "G-8NHTYT4JC1"
 };
 
 const app = initializeApp(firebaseConfig);
@@ -117,14 +117,23 @@ const LoginScreen = () => {
     console.log(`Login with ${platform}`);
   };
 
-  const handleGoogleLogin = () => {
-    promptAsync();
-  };
+  // const handleGoogleLogin = () => {
+  //   promptAsync();
+  // };
 
 
-  const toTheSignUp = async () => {
-    navigation.navigate('Signup');
-  };
+  const handleGoogleServiceLogin = async () => {
+    try {
+      setLoading(true);
+      await onGoogleButtonPress();
+      setLoading(false);
+      // Alert.alert("Login Success", `Welcome ${user.email}`);
+      navigation.navigate("ListUser");
+    } catch (error) {
+      Alert.alert("Google Login Failed", error.message);
+      setLoading(false);
+    }
+  }
   return (
     <LinearGradient colors={['#FF9966', '#FF5E62']} style={styles.gradient}>
       <SafeAreaView>
@@ -165,7 +174,7 @@ const LoginScreen = () => {
               <Text style={styles.buttonText}>Log In</Text>
             </TouchableOpacity>
             <View style={styles.socialLoginContainer}>
-              <TouchableOpacity style={styles.socialButton} onPress={handleGoogleLogin}>
+              <TouchableOpacity style={styles.socialButton} onPress={handleGoogleServiceLogin}>
                 <FontAwesome name="google" size={24} color="#DB4437" />
               </TouchableOpacity>
               <TouchableOpacity style={styles.socialButton} onPress={handleFacebookLogin}>
