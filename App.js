@@ -1,4 +1,4 @@
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback,useEffect } from "react";
 import { StyleSheet, View, StatusBar } from "react-native";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
@@ -18,7 +18,8 @@ import Profile from "./src/screens/Profile";
 import LoginScreen from "./src/screens/LoginScreens";
 import SignupScreen from "./src/screens/Signup";
 import ForgotPasswordScreen from "./src/screens/ForgotPassword";
-
+import IntroductionPage from "./src/screens/Wellcom";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
 import { CartProvider } from "./src/components/Context/CartContext";
@@ -137,11 +138,13 @@ function AuthStack() {
   );
 }
 function RootNavigator() {
-  const { isLoggedIn } = React.useContext(AuthContext);
-  
+  const { isLoggedIn, hasSeenIntro } = React.useContext(AuthContext);
+  //const { isLoggedIntro, hasSeenIntro } = React.useContext(AuthContext);
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      {isLoggedIn ? (
+      {!hasSeenIntro ? (
+        <Stack.Screen name="Intro" component={IntroductionPage} />
+      ) : isLoggedIn ? (
         <Stack.Screen name="Main" component={MainTabs} />
       ) : (
         <Stack.Screen name="Auth" component={AuthStack} />
@@ -158,6 +161,17 @@ export default function App() {
   });
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [hasSeenIntro, setHasSeenIntro] = useState(false);
+
+  useEffect(() => {
+    // Check if the user has seen the intro before
+    AsyncStorage.getItem('hasSeenIntro').then(value => {
+      if (value === 'true') {
+        setHasSeenIntro(true);
+      }
+    });
+  }, []);
+
 
   const authContext = React.useMemo(
     () => ({
@@ -167,9 +181,14 @@ export default function App() {
       signOut: () => {
         setIsLoggedIn(false);
       },
+      markIntroAsSeen: () => {
+        setHasSeenIntro(true);
+        AsyncStorage.setItem('hasSeenIntro', 'true');
+      },
       isLoggedIn,
+      hasSeenIntro,
     }),
-    [isLoggedIn]
+    [isLoggedIn,hasSeenIntro]
   );
 
   const onLayoutRootView = useCallback(async () => {
@@ -209,11 +228,13 @@ function MainTabs() {
 
           if (route.name === "Home") {
             iconName = focused ? "home" : "home-outline";
+          } else if (route.name === "Explore") {
+            iconName = focused ? "compass" : "compass-outline";
+          } else if (route.name === "My Cart") {
+            iconName = focused ? "cart" : "cart-outline";
           } else if (route.name === "Favorites") {
             iconName = focused ? "heart" : "heart-outline";
-          } else if (route.name === "Popular") {
-            iconName = focused ? "star" : "star-outline";
-          } else if (route.name === "Me") {
+          } else if (route.name === "User ") {
             iconName = focused ? "person" : "person-outline";
           }
 
@@ -222,12 +243,14 @@ function MainTabs() {
         tabBarActiveTintColor: 'tomato',
         tabBarInactiveTintColor: 'gray',
         headerShown: false,
+        tabBarShowLabel:false,
       })}
     >
       <Tab.Screen name="Home" component={HomeStack} />
+      <Tab.Screen name="Explore" component={PopularStack} />
+      <Tab.Screen name="My Cart" component={MyCart} />
       <Tab.Screen name="Favorites" component={FavoritesStack} />
-      <Tab.Screen name="Popular" component={PopularStack} />
-      <Tab.Screen name="Me" component={UserScreens} />
+      <Tab.Screen name="User " component={UserScreens} />
     </Tab.Navigator>
   );
 }

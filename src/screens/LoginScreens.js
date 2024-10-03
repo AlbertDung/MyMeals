@@ -42,22 +42,22 @@ const LoginScreen = () => {
 
 
 
-  const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
-    clientId: '756702315456-3t6618id9kfjpqj7467chstrhvdtmps5.apps.googleusercontent.com',
-  });
+  // const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
+  //   clientId: '756702315456-3t6618id9kfjpqj7467chstrhvdtmps5.apps.googleusercontent.com',
+  // });
 
 
-  useEffect(() => {
-    if (response?.type === 'success') {
-      const { id_token } = response.params;
-      const credential = GoogleAuthProvider.credential(id_token);
-      signInWithCredential(auth, credential).then(() => {
-        navigation.navigate('Home');
-      }).catch((err) => {
-        setError('Google Sign-In failed. Try again.');
-      });
-    }
-  }, [response]);
+  // useEffect(() => {
+  //   if (response?.type === 'success') {
+  //     const { id_token } = response.params;
+  //     const credential = GoogleAuthProvider.credential(id_token);
+  //     signInWithCredential(auth, credential).then(() => {
+  //       navigation.navigate('Home');
+  //     }).catch((err) => {
+  //       setError('Google Sign-In failed. Try again.');
+  //     });
+  //   }
+  // }, [response]);
 
   const handleLogin = async () => {
     if (!email.trim() && !password.trim()) {
@@ -122,18 +122,17 @@ const LoginScreen = () => {
   // };
 
 
-  const handleGoogleServiceLogin = async () => {
+  const handleGoogleSignIn = async () => {
     try {
-      setLoading(true);
-      await onGoogleButtonPress();
-      setLoading(false);
-      // Alert.alert("Login Success", `Welcome ${user.email}`);
-      navigation.navigate("ListUser");
+      const userCredential = await onGoogleButtonPress();
+      if (userCredential) {
+        // Đăng nhập thành công
+        signIn();
+      }
     } catch (error) {
-      Alert.alert("Google Login Failed", error.message);
-      setLoading(false);
+      setError('Google Sign-In failed. Try again.');
     }
-  }
+  };
   return (
     <LinearGradient colors={['#FF9966', '#FF5E62']} style={styles.gradient}>
       <SafeAreaView>
@@ -174,7 +173,7 @@ const LoginScreen = () => {
               <Text style={styles.buttonText}>Log In</Text>
             </TouchableOpacity>
             <View style={styles.socialLoginContainer}>
-              <TouchableOpacity style={styles.socialButton} onPress={handleGoogleServiceLogin}>
+              <TouchableOpacity style={styles.socialButton} onPress={handleGoogleSignIn}>
                 <FontAwesome name="google" size={24} color="#DB4437" />
               </TouchableOpacity>
               <TouchableOpacity style={styles.socialButton} onPress={handleFacebookLogin}>
