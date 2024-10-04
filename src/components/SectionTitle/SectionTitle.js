@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
   container: {
     width: "100%",
     alignItems: "center",
-    paddingBottom:10,
+    paddingBottom: 5,
   },
   title: {
     color: colors.primary,
