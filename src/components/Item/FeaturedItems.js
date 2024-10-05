@@ -3,8 +3,12 @@ import { View, Text, ScrollView, Image, StyleSheet, TouchableOpacity } from 'rea
 
 const FeaturedItem = ({ title, image, onPress }) => (
   <TouchableOpacity style={styles.itemContainer} onPress={onPress}>
-    <Image source={{ uri: image }} style={styles.image} />
-    <Text style={styles.itemTitle}>{title}</Text>
+    <Image 
+          source={typeof image === 'string' ? { uri: image } : image} 
+          style={styles.image} 
+          //resizeMode="cover" // Đảm bảo ảnh vừa khung
+        />
+        <Text style={styles.title}>{title}</Text>
   </TouchableOpacity>
 );
 
@@ -16,7 +20,7 @@ const FeaturedItems = ({ items }) => {
         {items.map((item, index) => (
           <FeaturedItem
             key={index}
-            title={item.title}
+            title={item.name}
             image={item.image}
             onPress={() => {/* Navigate to item details */}}
           />
@@ -41,8 +45,8 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   image: {
-    width: 100,
-    height: 100,
+    width: 75,
+    height: 75,
     borderRadius: 50,
   },
   itemTitle: {

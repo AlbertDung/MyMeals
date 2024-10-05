@@ -5,7 +5,11 @@ import { Ionicons } from '@expo/vector-icons';
 const Restaurant = ({ name, image, rating, cuisine, distance, estimatedTime, reviews, onPress }) => {
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
-      <Image source={{ uri: image }} style={styles.image} />
+      <Image 
+        source={image} 
+        style={styles.image} 
+      />
+
       <View style={styles.info}>
         <Text style={styles.name} numberOfLines={1}>{name}</Text>
         <Text style={styles.cuisine}>{cuisine}</Text>

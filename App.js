@@ -19,6 +19,8 @@ import LoginScreen from "./src/screens/LoginScreens";
 import SignupScreen from "./src/screens/Signup";
 import ForgotPasswordScreen from "./src/screens/ForgotPassword";
 import IntroductionPage from "./src/screens/Wellcom";
+import RestaurantDetails from "./src/screens/RestaurantDetails";
+import DishDetails from "./src/screens/DishDetails";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
@@ -69,9 +71,11 @@ const UserScreens = ({ navigation }) => {
 
 function HomeStack() {
   return (
-    <Stack.Navigator screenOptions={{ headerShown: false }}>
+    <Stack.Navigator screenOptions={{ headerShown: false}}>
       <Stack.Screen name="HomeScreen" component={Home} />
       <Stack.Screen name="Details" component={Details} />
+      <Stack.Screen name="RestaurantDetails" component={RestaurantDetails} />
+      <Stack.Screen name="DishDetails" component={DishDetails} />
     </Stack.Navigator>
   );
 }
