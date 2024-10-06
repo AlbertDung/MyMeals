@@ -53,18 +53,19 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     fontWeight: 'bold',
+    marginLeft: -10,
   },
   seeAll: {
     fontSize: 14,
     color: 'blue',
   },
   restaurantItem: {
-    marginRight: 15,
+    marginRight: 10,
   },
   restaurantImage: {
-    width: 100,
-    height: 100,
-    borderRadius: 10,
+    width: 110,
+    height: 110,
+    borderRadius: 8,
   },
   restaurantName: {
     marginTop: 5,
