@@ -18,7 +18,7 @@ const FeaturedItem = ({ id, title, image, onPress }) => (
 const FeaturedItems = ({ items }) => {
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Featured Items</Text>
+      <Text style={styles.title}>Explore some thing new</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         {items.map((item, index) => (
           <FeaturedItem

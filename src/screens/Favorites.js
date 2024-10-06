@@ -1,5 +1,6 @@
-import React from 'react';
-import { StyleSheet, FlatList, View, Text, ActivityIndicator } from 'react-native';
+import React, { useState } from 'react';
+import { StyleSheet, View, Text, FlatList, TouchableOpacity, Animated } from 'react-native';
+import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import { useFavorites } from '../components/Context/FavoritesContext';
 import FavoriteCard from '../components/FavoriteCard/FavoriteCard';
 import Screen from '../components/Screen/Screen';
@@ -7,20 +8,87 @@ import AppHeader from '../components/AppHeader/AppHeader';
 import { useNavigation } from '@react-navigation/native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
-const Favorites = () => {
-  const { favorites, removeFavorite, updateFavoriteQuantity } = useFavorites();
+const AnimatedIcon = Animated.createAnimatedComponent(MaterialCommunityIcons);
+
+const FavoriteItem = ({ item, onPress, onFavoritePress, isFavorite }) => {
+  const scaleValue = React.useRef(new Animated.Value(1)).current;
+
+  const animateScale = () => {
+    Animated.sequence([
+      Animated.timing(scaleValue, {
+        toValue: 1.2,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+      Animated.timing(scaleValue, {
+        toValue: 1,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+
+  const handleFavoritePress = () => {
+    animateScale();
+    onFavoritePress(item);
+  };
+
+  return (
+    <TouchableOpacity style={styles.itemContainer} onPress={() => onPress(item)}>
+      <View style={styles.itemInfo}>
+        <Text style={styles.itemName}>{item.name}</Text>
+        <Text style={styles.itemDetails}>{item.cuisine || item.category}</Text>
+      </View>
+      <TouchableOpacity onPress={handleFavoritePress}>
+        <AnimatedIcon
+          name={isFavorite ? "heart" : "heart-outline"}
+          size={24}
+          color={isFavorite ? "#FF6B6B" : "#333"}
+          style={{ transform: [{ scale: scaleValue }] }}
+        />
+      </TouchableOpacity>
+    </TouchableOpacity>
+  );
+};
+
+const RestaurantsTab = () => {
+  const { favorites, removeFavorite, isFavorite } = useFavorites();
   const navigation = useNavigation();
+  const restaurants = favorites.filter(item => item.type === 'restaurant');
 
   const handleCardPress = (item) => {
-    navigation.navigate('Details', { item });
+    navigation.navigate('RestaurantDetails', { restaurant: item });
   };
 
-  const handleDelete = (item) => {
-    removeFavorite(item.id);
-    // Thêm thông báo xác nhận hoặc hoàn tác ở đây nếu cần
+  const handleFavoritePress = (item) => {
+    if (isFavorite(item.id)) {
+      removeFavorite(item.id);
+    }
   };
 
-  const handleQuantityChange = (item, newQuantity) => {
+  return (
+    <FlatList
+      data={restaurants}
+      keyExtractor={(item) => item.id}
+      renderItem={({ item }) => (
+        <FavoriteItem
+          item={item}
+          onPress={handleCardPress}
+          onFavoritePress={handleFavoritePress}
+          isFavorite={isFavorite(item.id)}
+        />
+      )}
+      ListEmptyComponent={
+        <View style={styles.emptyContainer}>
+          <MaterialCommunityIcons name="store-outline" size={80} color="#CCC" />
+          <Text style={styles.emptyText}>No favorite restaurants yet</Text>
+          <Text style={styles.emptySubText}>Explore restaurants and tap the heart to add them to your favorites!</Text>
+        </View>
+      }
+    />
+  );
+};
+const handleQuantityChange = (item, newQuantity) => {
     if (newQuantity > 0) {
       updateFavoriteQuantity(item.id, newQuantity);
     } else {
@@ -28,32 +96,94 @@ const Favorites = () => {
     }
   };
 
-  const renderEmptyState = () => (
+
+const DishesTab = () => {
+  const { favorites, removeFavorite, isFavorite } = useFavorites();
+  const navigation = useNavigation();
+  //const dishes = favorites.filter(item => item.type === 'dish');
+
+  const handleCardPress = (item) => {
+    navigation.navigate('Details', { item });
+  };
+
+  const handleFavoritePress = (item) => {
+    if (isFavorite(item.id)) {
+      removeFavorite(item.id);
+    }
+  };
+
+  return (
+    <Screen style={styles.screen}>
+      <FlatList
+          data={favorites}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <FavoriteCard
+              item={item}
+              onPress={() => handleCardPress(item)}
+              onFavoritePress={() => handleFavoritePress(item)}
+              onQuantityChange={(newQuantity) => handleQuantityChange(item, newQuantity)}
+              onDelete={() => handleFavoritePress(item)}
+            />
+          )}
+        contentContainerStyle={styles.listContainer}
+        showsVerticalScrollIndicator={false}
+        ListEmptyComponent={
+          <View style={styles.emptyContainer}>
+            <MaterialCommunityIcons name="food-outline" size={80} color="#CCC" />
+            <Text style={styles.emptyText}>No favorite dishes yet</Text>
+            <Text style={styles.emptySubText}>Explore dishes and tap the heart to add them to your favorites!</Text>
+          </View>
+        }
+      />
+    </Screen>
+  );
+};
+
+const HistoryTab = () => {
+  // Implement history logic here
+  return (
     <View style={styles.emptyContainer}>
-      <MaterialCommunityIcons name="heart-outline" size={80} color="#CCC" />
-      <Text style={styles.emptyText}>Your favorites list is empty</Text>
-      <Text style={styles.emptySubText}>Explore our menu and tap the heart to add items you love!</Text>
+      <MaterialCommunityIcons name="history" size={80} color="#CCC" />
+      <Text style={styles.emptyText}>No history yet</Text>
+      <Text style={styles.emptySubText}>Your browsing and order history will appear here!</Text>
     </View>
+  );
+};
+
+const renderScene = SceneMap({
+  restaurants: RestaurantsTab,
+  dishes: DishesTab,
+  history: HistoryTab,
+});
+
+const Favorites = () => {
+  const [index, setIndex] = useState(0);
+  const [routes] = useState([
+    { key: 'restaurants', title: 'Restaurants' },
+    { key: 'dishes', title: 'Dishes' },
+    { key: 'history', title: 'History' },
+  ]);
+
+  const renderTabBar = props => (
+    <TabBar
+      {...props}
+      indicatorStyle={styles.tabIndicator}
+      style={styles.tabBar}
+      labelStyle={styles.tabLabel}
+      activeColor="#FF6B6B"
+      inactiveColor="#333"
+    />
   );
 
   return (
     <Screen style={styles.screen}>
       <AppHeader title="My Favorites" customTitleStyles={styles.headerTitle} />
-      <FlatList
-        data={favorites}
-        keyExtractor={(item) => item.id}
-        renderItem={({ item }) => (
-          <FavoriteCard
-            item={item}
-            onPress={() => handleCardPress(item)}
-            onFavoritePress={() => handleDelete(item)}
-            onQuantityChange={(newQuantity) => handleQuantityChange(item, newQuantity)}
-            onDelete={() => handleDelete(item)}
-          />
-        )}
-        contentContainerStyle={styles.listContainer}
-        showsVerticalScrollIndicator={false}
-        ListEmptyComponent={renderEmptyState}
+      <TabView
+        navigationState={{ index, routes }}
+        renderScene={renderScene}
+        onIndexChange={setIndex}
+        renderTabBar={renderTabBar}
       />
     </Screen>
   );
@@ -74,6 +204,35 @@ const styles = StyleSheet.create({
     paddingTop: 16,
     paddingBottom: 24,
     flexGrow: 1,
+  },
+  tabBar: {
+    backgroundColor: '#FFF',
+  },
+  tabIndicator: {
+    backgroundColor: '#FF6B6B',
+  },
+  tabLabel: {
+    fontWeight: 'bold',
+  },
+  itemContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    backgroundColor: '#FFF',
+    marginBottom: 8,
+    borderRadius: 8,
+  },
+  itemInfo: {
+    flex: 1,
+  },
+  itemName: {
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  itemDetails: {
+    fontSize: 14,
+    color: '#666',
   },
   emptyContainer: {
     flex: 1,

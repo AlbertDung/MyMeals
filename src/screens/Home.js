@@ -10,6 +10,7 @@ import { restaurantsData, filterData2,restaurantsLogoData } from "../data";
 import TabView from '../components/TabView/TabView';
 import RestaurantScroll from '../components/Scroll/RestaurantScroll';
 import FeaturedItems from '../components/Item/FeaturedItems';
+import SectionTitle from '../components/SectionTitle/SectionTitle';
 
 
 const CategoryIcon = ({ name, icon }) => (
@@ -28,7 +29,7 @@ const Home = () => {
       <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.content}>
           <View style={styles.categoriesContainer1}>
-            <CategoryIcon name="Breakfast" icon="food-croissant" />
+            <CategoryIcon name="Morning" icon="food-croissant" />
             <CategoryIcon name="Burger" icon="hamburger" />
             <CategoryIcon name="Pizza" icon="pizza" />
             <CategoryIcon name="Coffee" icon="coffee" />
@@ -43,11 +44,12 @@ const Home = () => {
           </View> */}
           {/* <FavoriteRestaurants restaurants={restaurantsData.slice(0, 2)} /> */}
           <RestaurantScroll 
-            title="Featured Restaurants" 
+            title="Restaurants" 
             restaurants={restaurantsData} 
             onSeeAll={() => {/* Navigate to all restaurants */}}
             navigation={navigation}
           />
+          
           <View style={styles.categoriesContainer2}>
             <CategoryTabView restaurants={restaurantsLogoData} />
           </View>
@@ -76,7 +78,7 @@ const styles = StyleSheet.create({
   },
   categoryButton: {
     alignItems: 'center',
-    backgroundColor: '#00a082',
+    backgroundColor: '#EA5455',
     borderRadius: 8,
     padding: 8,
     width: 64,

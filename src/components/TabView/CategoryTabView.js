@@ -1,5 +1,5 @@
-import React, { useState } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image } from 'react-native';
+import React, { useState, useRef } from 'react';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image, Animated } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 
 const Tab = ({ title, active, onPress }) => (
@@ -12,29 +12,61 @@ const Tab = ({ title, active, onPress }) => (
   </TouchableOpacity>
 );
 
-const RestaurantItem = ({ name, logo, cuisine, rating, distance, estimatedTime, saved, onPress, onToggleSave }) => (
-  <TouchableOpacity style={styles.restaurantItem} onPress={onPress}>
-    <Image source={logo} style={styles.restaurantLogo} />
-    <View style={styles.restaurantInfo}>
-      <Text style={styles.restaurantName} numberOfLines={1}>{name}</Text>
-      <Text style={styles.restaurantCuisine} numberOfLines={1}>{cuisine}</Text>
-      <View style={styles.restaurantDetails}>
-        <MaterialCommunityIcons name="star" size={14} color="#FFC107" />
-        <Text style={styles.detailText}>{rating.toFixed(1)}</Text>
-        <MaterialCommunityIcons name="map-marker" size={14} color="#757575" style={styles.icon} />
-        <Text style={styles.detailText}>{distance} km</Text>
-        <MaterialCommunityIcons name="clock-outline" size={14} color="#757575" style={styles.icon} />
-        <Text style={styles.detailText}>{estimatedTime} min</Text>
+const RestaurantItem = ({ name, logo, cuisine, rating, distance, estimatedTime, saved, onPress, onToggleSave }) => {
+  const scaleValue = useRef(new Animated.Value(1)).current;
+
+  const animateScale = () => {
+    Animated.sequence([
+      Animated.timing(scaleValue, {
+        toValue: 1.2,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+      Animated.timing(scaleValue, {
+        toValue: 1,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+
+  const handleToggleSave = () => {
+    animateScale();
+    onToggleSave();
+  };
+
+  return (
+    <TouchableOpacity style={styles.restaurantItem} onPress={onPress}>
+      <Image source={logo} style={styles.restaurantLogo} />
+      <View style={styles.restaurantInfo}>
+        <Text style={styles.restaurantName} numberOfLines={1}>{name}</Text>
+        <Text style={styles.restaurantCuisine} numberOfLines={1}>{cuisine}</Text>
+        <View style={styles.restaurantDetails}>
+          <MaterialCommunityIcons name="star" size={14} color="#FFC107" />
+          <Text style={styles.detailText}>{rating.toFixed(1)}</Text>
+          <MaterialCommunityIcons name="map-marker" size={14} color="#757575" style={styles.icon} />
+          <Text style={styles.detailText}>{distance} km</Text>
+          <MaterialCommunityIcons name="clock-outline" size={14} color="#757575" style={styles.icon} />
+          <Text style={styles.detailText}>{estimatedTime} min</Text>
+        </View>
       </View>
-    </View>
-    <TouchableOpacity style={styles.saveButton} onPress={onToggleSave}>
-      <MaterialCommunityIcons name={saved ? "bookmark" : "bookmark-outline"} size={20} color="#00A082" />
+      <TouchableOpacity style={styles.saveButton} onPress={handleToggleSave}>
+        <Animated.View style={{ transform: [{ scale: scaleValue }] }}>
+          <MaterialCommunityIcons
+            name={saved ? "bookmark" : "bookmark-outline"}
+            size={20}
+            color="#E84545"
+          />
+        </Animated.View>
+      </TouchableOpacity>
     </TouchableOpacity>
-  </TouchableOpacity>
-);
+  );
+};
 
 const CategoryTabView = ({ restaurants, onRestaurantPress }) => {
   const [activeTab, setActiveTab] = useState('recent');
+  const [favoriteRestaurants, setFavoriteRestaurants] = useState([]);
+
   const tabs = [
     { key: 'recent', title: 'Recent' },
     { key: 'favorites', title: 'Favorites' },
@@ -42,16 +74,26 @@ const CategoryTabView = ({ restaurants, onRestaurantPress }) => {
     { key: 'popular', title: 'Popular' },
   ];
 
+  const toggleFavorite = (restaurant) => {
+    setFavoriteRestaurants((prevFavorites) => {
+      if (prevFavorites.some((fav) => fav.id === restaurant.id)) {
+        return prevFavorites.filter((fav) => fav.id !== restaurant.id);
+      } else {
+        return [...prevFavorites, restaurant];
+      }
+    });
+  };
+
   const getFilteredData = () => {
     switch (activeTab) {
       case 'recent':
         return restaurants.slice(0, 5);
       case 'favorites':
-        return restaurants.filter(r => r.saved);
+        return favoriteRestaurants;
       case 'rating':
         return [...restaurants].sort((a, b) => b.averageReview - a.averageReview).slice(0, 5);
       case 'popular':
-        return restaurants.slice(0,5);
+        return restaurants.slice(0, 3);
       default:
         return restaurants;
     }
@@ -79,9 +121,9 @@ const CategoryTabView = ({ restaurants, onRestaurantPress }) => {
             rating={item.averageReview}
             distance={item.farAway}
             estimatedTime={item.deliveryTime}
-            saved={item.saved}
+            saved={favoriteRestaurants.some((fav) => fav.id === item.id)}
             onPress={() => onRestaurantPress(item)}
-            onToggleSave={() => {/* Toggle saved state */}}
+            onToggleSave={() => toggleFavorite(item)}
           />
         )}
         keyExtractor={(item) => item.id.toString()}

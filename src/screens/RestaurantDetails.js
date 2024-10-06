@@ -1,6 +1,7 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, SafeAreaView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
+import { Ionicons } from '@expo/vector-icons';
 
 const RestaurantDetails = ({ route }) => {
   const { restaurant } = route.params;
@@ -8,13 +9,12 @@ const RestaurantDetails = ({ route }) => {
 
   const getImageSource = (image) => {
     if (typeof image === 'number') {
-      return image; // Đây có thể là kết quả của require()
+      return image;
     }
     if (typeof image === 'string') {
       return { uri: image };
     }
-    // // Nếu image là undefined hoặc null, trả về một hình ảnh mặc định
-    // return require('../../assets/images/foods/burger-1.jpg');
+    //return require('../../assets/images/placeholder.png'); // Default placeholder
   };
 
   const renderMenuItem = ({ item }) => (
@@ -22,114 +22,207 @@ const RestaurantDetails = ({ route }) => {
       style={styles.menuItem} 
       onPress={() => navigation.navigate('DishDetails', { dish: item })}
     >
-      <Image source={{ uri: item.image }} style={styles.menuItemImage} />
+      <Image source={getImageSource(item.image)} style={styles.menuItemImage} />
       <View style={styles.menuItemInfo}>
         <Text style={styles.menuItemName}>{item.name}</Text>
+        <Text style={styles.menuItemDescription} numberOfLines={2}>{item.description}</Text>
         <Text style={styles.menuItemPrice}>${item.price.toFixed(2)}</Text>
       </View>
+      <TouchableOpacity style={styles.addButton}>
+        <Text style={styles.addButtonText}>+</Text>
+      </TouchableOpacity>
     </TouchableOpacity>
   );
 
   return (
-    <View style={styles.container}>
-      <Image 
-        // source={typeof restaurant.images === 'string' ? { uri: restaurant.images } : restaurant.images} 
-        source={getImageSource(restaurant.images)}
-        style={styles.image} 
-      />
-      <View style={styles.infoContainer}>
-        <Text style={styles.name}>{restaurant.restaurantName}</Text>
-        <Text style={styles.cuisine}>{restaurant.foodType}</Text>
-        <View style={styles.ratingContainer}>
-          <Text style={styles.rating}>{restaurant.averageReview} ⭐</Text>
-          <Text style={styles.reviews}>({restaurant.numberOfReview} reviews)</Text>
-        </View>
-        <Text style={styles.distance}>{restaurant.farAway} km away</Text>
-        <Text style={styles.deliveryTime}>Estimated delivery: {restaurant.deliveryTime} min</Text>
-        <Text style={styles.address}>{restaurant.businessAddress}</Text>
+    <SafeAreaView style={styles.container}>
+      <Image source={getImageSource(restaurant.images)} style={styles.headerImage} />
+      <View style={styles.headerOverlay}>
+        <TouchableOpacity style={styles.backButton} onPress={() => navigation.goBack()}>
+          <Ionicons name="arrow-back" size={24} color="#fff" />
+        </TouchableOpacity>
+        <TouchableOpacity style={styles.favoriteButton}>
+          <Ionicons name="bookmark-outline" size={24} color="#fff" />
+        </TouchableOpacity>
       </View>
-      <FlatList
-        data={restaurant.productData}
-        renderItem={renderMenuItem}
-        keyExtractor={(item) => item.name}
-        style={styles.menuList}
-      />
-    </View>
+
+      <View style={styles.contentContainer}>
+        <Text style={styles.name}>{restaurant.restaurantName}</Text>
+        <View style={styles.ratingContainer}>
+          <Ionicons name="star" size={16} color="#FFD700" />
+          <Text style={styles.rating}>{restaurant.averageReview}</Text>
+          <Text style={styles.reviews}>{restaurant.numberOfReview}+ Ratings</Text>
+          <View style={styles.dotSeparator} />
+          <Text style={styles.cuisine}>{restaurant.foodType}</Text>
+        </View>
+
+        <View style={styles.deliveryInfo}>
+          <View style={styles.deliveryItem}>
+            <Ionicons name="bicycle-outline" size={16} color="#4CAF50" />
+            <Text style={styles.deliveryText}>Free Delivery</Text>
+          </View>
+          <View style={styles.deliveryItem}>
+            <Ionicons name="time-outline" size={16} color="#FF9800" />
+            <Text style={styles.deliveryText}>{restaurant.deliveryTime} min</Text>
+          </View>
+          <TouchableOpacity style={styles.takeAwayButton}>
+            <Text style={styles.takeAwayText}>Take Away</Text>
+          </TouchableOpacity>
+        </View>
+
+        <FlatList
+          data={restaurant.productData}
+          renderItem={renderMenuItem}
+          keyExtractor={(item) => item.name}
+          contentContainerStyle={styles.menuList}
+        />
+      </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  address: {
-    fontSize: 14,
-    marginTop: 5,
-    color: 'gray',
-  },
   container: {
     flex: 1,
+    backgroundColor: '#fff',
   },
-  image: {
+  headerImage: {
     width: '100%',
-    height: 200,
+    height: 240,
+    borderBottomLeftRadius: 20,
+    borderBottomRightRadius: 20,
   },
-  infoContainer: {
-    padding: 15,
+  headerOverlay: {
+    position: 'absolute',
+    top: 20,
+    left: 0,
+    right: 0,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    paddingHorizontal: 16,
+  },
+  backButton: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    borderRadius: 20,
+    padding: 8,
+  },
+  favoriteButton: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    borderRadius: 20,
+    padding: 8,
+  },
+  contentContainer: {
+    flex: 1,
+    paddingHorizontal: 16,
+    paddingVertical: 24,
   },
   name: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: 'bold',
-  },
-  cuisine: {
-    fontSize: 16,
-    color: 'gray',
+    marginBottom: 8,
   },
   ratingContainer: {
     flexDirection: 'row',
     alignItems: 'center',
-    marginTop: 5,
+    marginBottom: 16,
   },
   rating: {
     fontSize: 16,
     fontWeight: 'bold',
+    marginHorizontal: 8,
   },
   reviews: {
     fontSize: 14,
-    color: 'gray',
-    marginLeft: 5,
+    color: '#666',
   },
-  distance: {
-    fontSize: 14,
-    marginTop: 5,
+  dotSeparator: {
+    width: 4,
+    height: 4,
+    borderRadius: 2,
+    backgroundColor: '#666',
+    marginHorizontal: 8,
   },
-  deliveryTime: {
+  cuisine: {
     fontSize: 14,
-    marginTop: 5,
+    color: '#666',
+  },
+  deliveryInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    marginBottom: 20,
+  },
+  deliveryItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  deliveryText: {
+    fontSize: 14,
+    marginLeft: 4,
+    color: '#666',
+  },
+  takeAwayButton: {
+    backgroundColor: '#FFEBEE',
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: 16,
+  },
+  takeAwayText: {
+    color: '#D32F2F',
+    fontSize: 12,
+    fontWeight: 'bold',
   },
   menuList: {
-    marginTop: 15,
+    paddingTop: 16,
   },
   menuItem: {
     flexDirection: 'row',
-    padding: 15,
-    borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    marginBottom: 16,
+    padding: 12,
+    alignItems: 'center',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.2,
+    shadowRadius: 1.5,
   },
   menuItemImage: {
     width: 80,
     height: 80,
-    borderRadius: 10,
+    borderRadius: 8,
   },
   menuItemInfo: {
-    marginLeft: 15,
-    justifyContent: 'center',
+    flex: 1,
+    marginLeft: 12,
   },
   menuItemName: {
     fontSize: 16,
     fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  menuItemDescription: {
+    fontSize: 12,
+    color: '#666',
+    marginBottom: 4,
   },
   menuItemPrice: {
     fontSize: 14,
-    color: 'gray',
-    marginTop: 5,
+    fontWeight: 'bold',
+    color: '#FF9800',
+  },
+  addButton: {
+    backgroundColor: '#FF9800',
+    borderRadius: 16,
+    width: 28,
+    height: 28,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  addButtonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });
 

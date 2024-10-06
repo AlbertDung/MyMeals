@@ -1,9 +1,35 @@
 import React from 'react';
-import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, Image, StyleSheet, TouchableOpacity, Animated } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { SharedElement } from 'react-navigation-shared-element';
+import { useFavorites } from '../components/Context/FavoritesContext';
 
-const Restaurant = ({ id, name, image, rating, cuisine, distance, estimatedTime, reviews, saved, onPress }) => {
+const AnimatedIcon = Animated.createAnimatedComponent(Ionicons);
+
+const Restaurant = ({ id, name, image, rating, cuisine, distance, estimatedTime, reviews, onPress }) => {
+  const { isFavorite, toggleFavorite } = useFavorites();
+  const scaleValue = React.useRef(new Animated.Value(1)).current;
+
+  const animateScale = () => {
+    Animated.sequence([
+      Animated.timing(scaleValue, {
+        toValue: 1.2,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+      Animated.timing(scaleValue, {
+        toValue: 1,
+        duration: 100,
+        useNativeDriver: true,
+      }),
+    ]).start();
+  };
+
+  const handleFavoritePress = () => {
+    animateScale();
+    toggleFavorite({ id, name, image, rating, cuisine, distance, estimatedTime, reviews, type: 'restaurant' });
+  };
+
   return (
     <TouchableOpacity style={styles.container} onPress={onPress}>
       <SharedElement id={`restaurant.${id}.image`}>
@@ -12,8 +38,13 @@ const Restaurant = ({ id, name, image, rating, cuisine, distance, estimatedTime,
       <View style={styles.info}>
         <View style={styles.nameRow}>
           <Text style={styles.name} numberOfLines={1}>{name}</Text>
-          <TouchableOpacity onPress={() => {/* Toggle saved state */}}>
-            <Ionicons name={saved ? "bookmark" : "bookmark-outline"} size={24} color={saved ? "#007AFF" : "#333"} />
+          <TouchableOpacity onPress={handleFavoritePress}>
+            <AnimatedIcon
+              name={isFavorite(id) ? "bookmark" : "bookmark-outline"}
+              size={24}
+              color={isFavorite(id) ? "#E84545" : "#E84545"}
+              style={{ transform: [{ scale: scaleValue }] }}
+            />
           </TouchableOpacity>
         </View>
         <Text style={styles.cuisine}>{cuisine}</Text>
@@ -32,7 +63,6 @@ const Restaurant = ({ id, name, image, rating, cuisine, distance, estimatedTime,
     </TouchableOpacity>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     width: 300,
