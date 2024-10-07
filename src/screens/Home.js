@@ -51,7 +51,10 @@ const Home = () => {
           />
           
           <View style={styles.categoriesContainer2}>
-            <CategoryTabView restaurants={restaurantsLogoData} />
+            <CategoryTabView 
+            restaurants={restaurantsLogoData} 
+            navigation={navigation}
+            />
           </View>
 
           <SafeAreaView style={styles.foodCategories}>

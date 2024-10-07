@@ -141,18 +141,32 @@ function AuthStack() {
     </Stack.Navigator>
   );
 }
+
+function IntroAngAUthStack()
+{
+  return(
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="intro" component={IntroductionPage} />
+      <Stack.Screen name="auth" component={AuthStack} />
+    </Stack.Navigator>
+  );
+}
+
 function RootNavigator() {
   const { isLoggedIn, hasSeenIntro } = React.useContext(AuthContext);
   //const { isLoggedIntro, hasSeenIntro } = React.useContext(AuthContext);
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       {!hasSeenIntro ? (
-        <Stack.Screen name="Intro" component={IntroductionPage} />
+        <Stack.Screen name="Intro" component={IntroAngAUthStack} />
       ) : isLoggedIn ? (
         <Stack.Screen name="Main" component={MainTabs} />
       ) : (
         <Stack.Screen name="Auth" component={AuthStack} />
       )}
+      {/* <Stack.Screen name="Intro" component={IntroductionPage} />
+      <Stack.Screen name="Auth" component={AuthStack} />
+      <Stack.Screen name="Main" component={MainTabs} /> */}
     </Stack.Navigator>
   );
 }
@@ -171,7 +185,7 @@ export default function App() {
     // Check if the user has seen the intro before
     AsyncStorage.getItem('hasSeenIntro').then(value => {
       if (value === 'true') {
-        setHasSeenIntro(true);
+        setHasSeenIntro(false);
       }
     });
   }, []);

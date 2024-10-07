@@ -1,4 +1,4 @@
-import React, { useState, useContext, useRef } from 'react';
+import React, { useState, useContext, useRef, useEffect } from 'react';
 import { 
   View, 
   Text, 
@@ -11,7 +11,7 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { AuthContext } from '../../App'; // Update this path
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons'; // Make sure to install this package
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const { width, height } = Dimensions.get('window');
 
@@ -26,13 +26,11 @@ const IntroductionPage = () => {
     {
       header: "Welcome to Themeals",
       subheading: "Order your favorite dishes, fast and economical delivery",
-      //image: require('./meal-image.jpg'),
       icon: 'food'
     },
     {
       header: "Discover Your New Favorite Dish",
       text: "Browse through our vast menu and find the perfect meal for you",
-      //image: require('./dish-image.jpg'),
       icon: 'silverware-fork-knife'
     },
     {   
@@ -41,6 +39,8 @@ const IntroductionPage = () => {
       icon: 'rocket-launch'
     }
   ];
+
+  const dotAnimations = introPages.map(() => new Animated.Value(0.3));
 
   const handleNext = () => {
     if (currentPage < introPages.length - 1) {
@@ -52,7 +52,7 @@ const IntroductionPage = () => {
 
   const completeIntro = () => {
     markIntroAsSeen();
-    navigation.navigate('Login'); // Navigate to the Login screen
+    navigation.navigate('auth');
   };
 
   const fadeIn = () => {
@@ -63,9 +63,25 @@ const IntroductionPage = () => {
     }).start();
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     fadeIn();
+    // Animate dots
+    dotAnimations.forEach((anim, index) => {
+      Animated.timing(anim, {
+        toValue: index === currentPage ? 1 : 0.3,
+        duration: 300,
+        useNativeDriver: true,
+      }).start();
+    });
   }, [currentPage]);
+
+  const handleScroll = (event) => {
+    const offsetX = event.nativeEvent.contentOffset.x;
+    const newPage = Math.round(offsetX / width);
+    if (newPage !== currentPage) {
+      setCurrentPage(newPage);
+    }
+  };
 
   return (
     <View style={styles.container}>
@@ -74,10 +90,8 @@ const IntroductionPage = () => {
         horizontal 
         pagingEnabled 
         showsHorizontalScrollIndicator={false}
-        onMomentumScrollEnd={(event) => {
-          const newPage = Math.round(event.nativeEvent.contentOffset.x / width);
-          setCurrentPage(newPage);
-        }}
+        onScroll={handleScroll}
+        scrollEventThrottle={16}
       >
         {introPages.map((page, index) => (
           <Animated.View key={index} style={[styles.section, { width, opacity: fadeAnim }]}>
@@ -85,16 +99,15 @@ const IntroductionPage = () => {
             <Text style={styles.header}>{page.header}</Text>
             {page.subheading && <Text style={styles.subheading}>{page.subheading}</Text>}
             {page.text && <Text style={styles.text}>{page.text}</Text>}
-            {page.image && <Image source={page.image} style={styles.image} />}
           </Animated.View>
         ))}
       </ScrollView>
       
       <View style={styles.paginationContainer}>
-        {introPages.map((_, i) => (
-          <View
+        {dotAnimations.map((anim, i) => (
+          <Animated.View
             key={i}
-            style={[styles.paginationDot, { opacity: i === currentPage ? 1 : 0.3 }]}
+            style={[styles.paginationDot, { opacity: anim }]}
           />
         ))}
       </View>
@@ -142,13 +155,6 @@ const styles = StyleSheet.create({
     color: '#666',
     marginBottom: 20,
     textAlign: 'center',
-  },
-  image: {
-    width: width * 0.8,
-    height: height * 0.3,
-    resizeMode: 'cover',
-    marginBottom: 20,
-    borderRadius: 10,
   },
   icon: {
     marginBottom: 20,

@@ -63,9 +63,13 @@ const RestaurantItem = ({ name, logo, cuisine, rating, distance, estimatedTime, 
   );
 };
 
-const CategoryTabView = ({ restaurants, onRestaurantPress }) => {
+const CategoryTabView = ({ restaurants, navigation }) => {
   const [activeTab, setActiveTab] = useState('recent');
   const [favoriteRestaurants, setFavoriteRestaurants] = useState([]);
+
+  const handlePress = (restaurant) => {
+    navigation.navigate('RestaurantDetails', { restaurant });
+  };
 
   const tabs = [
     { key: 'recent', title: 'Recent' },
@@ -122,7 +126,7 @@ const CategoryTabView = ({ restaurants, onRestaurantPress }) => {
             distance={item.farAway}
             estimatedTime={item.deliveryTime}
             saved={favoriteRestaurants.some((fav) => fav.id === item.id)}
-            onPress={() => onRestaurantPress(item)}
+            onPress={() => handlePress(item)}
             onToggleSave={() => toggleFavorite(item)}
           />
         )}

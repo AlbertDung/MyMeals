@@ -38,7 +38,7 @@ const FavoriteCard = ({ item, onPress, onFavoritePress, onQuantityChange, onDele
             </View>
             <Text style={styles.description} numberOfLines={2}>{item.description}</Text>
             <View style={styles.footer}>
-              <Text style={styles.price}>${item.price.toFixed(2)}</Text>
+              <Text style={styles.price}>${item.price}</Text>
               {/* <View style={styles.quantityContainer}>
                 <TouchableOpacity onPress={() => onQuantityChange(item.quantity - 1)} style={styles.quantityButton}>
                   <MaterialCommunityIcons name="minus" size={20} color="#FFF" />
