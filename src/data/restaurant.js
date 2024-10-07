@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{ useState, useEffect} from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity, Animated } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { SharedElement } from 'react-navigation-shared-element';
@@ -9,6 +9,11 @@ const AnimatedIcon = Animated.createAnimatedComponent(Ionicons);
 const Restaurant = ({ id, name, image, rating, cuisine, distance, estimatedTime, reviews, onPress }) => {
   const { isFavorite, toggleFavorite } = useFavorites();
   const scaleValue = React.useRef(new Animated.Value(1)).current;
+  const [isFav, setIsFav] = useState(false);
+
+  useEffect(() => {
+    setIsFav(isFavorite(id));
+  }, [id, isFavorite]);
 
   const animateScale = () => {
     Animated.sequence([
@@ -28,6 +33,7 @@ const Restaurant = ({ id, name, image, rating, cuisine, distance, estimatedTime,
   const handleFavoritePress = () => {
     animateScale();
     toggleFavorite({ id, name, image, rating, cuisine, distance, estimatedTime, reviews, type: 'restaurant' });
+    setIsFav(!isFav);
   };
 
   return (
@@ -40,9 +46,9 @@ const Restaurant = ({ id, name, image, rating, cuisine, distance, estimatedTime,
           <Text style={styles.name} numberOfLines={1}>{name}</Text>
           <TouchableOpacity onPress={handleFavoritePress}>
             <AnimatedIcon
-              name={isFavorite(id) ? "bookmark" : "bookmark-outline"}
+              name={isFav ? "bookmark" : "bookmark-outline"}
               size={24}
-              color={isFavorite(id) ? "#E84545" : "#E84545"}
+              color={isFav ? "#E84545" : "#E84545"}
               style={{ transform: [{ scale: scaleValue }] }}
             />
           </TouchableOpacity>
@@ -63,6 +69,7 @@ const Restaurant = ({ id, name, image, rating, cuisine, distance, estimatedTime,
     </TouchableOpacity>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     width: 300,

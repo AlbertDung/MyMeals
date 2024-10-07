@@ -9,7 +9,7 @@ export const FavoritesProvider = ({ children }) => {
 
   const addFavorite = (item) => {
     if (!favorites.some(fav => fav.id === item.id)) {
-      setFavorites((prevFavorites) => [...prevFavorites, { ...item, type: item.type || 'restaurant' }]);
+      setFavorites((prevFavorites) => [...prevFavorites, { ...item, type: item.type || (item.restaurantName ? 'restaurant' : 'dish') }]);
     }
   };
   
@@ -29,7 +29,6 @@ export const FavoritesProvider = ({ children }) => {
     }
   };
 
-  
   return (
     <FavoritesContext.Provider value={{ favorites, addFavorite, removeFavorite, isFavorite, toggleFavorite }}>
       {children}

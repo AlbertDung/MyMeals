@@ -20,16 +20,17 @@ const RestaurantScroll = ({ title, restaurants, onSeeAll, navigation }) => {
           <TouchableOpacity key={index} onPress={() => handlePress(restaurant)}>
           <View style={styles.restaurantItem}>
             {/* <Text style={styles.restaurantName}>{restaurant.restaurantName}</Text> */}
-                <Restaurant
-                  key={index}
-                  name={restaurant.restaurantName}
-                  image={restaurant.images} // Chú ý rằng đây là 'images', không phải 'image'
-                  rating={restaurant.averageReview}
-                  cuisine={restaurant.foodType}
-                  distance={restaurant.farAway}
-                  estimatedTime={restaurant.deliveryTime}
-                  reviews={restaurant.numberOfReview}
-                  onPress={() => handlePress(restaurant)}
+            <Restaurant
+                key={restaurant.id}
+                id={restaurant.id}
+                name={restaurant.restaurantName}
+                image={restaurant.images}
+                rating={restaurant.averageReview}
+                cuisine={restaurant.foodType}
+                distance={restaurant.farAway}
+                estimatedTime={restaurant.deliveryTime}
+                reviews={restaurant.numberOfReview}
+                onPress={() => handlePress(restaurant)}
               />
           </View>
           </TouchableOpacity>
