@@ -13,7 +13,7 @@ export const CartProvider = ({ children }) => {
           i.id === item.id ? { ...i, quantity: i.quantity + 1 } : i
         );
       }
-      return [...prevItems, { ...item, quantity: 1 }];
+      return [...prevItems, { ...item, quantity: 1, type: item.type || 'regular' }];
     });
   };
 

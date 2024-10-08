@@ -130,7 +130,7 @@ const Details = ({ route }) => {
         )}
         scrollEventThrottle={16}
       >
-        <TouchableOpacity onPress={handleDoubleTap} activeOpacity={0.9} style={styles.imageContainer}>
+        <TouchableOpacity  activeOpacity={0.9} style={styles.imageContainer}>
           <Image source={item.image} style={styles.image} />
           <LinearGradient
             colors={['rgba(0,0,0,0.5)', 'transparent', 'rgba(0,0,0,0.5)']}

@@ -3,6 +3,7 @@ import { ScrollView, View, StyleSheet, TouchableOpacity, SafeAreaView } from "re
 import { Ionicons } from '@expo/vector-icons';
 import AppText from "../components/AppText/AppText";
 import CartItem from "../components/CartItem/CartItem";
+import DishItem from "../components/CartItem/dishItem";
 import { colors } from "../theme/colors";
 import { useCart } from "../components/Context/CartContext";
 import { useNavigation } from '@react-navigation/native';
@@ -28,7 +29,7 @@ const MyCart = () => {
   };
 
   const handleCheckOut = () => {
-    navigation.navigate('AddPayment');
+    navigation.navigate('Checkout');
   };
 
   const subTotal = calculateTotal();
@@ -36,24 +37,41 @@ const MyCart = () => {
   const tip = 2.00;
   const total = subTotal + deliveryFee + tip;
 
+
+
+  const renderCartItem = (item) => {
+    if (item.type === 'dish') {
+      return (
+        <DishItem
+          key={item.id}
+          item={item}
+          onRemove={removeFromCart}
+          onUpdateQuantity={updateQuantity}
+        />
+      );
+    } else {
+      return (
+        <CartItem
+          key={item.id}
+          item={item}
+          onRemove={() => removeFromCart(item.id)}
+          onUpdateQuantity={(newQuantity) => updateQuantity(item.id, newQuantity)}
+        />
+      );
+    }
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => navigation.goBack()}>
+        {/* <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons name="arrow-back" size={24} color={colors.primary} />
-        </TouchableOpacity>
+        </TouchableOpacity> */}
         <AppText text="My Cart" customStyles={styles.title} />
         <View style={styles.placeholder} />
       </View>
       <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollView}>
-        {cartItems.map((item) => (
-          <CartItem 
-            key={item.id} 
-            item={item} 
-            onRemove={() => removeFromCart(item.id)}
-            onUpdateQuantity={(newQuantity) => updateQuantity(item.id, newQuantity)}
-          />
-        ))}
+        {cartItems.map(renderCartItem)}
       </ScrollView>
       <View style={styles.summaryCard}>
         <View style={styles.summaryItem}>
@@ -98,6 +116,7 @@ const styles = StyleSheet.create({
     fontFamily: "Lato-Bold",
     fontSize: 20,
     color: colors.primary,
+    alignItems: 'center',
   },
   placeholder: {
     width: 24,

@@ -1,19 +1,34 @@
 import React, { useState } from 'react';
-import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView, ToastAndroid } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-
+import { useCart } from "../components/Context/CartContext";
 const DishDetails = ({ route, navigation }) => {
   const { dish } = route.params;
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState('Burger Only');
-
+  const { addToCart } = useCart();
+  const [specialInstructions, setSpecialInstructions] = useState([]);
   const handleQuantityChange = (change) => {
     setQuantity(Math.max(1, quantity + change));
   };
+  const getImageSource = (image) => {
+    if (typeof image === 'number') {
+      return image;
+    }
+    if (typeof image === 'string') {
+      return { uri: image };
+    }
+    //return require('../../assets/images/placeholder.png');
+  };
 
+  
+  const handleAddToCart = () => {
+    addToCart({ ...dish, quantity, specialInstructions, selectedSize, type: 'dish' });
+    ToastAndroid.show('Added to cart', ToastAndroid.SHORT);
+  };
   const renderSideItem = (item) => (
     <TouchableOpacity style={styles.sideItem}>
-      <Image source={{ uri: item.image }} style={styles.sideItemImage} />
+      <Image source={getImageSource(item.image)} style={styles.sideItemImage} />
       <Text style={styles.sideItemName}>{item.name}</Text>
     </TouchableOpacity>
   );
@@ -26,7 +41,7 @@ const DishDetails = ({ route, navigation }) => {
             <Ionicons name="chevron-back" size={24} color="#333" />
           </TouchableOpacity>
         </View>
-        <Image source={{ uri: dish.image }} style={styles.image} />
+        <Image source={getImageSource(dish.image)} style={styles.image} />
         <View style={styles.infoContainer}>
           <Text style={styles.name}>{dish.name}</Text>
           <Text style={styles.restaurant}>{dish.restaurant}</Text>
@@ -64,10 +79,10 @@ const DishDetails = ({ route, navigation }) => {
             <Text style={styles.sectionTitle}>Sides</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.sidesScroll}>
               {[
-                { name: 'Hamburger', image: 'https://example.com/hamburger.jpg' },
-                { name: 'Cheeseburger', image: 'https://example.com/cheeseburger.jpg' },
-                { name: 'Fries', image: 'https://example.com/fries.jpg' },
-                { name: 'Nuggets', image: 'https://example.com/nuggets.jpg' },
+                { name: 'Hamburger',id: 0, image: require('../../assets/images/product/bicmac.png') },
+                { name: 'Cheeseburger',id: 1, image: require('../../assets/images/product/chillichease.png') },
+                { name: 'Fries',id: 2, image: require('../../assets/images/product/handcutchip.png') },
+                { name: 'Nuggets',id: 3, image: require('../../assets/images/product/nuggest.png') },
               ].map((item) => renderSideItem(item))}
             </ScrollView>
           </View>
@@ -76,16 +91,16 @@ const DishDetails = ({ route, navigation }) => {
             <Text style={styles.sectionTitle}>Beverages</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.beveragesScroll}>
               {[
-                { name: 'Coca-Cola', image: 'https://example.com/coke.jpg' },
-                { name: 'Pepsi', image: 'https://example.com/pepsi.jpg' },
-                { name: 'Iced Coffee', image: 'https://example.com/iced-coffee.jpg' },
-                { name: 'Milkshake', image: 'https://example.com/milkshake.jpg' },
+                { name: 'Coca-Cola',id: 4, image: require('../../assets/images/product/cocacola.png') },
+                { name: 'Pepsi',id: 5, image: require('../../assets/images/product/pepsi.png') },
+                { name: 'Iced Coffee',id: 6, image: require('../../assets/images/product/icedlate.png') },
+                { name: 'Milkshake',id: 7, image: require('../../assets/images/product/milk.png') },
               ].map((item) => renderSideItem(item))}
             </ScrollView>
           </View>
         </View>
       </ScrollView>
-      <TouchableOpacity style={styles.addToCartButton}>
+      <TouchableOpacity style={styles.addToCartButton} onPress={handleAddToCart}>
         <Text style={styles.addToCartText}>Add To Cart</Text>
         <Text style={styles.addToCartPrice}>${(dish.price * quantity).toFixed(2)}</Text>
       </TouchableOpacity>

@@ -21,6 +21,7 @@ import ForgotPasswordScreen from "./src/screens/ForgotPassword";
 import IntroductionPage from "./src/screens/Wellcom";
 import RestaurantDetails from "./src/screens/RestaurantDetails";
 import DishDetails from "./src/screens/DishDetails";
+import Checkout from "./src/screens/checkout";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 
@@ -101,8 +102,21 @@ function PopularStack() {
 function PaymentStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Checkout" component={Checkout} />
       <Stack.Screen name="AddPaymentScreen" component={AddPayment} />
       <Stack.Screen name="Payment" component={PaymentScreen} />
+    </Stack.Navigator>
+  );
+}
+
+function CartStack() {
+  return (
+    <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="MyCart" component={MyCart} />
+      <Stack.Screen name="AddPayment" component={PaymentStack} />
+      <Stack.Screen name="Checkout" component={Checkout} />
+      <Stack.Screen name="Payment" component={PaymentScreen} />
+      <Stack.Screen name="AddPaymentScreen" component={AddPayment} />
     </Stack.Navigator>
   );
 }
@@ -111,7 +125,7 @@ function UserStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Profile" component={Profile} />
-      <Stack.Screen name="MyCart" component={MyCart} />
+      <Stack.Screen name="MyCart" component={CartStack} />
       <Stack.Screen name="MyOrder" component={MyOrder} />
       <Stack.Screen name="AddPayment" component={PaymentStack} />
       {/* <Stack.Screen name="Signout" component={AuthStack} /> */}
@@ -266,7 +280,7 @@ function MainTabs() {
     >
       <Tab.Screen name="Home" component={HomeStack} />
       <Tab.Screen name="Explore" component={PopularStack} />
-      <Tab.Screen name="My Cart" component={MyCart} />
+      <Tab.Screen name="My Cart" component={CartStack} />
       <Tab.Screen name="Favorites" component={FavoritesStack} />
       <Tab.Screen name="User " component={UserScreens} />
     </Tab.Navigator>
