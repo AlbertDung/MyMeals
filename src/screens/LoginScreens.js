@@ -7,7 +7,7 @@ import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { FontAwesome } from '@expo/vector-icons';
-import { AuthContext } from '../../App'; // Đảm bảo đường dẫn này chính xác
+import { AuthContext } from '../components/Context/AuthContext'; // Đảm bảo đường dẫn này chính xác
 import { onGoogleButtonPress } from '../../socialSignIn';
 import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
@@ -29,7 +29,9 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
+const auth = initializeAuth(app, {
+  persistence: getReactNativePersistence(ReactNativeAsyncStorage)
+});
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');

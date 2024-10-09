@@ -10,7 +10,7 @@ import {
   Animated 
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import { AuthContext } from '../../App'; // Update this path
+import { AuthContext } from '../components/Context/AuthContext';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const { width, height } = Dimensions.get('window');

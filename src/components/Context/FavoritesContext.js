@@ -9,6 +9,7 @@ export const FavoritesProvider = ({ children }) => {
 
   const addFavorite = (item) => {
     if (!favorites.some(fav => fav.id === item.id)) {
+      
       setFavorites((prevFavorites) => [...prevFavorites, { ...item, type: item.type || (item.restaurantName ? 'restaurant' : 'dish') }]);
     }
   };
@@ -25,7 +26,18 @@ export const FavoritesProvider = ({ children }) => {
     if (isFavorite(item.id)) {
       removeFavorite(item.id);
     } else {
-      addFavorite(item);
+      addFavorite({
+        ...item,
+        type: 'restaurant',
+        // Ensure all necessary fields are included
+        restaurantName: item.restaurantName,
+        farAway: item.farAway,
+        images: item.images,
+        averageReview: item.averageReview,
+        numberOfReview: item.numberOfReview,
+        foodType: item.foodType,
+        // Add any other fields you need for the RestaurantCard
+      });
     }
   };
 

@@ -12,14 +12,14 @@ const RestaurantCard = ({ restaurant, onPress, onFavoritePress, isFavorite }) =>
         <View style={styles.detailsRow}>
           <View style={styles.ratingContainer}>
             <Ionicons name="star" size={16} color="#FFD700" />
-            <Text style={styles.rating}>{restaurant.rating.toFixed(1)} ({restaurant.reviews} reviews)</Text>
+            <Text style={styles.rating}>{restaurant.rating} ({restaurant.reviews} reviews)</Text>
           </View>
           <Text style={styles.distance}>{restaurant.distance} km</Text>
         </View>
       </View>
       <TouchableOpacity style={styles.favoriteButton} onPress={onFavoritePress}>
         <Ionicons
-          name={isFavorite ? "heart" : "heart-outline"}
+          name={isFavorite ? "bookmark" : "bookmark-outline"}
           size={24}
           color={isFavorite ? "#FF6B6B" : "#333"}
         />

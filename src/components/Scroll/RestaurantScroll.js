@@ -3,6 +3,8 @@ import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image } from 'rea
 import Restaurant from '../../data/restaurant';
 
 const RestaurantScroll = ({ title, restaurants, onSeeAll, navigation }) => {
+
+  
   const handlePress = (restaurant) => {
     navigation.navigate('RestaurantDetails', { restaurant });
   };

@@ -4,7 +4,7 @@ import { useNavigation } from '@react-navigation/native';
 import Screen from '../components/Screen/Screen';
 import Button from '../components/Button/Button';
 import { BlurView } from 'expo-blur';
-import { AuthContext } from '../../App'; // Import AuthContext 
+import { AuthContext } from '../components/Context/AuthContext';
 export default function ProfileView() {
   const navigation = useNavigation();
 

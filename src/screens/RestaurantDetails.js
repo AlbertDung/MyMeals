@@ -8,7 +8,7 @@ const RestaurantDetails = ({ route }) => {
   const { restaurant } = route.params;
   const navigation = useNavigation();
   const { isFavorite, toggleFavorite } = useFavorites();
-
+  
   const getImageSource = (image) => {
     if (typeof image === 'number') {
       return image;

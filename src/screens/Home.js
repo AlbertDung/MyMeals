@@ -1,20 +1,17 @@
 import React from 'react';
-import { StyleSheet, ScrollView, View, Text, TouchableOpacity } from 'react-native';
+import { StyleSheet, View, Text, TouchableOpacity, FlatList } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import SearchHeader from '../components/SearchHeader/SearchHeader';
-//import FavoriteRestaurants from '../components/FavoriteRestaurants/FavoriteRestaurants';
 import CategoryTabView from '../components/TabView/CategoryTabView';
-import { restaurantsData, filterData2,restaurantsLogoData } from "../data";
-import TabView from '../components/TabView/TabView';
+import { restaurantsData, filterData2, restaurantsLogoData } from "../data";
 import RestaurantScroll from '../components/Scroll/RestaurantScroll';
 import FeaturedItems from '../components/Item/FeaturedItems';
-import SectionTitle from '../components/SectionTitle/SectionTitle';
+import TabView from '../components/TabView/TabView';
 
-
-const CategoryIcon = ({ name, icon }) => (
-  <TouchableOpacity style={styles.categoryButton}>
+const CategoryIcon = ({ name, icon, onpress }) => (
+  <TouchableOpacity style={styles.categoryButton} onPress={onpress}>
     <Icon name={icon} size={24} color="#fff" />
     <Text style={styles.categoryText}>{name}</Text>
   </TouchableOpacity>
@@ -23,45 +20,56 @@ const CategoryIcon = ({ name, icon }) => (
 const Home = () => {
   const navigation = useNavigation();
 
+  const handle = () => {
+    navigation.navigate('Explore');
+  };
+
+  const DATA = [
+    { key: '1', component: <SearchHeader /> },
+    { key: '2', component: (
+      <View style={styles.categoriesContainer1}>
+        <CategoryIcon name="Morning" icon="food-croissant" onpress={handle} />
+        <CategoryIcon name="Burger" icon="hamburger" onpress={handle} />
+        <CategoryIcon name="Pizza" icon="pizza" onpress={handle} />
+        <CategoryIcon name="Coffee" icon="coffee" onpress={handle} />
+        <CategoryIcon name="Drinks" icon="cup" onpress={handle} />
+      </View>
+    ) },
+    { key: '3', component: <FeaturedItems items={filterData2.slice(0, 7)} /> },
+    { key: '4', component: (
+      <RestaurantScroll 
+        title="Restaurants" 
+        restaurants={restaurantsData} 
+        onSeeAll={handle}
+        navigation={navigation}
+      />
+    )},
+    { key: '5', component: (
+      <View style={styles.categoriesContainer2}>
+        <CategoryTabView 
+          restaurants={restaurantsLogoData} 
+          navigation={navigation}
+        />
+      </View>
+    ) },
+    { key: '6', component: (
+      <SafeAreaView style={styles.foodCategories}>
+        <TabView />
+      </SafeAreaView>
+    ) },
+  ];
+
   return (
     <SafeAreaView style={styles.container}>
-      <SearchHeader />
-      <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.content}>
-          <View style={styles.categoriesContainer1}>
-            <CategoryIcon name="Morning" icon="food-croissant" />
-            <CategoryIcon name="Burger" icon="hamburger" />
-            <CategoryIcon name="Pizza" icon="pizza" />
-            <CategoryIcon name="Coffee" icon="coffee" />
-            <CategoryIcon name="Drinks" icon="cup" />
-          </View>
-          <FeaturedItems items={filterData2.slice(0, 7)} />
-          {/* <View style={styles.sectionHeader}>
-            <Text style={styles.sectionTitle}>Favourite</Text>
-            <TouchableOpacity>
-              <Text style={styles.seeAllText}>See all</Text>
-            </TouchableOpacity>
-          </View> */}
-          {/* <FavoriteRestaurants restaurants={restaurantsData.slice(0, 2)} /> */}
-          <RestaurantScroll 
-            title="Restaurants" 
-            restaurants={restaurantsData} 
-            onSeeAll={() => {/* Navigate to all restaurants */}}
-            navigation={navigation}
-          />
-          
-          <View style={styles.categoriesContainer2}>
-            <CategoryTabView 
-            restaurants={restaurantsLogoData} 
-            navigation={navigation}
-            />
-          </View>
-
-          <SafeAreaView style={styles.foodCategories}>
-            <TabView />
-          </SafeAreaView>
-        </View>
-      </ScrollView>
+      <FlatList
+        data={DATA}
+        renderItem={({ item }) => item.component}
+        keyExtractor={item => item.key}
+        showsVerticalScrollIndicator={false}
+        contentContainerStyle={styles.content}
+        // Optional: Disable scrolling if nested lists cause issues
+        // scrollEnabled={false} // Uncomment if needed
+      />
     </SafeAreaView>
   );
 };
@@ -91,21 +99,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     marginTop: 4,
   },
-  sectionHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 16,
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-  },
-  seeAllText: {
-    color: '#f4a460',
-    fontSize: 14,
-  },
   foodCategories: {
     marginTop: 15,
     height: 2010, // Adjust this value as needed
@@ -115,4 +108,5 @@ const styles = StyleSheet.create({
     height: 540,
   },
 });
+
 export default Home;

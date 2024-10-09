@@ -3,15 +3,14 @@ import { View, StyleSheet, TouchableOpacity, Image, Modal, ScrollView, Text } fr
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useCart } from '../components/Context/CartContext';
-import MapView, { Marker } from 'react-native-maps';
 import * as Location from 'expo-location';
 
-const Checkout = () => {
+const Checkout = ({ route }) => {
   const [showModal, setShowModal] = useState(false);
-  const [showMapModal, setShowMapModal] = useState(false);
   const [location, setLocation] = useState(null);
   const navigation = useNavigation();
   const { cartItems, removeFromCart, updateQuantity } = useCart();
+  const { paymentMethod, cardData } = route.params || {};
 
   useEffect(() => {
     (async () => {
@@ -37,33 +36,48 @@ const Checkout = () => {
       navigation.navigate('MyCart');
     }, 2000);
   };
-
-  const handleChangeLocation = () => {
-    setShowMapModal(true);
+  const handleAddPayment =() => {
+    navigation.navigate('AddPaymentScreen');
   };
 
-  const handleSelectLocation = (event) => {
-    setLocation({
-      coords: {
-        latitude: event.nativeEvent.coordinate.latitude,
-        longitude: event.nativeEvent.coordinate.longitude,
-      }
-    });
-    setShowMapModal(false);
-  };
-
-
-
-  const handleAddPayment = () =>{
-      navigation.navigate('AddPaymentScreen');
-  }
   const calculateTotal = () => {
     return cartItems.reduce((total, item) => total + item.price * item.quantity, 0);
   };
 
+  const renderPaymentMethod = () => {
+    if (!paymentMethod || !cardData) return null;
+
+    let icon, text;
+    switch (paymentMethod) {
+      case 'card':
+        icon = <Ionicons name="card-outline" size={24} color="#2C3E50" />;
+        text = `${cardData.cardNumber.slice(-4)} - Expires ${cardData.expiryDate}`;
+        break;
+      case 'paypal':
+        icon = <Ionicons name="logo-paypal" size={24} color="#0070BA" />;
+        text = cardData.email;
+        break;
+      case 'bitcoin':
+        icon = <Ionicons name="logo-bitcoin" size={24} color="#F7931A" />;
+        text = cardData.address.slice(0, 10) + '...';
+        break;
+      default:
+        return null;
+    }
+
+    return (
+      <View style={styles.paymentMethod}>
+        {icon}
+        <Text style={styles.paymentMethodText}>{text}</Text>
+        <Ionicons name="checkmark-circle" size={24} color="#4CD964" />
+      </View>
+    );
+  };
+
+
   const renderCartItem = (item) => (
     <View style={styles.cartItem} key={item.id}>
-      <Image source={item.image } style={styles.itemImage} />
+      <Image source={item.image} style={styles.itemImage} />
       <View style={styles.itemDetails}>
         <Text style={styles.itemName}>{item.name}</Text>
         <Text style={styles.itemPrice}>${item.price.toFixed(2)}</Text>
@@ -96,12 +110,11 @@ const Checkout = () => {
             <Ionicons name="location-outline" size={24} color="#4A4A4A" />
             <Text style={styles.sectionTitle}>Deliver To</Text>
           </View>
-          <TouchableOpacity style={styles.locationButton}>
+          <View style={styles.locationInfo}>
             <Text style={styles.locationText}>
-              {location ? `Lat: ${location.coords.latitude.toFixed(4)}, Long: ${location.coords.longitude.toFixed(4)}` : 'Select Location'}
+              {location ? `Lat: ${location.coords.latitude.toFixed(4)}, Long: ${location.coords.longitude.toFixed(4)}` : 'Retrieving location...'}
             </Text>
-            <Text style={styles.changeText}>Change</Text>
-          </TouchableOpacity>
+          </View>
         </View>
 
         <View style={styles.section}>
@@ -113,19 +126,15 @@ const Checkout = () => {
         </View>
 
         <View style={styles.section}>
-          <View style={styles.sectionHeader}>
-            <Ionicons name="card-outline" size={24} color="#4A4A4A" />
-            <Text style={styles.sectionTitle}>Payment Method</Text>
-          </View>
-          <TouchableOpacity style={styles.paymentMethod}>
-            <Ionicons name="logo-paypal" size={24} color="#0070BA" />
-            <Text style={styles.paymentMethodText}>PayPal</Text>
-            <Ionicons name="checkmark-circle" size={24} color="#4CD964" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.addPaymentMethod} onPress={handleAddPayment}>
-            <Text style={styles.addPaymentMethodText}>Add New</Text>
-          </TouchableOpacity>
+        <View style={styles.sectionHeader}>
+          <Ionicons name="card-outline" size={24} color="#4A4A4A" />
+          <Text style={styles.sectionTitle}>Payment Method</Text>
         </View>
+        {renderPaymentMethod()}
+        <TouchableOpacity style={styles.addPaymentMethod} onPress={handleAddPayment}>
+          <Text style={styles.addPaymentMethodText}>Change Payment Method</Text>
+        </TouchableOpacity>
+      </View>
 
         <TouchableOpacity style={styles.promoCode}>
           <Ionicons name="pricetag-outline" size={24} color="#4A4A4A" />
@@ -166,42 +175,7 @@ const Checkout = () => {
             <Text style={styles.modalSubText}>
               Your order will be delivered within 25 minutes. Enjoy your meal!
             </Text>
-            <TouchableOpacity style={styles.modalButton} onPress={() => setShowModal(false)}>
-              <Text style={styles.modalButtonText}>Continue Shopping</Text>
-            </TouchableOpacity>
           </View>
-        </View>
-      </Modal>
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={showMapModal}
-        onRequestClose={() => setShowMapModal(false)}
-      >
-        <View style={styles.mapModalContainer}>
-          {location && (
-            <MapView
-              style={styles.map}
-              initialRegion={{
-                latitude: location.coords.latitude,
-                longitude: location.coords.longitude,
-                latitudeDelta: 0.0922,
-                longitudeDelta: 0.0421,
-              }}
-              onPress={handleSelectLocation}
-            >
-              <Marker
-                coordinate={{
-                  latitude: location.coords.latitude,
-                  longitude: location.coords.longitude,
-                }}
-              />
-            </MapView>
-          )}
-          <TouchableOpacity style={styles.closeMapButton} onPress={() => setShowMapModal(false)}>
-            <Ionicons name="close" size={24} color="#FFFFFF" />
-          </TouchableOpacity>
         </View>
       </Modal>
     </View>

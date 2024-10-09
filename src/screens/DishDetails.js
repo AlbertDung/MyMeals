@@ -27,7 +27,7 @@ const DishDetails = ({ route, navigation }) => {
     ToastAndroid.show('Added to cart', ToastAndroid.SHORT);
   };
   const renderSideItem = (item) => (
-    <TouchableOpacity style={styles.sideItem}>
+    <TouchableOpacity key={item.id} style={styles.sideItem}>
       <Image source={getImageSource(item.image)} style={styles.sideItemImage} />
       <Text style={styles.sideItemName}>{item.name}</Text>
     </TouchableOpacity>
@@ -83,7 +83,7 @@ const DishDetails = ({ route, navigation }) => {
                 { name: 'Cheeseburger',id: 1, image: require('../../assets/images/product/chillichease.png') },
                 { name: 'Fries',id: 2, image: require('../../assets/images/product/handcutchip.png') },
                 { name: 'Nuggets',id: 3, image: require('../../assets/images/product/nuggest.png') },
-              ].map((item) => renderSideItem(item))}
+              ].map(renderSideItem)}
             </ScrollView>
           </View>
 
@@ -95,7 +95,7 @@ const DishDetails = ({ route, navigation }) => {
                 { name: 'Pepsi',id: 5, image: require('../../assets/images/product/pepsi.png') },
                 { name: 'Iced Coffee',id: 6, image: require('../../assets/images/product/icedlate.png') },
                 { name: 'Milkshake',id: 7, image: require('../../assets/images/product/milk.png') },
-              ].map((item) => renderSideItem(item))}
+              ].map(renderSideItem)}
             </ScrollView>
           </View>
         </View>

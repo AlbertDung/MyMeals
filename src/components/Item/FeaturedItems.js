@@ -1,8 +1,9 @@
 import React from 'react';
 import { View, Text, ScrollView, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { SharedElement } from 'react-navigation-shared-element';
-
+import { useNavigation } from '@react-navigation/native';
 const FeaturedItem = ({ id, title, image, onPress }) => (
+  
   <TouchableOpacity style={styles.itemContainer} onPress={onPress}>
     <SharedElement id={`item.${id}.image`}>
       <Image 
@@ -16,6 +17,11 @@ const FeaturedItem = ({ id, title, image, onPress }) => (
 );
 
 const FeaturedItems = ({ items }) => {
+  const navigation = useNavigation();
+
+  const handle = () => {
+    navigation.navigate('Explore');
+  };
   return (
     <View style={styles.container}>
       <Text style={styles.title}>Explore some thing new</Text>
@@ -26,7 +32,7 @@ const FeaturedItems = ({ items }) => {
             id={item.id}
             title={item.name}
             image={item.image}
-            onPress={() => {/* Navigate to item details */}}
+            onPress={handle}
           />
         ))}
       </ScrollView>

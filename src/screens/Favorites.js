@@ -9,85 +9,6 @@ import { useNavigation } from '@react-navigation/native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import RestaurantCard from '../components/Card/RestaurantCard';
 const AnimatedIcon = Animated.createAnimatedComponent(MaterialCommunityIcons);
-
-// const FavoriteItem = ({ item, onPress, onFavoritePress, isFavorite }) => {
-//   const scaleValue = React.useRef(new Animated.Value(1)).current;
-
-//   const animateScale = () => {
-//     Animated.sequence([
-//       Animated.timing(scaleValue, {
-//         toValue: 1.2,
-//         duration: 100,
-//         useNativeDriver: true,
-//       }),
-//       Animated.timing(scaleValue, {
-//         toValue: 1,
-//         duration: 100,
-//         useNativeDriver: true,
-//       }),
-//     ]).start();
-//   };
-
-//   const handleFavoritePress = () => {
-//     animateScale();
-//     onFavoritePress(item);
-//   };
-
-//   return (
-//     <TouchableOpacity style={styles.itemContainer} onPress={() => onPress(item)}>
-//       <View style={styles.itemInfo}>
-//         <Text style={styles.itemName}>{item.name}</Text>
-//         <Text style={styles.itemDetails}>{item.cuisine || item.category}</Text>
-//       </View>
-//       <TouchableOpacity onPress={handleFavoritePress}>
-//         <AnimatedIcon
-//           name={isFavorite ? "heart" : "heart-outline"}
-//           size={24}
-//           color={isFavorite ? "#FF6B6B" : "#333"}
-//           style={{ transform: [{ scale: scaleValue }] }}
-//         />
-//       </TouchableOpacity>
-//     </TouchableOpacity>
-//   );
-// };
-
-// const RestaurantsTab = () => {
-//   const { favorites, removeFavorite, isFavorite } = useFavorites();
-//   const navigation = useNavigation();
-//   const restaurants = favorites.filter(item => item.type === 'restaurant');
-
-//   const handleCardPress = (item) => {
-//     navigation.navigate('RestaurantDetails', { restaurant: item });
-//   };
-
-//   const handleFavoritePress = (item) => {
-//     if (isFavorite(item.id)) {
-//       removeFavorite(item.id);
-//     }
-//   };
-
-//   return (
-//     <FlatList
-//       data={restaurants}
-//       keyExtractor={(item) => item.id}
-//       renderItem={({ item }) => (
-//         <FavoriteItem
-//           item={item}
-//           onPress={handleCardPress}
-//           onFavoritePress={handleFavoritePress}
-//           isFavorite={isFavorite(item.id)}
-//         />
-//       )}
-//       ListEmptyComponent={
-//         <View style={styles.emptyContainer}>
-//           <MaterialCommunityIcons name="store-outline" size={80} color="#CCC" />
-//           <Text style={styles.emptyText}>No favorite restaurants yet</Text>
-//           <Text style={styles.emptySubText}>Explore restaurants and tap the heart to add them to your favorites!</Text>
-//         </View>
-//       }
-//     />
-//   );
-// };
 const handleQuantityChange = (item, newQuantity) => {
     if (newQuantity > 0) {
       updateFavoriteQuantity(item.id, newQuantity);
@@ -118,7 +39,15 @@ const handleQuantityChange = (item, newQuantity) => {
         keyExtractor={(item) => item.id}
         renderItem={({ item }) => (
           <RestaurantCard
-            restaurant={item}
+          restaurant={{
+            name: item.restaurantName,
+            cuisine: item.foodType,
+            rating: item.averageReview,
+            reviews: item.numberOfReview,
+            distance: item.farAway,
+            image: item.images,
+            // Add any other fields needed by RestaurantCard
+          }}
             onPress={() => handleCardPress(item)}
             onFavoritePress={() => handleFavoritePress(item)}
             isFavorite={isFavorite(item.id)}

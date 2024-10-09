@@ -1,121 +1,120 @@
-import React from "react";
-import { ScrollView, StyleSheet, View, Text, TouchableOpacity, Dimensions } from "react-native";
+import React, { useState, useEffect } from 'react';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image, SafeAreaView } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
-import { Feather } from '@expo/vector-icons';
-import AppHeader from "../components/AppHeader/AppHeader";
-import Screen from "../components/Screen/Screen";
-import Card from "../components/Card/Card";
-import { foodItems } from "../data";
-import SearchHeader from "../components/SearchHeader/SearchHeader";
+import * as Location from 'expo-location';
+import { restaurantsData } from '../data/restaurantData';
+//import Restaurant from '../data/restaurant';//
+//import RestaurantpopularCard from './redesign';
+import RedesignedRestaurant from './redesign';
+const NearbyRestaurants = ({ navigation }) => {
+  const [location, setLocation] = useState(null);
+  const [errorMsg, setErrorMsg] = useState(null);
 
-const { width } = Dimensions.get('window');
-const cardWidth = width * 0.4; // Set card width to 40% of screen width
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== 'granted') {
+        setErrorMsg('Permission to access location was denied');
+        return;
+      }
 
-const CategorySection = ({ title, items }) => (
-  <View style={styles.categorySection}>
-    <View style={styles.categoryHeader}>
-      <Text style={styles.categoryTitle}>{title}</Text>
-      <TouchableOpacity>
-        <Text style={styles.seeAllText}>See All</Text>
-      </TouchableOpacity>
-    </View>
-    <ScrollView horizontal
-      pagingEnabled
-      showsHorizontalScrollIndicator={false} 
-      contentContainerStyle={styles.cardContainer}>
+      let location = await Location.getCurrentPositionAsync({});
+      setLocation(location);
+    })();
+  }, []);
 
-      {items.map((item) => (
-        <Card key={item.title} item={item} width={cardWidth} />
-      ))}
-    </ScrollView>
-  </View>
-);
-const popularItems = foodItems.slice(0, 4); // Slice the first 4 items
-const Popular = () => {
-  const categories = ["Popular", "Panini", "Tacos", "Burger", "Pizza"];
+  const renderRestaurantItem = ({ item }) => (
+    <RedesignedRestaurant
+      id={item.id}
+      name={item.restaurantName}
+      image={item.images}
+      rating={item.averageReview}
+      cuisine={item.foodType}
+      distance={item.farAway}
+      estimatedTime={item.deliveryTime}
+      reviews={item.numberOfReview}
+      onPress={() => navigation.navigate('Details', { restaurant: item })}
+    />
+  );
 
   return (
-    <Screen>
+    <SafeAreaView style={styles.container}>
       <LinearGradient
         colors={['#FF9966', '#FF5E62']}
-        style={styles.headerGradient}
+        style={styles.header}
       >
-        <SearchHeader />
-        {/* <AppHeader
-          title="Popular"
-          customTitleStyles={styles.headerTitle}
-          startButton={
-            <TouchableOpacity style={styles.iconButton}>
-              <Feather name="menu" size={20} color="white" />
-            </TouchableOpacity>
-          }
-          endButton={
-            <TouchableOpacity style={styles.iconButton}>
-              <Feather name="search" size={20} color="white" />
-            </TouchableOpacity>
-          }
-        /> */}
+        <View style={styles.locationContainer}>
+          <Ionicons name="location-sharp" size={24} color="white" />
+          <Text style={styles.locationText}>3.3a Main Street New York</Text>
+          <TouchableOpacity>
+            <Ionicons name="chevron-down" size={24} color="white" />
+          </TouchableOpacity>
+        </View>
+        <TouchableOpacity style={styles.searchBar}>
+          <Ionicons name="search" size={20} color="#999" />
+          <Text style={styles.searchText}>Search food and restaurant</Text>
+        </TouchableOpacity>
       </LinearGradient>
-      
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false} >
-        {categories.map((category) => (
-          <CategorySection
-            key={category}
-            title={category}
-            items={foodItems
-              .filter((item) => 
-                category === "Popular" ? true : item.category.toLowerCase() === category.toLowerCase()
-              )
-              .slice(0, 4) // Increased to show more items
-            }
-          />
-        ))}
-      </ScrollView>
-    </Screen>
+      <View style={styles.content}>
+        <Text style={styles.sectionTitle}>Near By Restaurants</Text>
+        <Text style={styles.subtitle}>{restaurantsData.length}+ Restaurants found near you</Text>
+        <FlatList
+          data={restaurantsData}
+          renderItem={renderRestaurantItem}
+          keyExtractor={(item) => item.id.toString()}
+          showsVerticalScrollIndicator={false}
+        />
+      </View>
+    </SafeAreaView>
   );
 };
 
 const styles = StyleSheet.create({
-  headerGradient: {
-    //paddingTop: 40,
-    paddingBottom: 10,
-    paddingTop: 15,
-  },
-  headerTitle: {
-    color: 'white',
-    fontSize: 20,
-    fontFamily: "Lato-Bold",
-  },
-  iconButton: {
-    padding: 8,
-  },
-  scrollView: {
+  container: {
     flex: 1,
     backgroundColor: '#F7F8FA',
   },
-  categorySection: {
-    marginVertical: 15,
+  header: {
+    padding: 20,
+    paddingTop: 40,
   },
-  categoryHeader: {
+  locationContainer: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 15,
-    marginBottom: 10,
+    marginBottom: 15,
   },
-  categoryTitle: {
-    fontSize: 18,
-    fontFamily: "Lato-Bold",
-    color: '#333',
+  locationText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginHorizontal: 10,
   },
-  seeAllText: {
+  searchBar: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: 'white',
+    borderRadius: 25,
+    padding: 10,
+  },
+  searchText: {
+    marginLeft: 10,
+    color: '#999',
+  },
+  content: {
+    flex: 1,
+    padding: 20,
+  },
+  sectionTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  subtitle: {
     fontSize: 14,
-    color: '#FF5E62',
-    fontFamily: "Lato-Regular",
-  },
-  cardContainer: {
-    paddingLeft: 15, // Add left padding to the container
+    color: '#666',
+    marginBottom: 15,
   },
 });
 
-export default Popular;
+export default NearbyRestaurants;

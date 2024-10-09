@@ -7,6 +7,11 @@ import Button from '../components/Button/Button';
 import { colors } from '../theme/colors';
 import { useNavigation } from '@react-navigation/native';
 
+import CreditCardForm from '../components/Card/CreditCardForm';
+import PayPalForm from '../components/Card/PayPalForm';
+import BitcoinForm from '../components/Card/BitcoinForm';
+
+
 const PaymentMethodItem = ({ method, onSelect, isSelected }) => (
   <TouchableOpacity 
     style={[styles.paymentMethod, isSelected && styles.selectedPaymentMethod]} 
@@ -23,6 +28,7 @@ const PaymentMethodItem = ({ method, onSelect, isSelected }) => (
 
 const AddPayment = () => {
   const [selectedMethod, setSelectedMethod] = useState(null);
+  const [cardData, setCardData] = useState(null);
   const navigation = useNavigation();
 
   const paymentMethods = [
@@ -36,17 +42,26 @@ const AddPayment = () => {
   };
 
   const handleNext = () => {
-    console.log('handleNext called, selectedMethod:', selectedMethod);
-    if (selectedMethod) {
-      console.log('Attempting to navigate to Payment screen');
-      navigation.navigate("Payment", { method: selectedMethod });
+    if (selectedMethod && cardData) {
+      navigation.navigate('Checkout', { paymentMethod: selectedMethod, cardData });
     } else {
-      console.log('No method selected');
+      console.log('Please select a method and fill out the form');
     }
   };
 
-  console.log('Rendering AddPayment component');
-  
+  const renderCardForm = () => {
+    switch (selectedMethod) {
+      case 'card':
+        return <CreditCardForm onSubmit={setCardData} />;
+      case 'paypal':
+        return <PayPalForm onSubmit={setCardData} />;
+      case 'bitcoin':
+        return <BitcoinForm onSubmit={setCardData} />;
+      default:
+        return null;
+    }
+  };
+
   return (
     <Screen customStyles={styles.container}>
       <View style={styles.header}>
@@ -66,22 +81,21 @@ const AddPayment = () => {
             method={item}
             onSelect={() => setSelectedMethod(item.id)}
             isSelected={selectedMethod === item.id}
-            
           />
         )}
         keyExtractor={(item) => item.id}
       />
       
+      {selectedMethod && renderCardForm()}
+
       <View style={styles.buttonContainer}>
-        {/* <Button 
-          label="Next" 
-          customStyles={[styles.button, !selectedMethod && styles.disabledButton]} 
+        <TouchableOpacity 
+          style={[styles.checkoutButton, (!selectedMethod || !cardData) && styles.disabledButton]} 
           onPress={handleNext}
-          disabled={!selectedMethod}
-        /> */}
-        <TouchableOpacity style={styles.checkoutButton} onPress={handleNext}>
-          <AppText text="NEXT" customStyles={styles.checkoutButtonText} />
-      </TouchableOpacity>
+          disabled={!selectedMethod || !cardData}
+        >
+          <AppText text="ADD PAYMENT METHOD" customStyles={styles.checkoutButtonText} />
+        </TouchableOpacity>
       </View>
     </Screen>
   );
