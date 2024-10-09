@@ -412,7 +412,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#4CAF50',
     paddingVertical: 12,
     paddingHorizontal: 20,
-    borderRadius: 25,
+    borderRadius: 10,
+    width:200,
   },
   buttonLabel: {
     fontSize: 16,

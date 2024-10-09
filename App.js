@@ -109,14 +109,15 @@ function PaymentStack() {
   );
 }
 
+
 function CartStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="MyCart" component={MyCart} />
-      <Stack.Screen name="AddPayment" component={PaymentStack} />
+      {/* <Stack.Screen name="AddPayment" component={PaymentStack} /> */}
       <Stack.Screen name="Checkout" component={Checkout} />
-      <Stack.Screen name="Payment" component={PaymentScreen} />
       <Stack.Screen name="AddPaymentScreen" component={AddPayment} />
+      <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
     </Stack.Navigator>
   );
 }
@@ -127,7 +128,7 @@ function UserStack() {
       <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen name="MyCart" component={CartStack} />
       <Stack.Screen name="MyOrder" component={MyOrder} />
-      <Stack.Screen name="AddPayment" component={PaymentStack} />
+      {/* <Stack.Screen name="AddPayment" component={PaymentStack} /> */}
       {/* <Stack.Screen name="Signout" component={AuthStack} /> */}
     </Stack.Navigator>
   );

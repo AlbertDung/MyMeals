@@ -36,15 +36,17 @@ const AddPayment = () => {
   };
 
   const handleNext = () => {
+    console.log('handleNext called, selectedMethod:', selectedMethod);
     if (selectedMethod) {
+      console.log('Attempting to navigate to Payment screen');
       navigation.navigate("Payment", { method: selectedMethod });
+    } else {
+      console.log('No method selected');
     }
   };
 
-  const handle = () => {
-    navigation.navigate('Payment');
-  };
-
+  console.log('Rendering AddPayment component');
+  
   return (
     <Screen customStyles={styles.container}>
       <View style={styles.header}>
@@ -71,17 +73,15 @@ const AddPayment = () => {
       />
       
       <View style={styles.buttonContainer}>
-        <Button 
+        {/* <Button 
           label="Next" 
           customStyles={[styles.button, !selectedMethod && styles.disabledButton]} 
           onPress={handleNext}
           disabled={!selectedMethod}
-        />
-        {/* <Button 
-          label="Next" 
-          // customStyles={[styles.button, !selectedMethod && styles.disabledButton]} 
-          onPress={handle}
-          /> */}
+        /> */}
+        <TouchableOpacity style={styles.checkoutButton} onPress={handleNext}>
+          <AppText text="NEXT" customStyles={styles.checkoutButtonText} />
+      </TouchableOpacity>
       </View>
     </Screen>
   );
@@ -147,6 +147,18 @@ const styles = StyleSheet.create({
   },
   disabledButton: {
     opacity: 0.5,
+  },
+  checkoutButton: {
+    backgroundColor: colors.primary,
+    paddingVertical: 15,
+    margin: 20,
+    borderRadius: 12,
+    alignItems: 'center',
+  },
+  checkoutButtonText: {
+    fontFamily: "Lato-Bold",
+    fontSize: 18,
+    color: colors.white,
   },
 });
 
