@@ -45,17 +45,22 @@ const ProfileView = () => {
   const renderFunctionBar = () => (
     <View style={styles.functionBar}>
       {[
-        { name: 'My All Order', icon: 'receipt-outline' },
-        { name: 'Offer & Promos', icon: 'gift-outline' },
-        { name: 'Delivery Address', icon: 'location-outline' }
+        { name: 'My All Order', icon: 'receipt-outline', screen: 'MyOrder' },
+        { name: 'Offer & Promos', icon: 'gift-outline', screen: 'MyCart' },
+        { name: 'Delivery Address', icon: 'location-outline', screen: 'address' } // Update the screen name as needed
       ].map((item, index) => (
-        <TouchableOpacity key={index} style={styles.functionItem}>
+        <TouchableOpacity 
+          key={index} 
+          style={styles.functionItem} 
+          onPress={() => navigation.navigate(item.screen)}
+        >
           <Ionicons name={item.icon} size={24} color="#EEEEEE" />
           <Text style={styles.functionText}>{item.name}</Text>
         </TouchableOpacity>
       ))}
     </View>
   );
+  
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
