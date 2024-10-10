@@ -1,146 +1,221 @@
-import React,{useContext} from 'react';
-import { StyleSheet, Text, View, Image, TouchableOpacity } from 'react-native';
+import React, { useState,useContext,useEffect } from 'react';
+import { StyleSheet, Text, View, Image, TouchableOpacity, Switch, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import Screen from '../components/Screen/Screen';
-import Button from '../components/Button/Button';
-import { BlurView } from 'expo-blur';
+import { Ionicons, MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
 import { AuthContext } from '../components/Context/AuthContext';
-export default function ProfileView() {
+import * as ImagePicker from 'expo-image-picker';
+const ProfileView = () => {
   const navigation = useNavigation();
-
-  const { signOut } = useContext(AuthContext); // Sử dụng AuthContext
+  const [avatar, setAvatar] = useState('https://via.placeholder.com/150');
+  const [notificationEnabled, setNotificationEnabled] = useState(true);
+  const [promoNotificationEnabled, setPromoNotificationEnabled] = useState(false);
+  const [themeMode, setThemeMode] = useState('Light');
+  const { signOut, userData } = useContext(AuthContext);
   
+  const [userName, setUserName] = useState('');
+  const [userEmail, setUserEmail] = useState('');
+
+  useEffect(() => {
+    const loadUserData = async () => {
+      try {
+        const storedName = await AsyncStorage.getItem('userName');
+        const storedEmail = await AsyncStorage.getItem('userEmail');
+        if (storedName) setUserName(storedName);
+        if (storedEmail) setUserEmail(storedEmail);
+      } catch (error) {
+        console.error('Error loading user data:', error);
+      }
+    };
+
+    loadUserData();
+  }, []);
+
   const handleSignOut = () => {
     signOut(); // Gọi hàm signOut từ AuthContext
   };
-  return (
-    <Screen>
-    <View style={styles.container}>
-      <View style={styles.header}>
-        <Image
-          style={styles.avatar}
-          source={{ uri: 'https://bootdey.com/img/Content/avatar/avatar7.png' }}
-        />
-        {/* <View className="w-16 h-16 border border-secondary rounded-lg flex justify-center items-center">
-              <Image
-                source={{ uri: user?.avatar }}
-                className="w-[90%] h-[90%] rounded-lg"
-                resizeMode="cover"
-              />
-            </View> */}
-        <Text style={styles.name}>Albert AnhDung</Text>
-      </View>
-
-      <View style={styles.body}>
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Tiện ích</Text>
-          <TouchableOpacity 
-            style={styles.menuItem} 
-            onPress={() => navigation.navigate('MyCart')}
-          >
-            <Text style={styles.menuText}>Giỏ hàng của tôi</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity 
-            style={styles.menuItem} 
-            onPress={() => navigation.navigate('MyOrder')}
-          >
-            <Text style={styles.menuText}>Đơn hàng của tôi</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity 
-            style={styles.menuItem} 
-            onPress={() => navigation.navigate('AddPayment')}
-          >
-            <Text style={styles.menuText}>Thêm phương thức thanh toán</Text>
-          </TouchableOpacity>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Trợ giúp</Text>
-          <TouchableOpacity 
-            style={styles.menuItem} 
-            onPress={() => alert('Chức năng Cài đặt chưa được triển khai')}
-          >
-            <Text style={styles.menuText}>Cài đặt</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity 
-            style={styles.menuItem} 
-            onPress={() => alert('Chức năng Hỗ trợ & Trợ giúp chưa được triển khai')}
-          >
-            <Text style={styles.menuText}>Hỗ trợ & Trợ giúp</Text>
-          </TouchableOpacity>
-        </View>
-
-        <BlurView intensity={50} style={styles.footer}>
-        <Button
-          label="Đăng xuất"
-          customStyles={styles.addToCartButton}
-          customLabelStyles={styles.buttonLabel}
-          onPressMe={handleSignOut}
-        />
-        
-      </BlurView>
-      </View>
+  const handleProfile = () => {
+    navigation.navigate('ManageProfileView');
+  };
+  const handlePay = () => {
+    navigation.navigate('pay');
+  };
+  const handle = () => {
+    navigation.navigate('Profile');
+  };
+  const renderFunctionBar = () => (
+    <View style={styles.functionBar}>
+      {[
+        { name: 'My All Order', icon: 'receipt-outline' },
+        { name: 'Offer & Promos', icon: 'gift-outline' },
+        { name: 'Delivery Address', icon: 'location-outline' }
+      ].map((item, index) => (
+        <TouchableOpacity key={index} style={styles.functionItem}>
+          <Ionicons name={item.icon} size={24} color="#EEEEEE" />
+          <Text style={styles.functionText}>{item.name}</Text>
+        </TouchableOpacity>
+      ))}
     </View>
-    </Screen>
   );
-}
+
+  const pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [1, 1],
+      quality: 1,
+    });
+
+    if (!result.canceled) {
+      setAvatar(result.assets[0].uri);
+    }
+  };
+
+  const renderTableRow = (onPress,icon, title, value, hasArrow = true, isSwitch = false, onToggle = null) => (
+    <TouchableOpacity style={styles.tableRow} onPress={onPress}>
+      <View style={styles.rowLeft}>
+        <Ionicons name={icon} size={24} color="#EEEEEE" style={styles.rowIcon} />
+        <Text style={styles.rowTitle}>{title}</Text>
+      </View>
+      <View style={styles.rowRight}>
+        {isSwitch ? (
+          <Switch
+            value={value}
+            onValueChange={onToggle}
+            trackColor={{ false: "#EEEEEE", true: "#903749" }}
+            thumbColor={value ? "#EEEEEE" : "#903749"}
+          />
+        ) : (
+          <>
+            <Text style={styles.rowValue}>{value}</Text>
+            {hasArrow && <Ionicons name="chevron-forward" size={24} color="#903749" />}
+          </>
+        )}
+      </View>
+    </TouchableOpacity>
+  );
+
+  return (
+    <ScrollView style={styles.container}>
+      <View style={styles.header}>
+      <TouchableOpacity onPress={pickImage}>
+          <Image source={{ uri: avatar }} style={styles.avatar} />
+        </TouchableOpacity>
+        <View style={styles.userInfo}>
+          <Text style={styles.userName}>{userData ? userData.name : 'Guest'}</Text>
+          <Text style={styles.userEmail}>{userData ? userData.email : 'guest@example.com'}</Text>
+        </View>
+      </View>
+
+      {renderFunctionBar()}
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>My account</Text>
+        {renderTableRow(handleProfile,'person-outline', 'Manage profile', '', true)}
+        {renderTableRow(handlePay,'card-outline', 'Payment', '', true)}
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>Notification</Text>
+        {renderTableRow(handle,'notifications-outline', 'Notification', notificationEnabled, false, true, setNotificationEnabled)}
+        {renderTableRow(handle,'megaphone-outline', 'Promotional Notification', promoNotificationEnabled, false, true, setPromoNotificationEnabled)}
+      </View>
+
+      <View style={styles.section}>
+        <Text style={styles.sectionTitle}>More</Text>
+        {renderTableRow(handle,'moon-outline', 'Theme mode', themeMode, true)}
+        {renderTableRow(handleSignOut,'log-out-outline', 'Log Out', '', false)}
+      </View>
+    </ScrollView>
+  );
+};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F7F8FA',
-    
+    backgroundColor: '#222831',
   },
   header: {
-    backgroundColor: '#FF6347',
+    flexDirection: 'row',
     alignItems: 'center',
-    paddingVertical: 30,
-    paddingHorizontal: 20,
+    padding: 20,
+    backgroundColor: '#950101',
   },
   avatar: {
-    width: 100,
-    height: 100,
-    borderRadius: 50,
-    marginBottom: 15,
+    width: 80,
+    height: 80,
+    borderRadius: 40,
+    borderWidth: 2,
+    borderColor: '#EEEEEE',
   },
-  name: {
-    fontSize: 24,
-    color: '#FFFFFF',
+  userInfo: {
+    marginLeft: 20,
+  },
+  userName: {
+    fontSize: 22,
     fontWeight: 'bold',
+    color: '#EEEEEE',
   },
-  body: {
-    flex: 1,
-    paddingTop: 20,
-    paddingHorizontal: 15,
+  userEmail: {
+    fontSize: 16,
+    color: '#EEEEEE',
+  },
+  functionBar: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    padding: 15,
+    backgroundColor: '#222831',
+    borderBottomWidth: 1,
+    borderBottomColor: '#222831',
+  },
+  functionItem: {
+    alignItems: 'center',
+  },
+  functionText: {
+    fontSize: 12,
+    color: '#EEEEEE',
+    marginTop: 5,
   },
   section: {
-    marginBottom: 25,
+    marginTop: 20,
+    backgroundColor: '#222831',
+    borderTopWidth: 1,
+    borderTopColor: '#903749',
   },
   sectionTitle: {
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: 'bold',
-    color: '#333333',
-    marginBottom: 10,
-    paddingLeft: 10,
+    padding: 15,
+    backgroundColor: '#222831',
+    color: '#903749',
   },
-  menuItem: {
-    backgroundColor: '#FFFFFF',
-    paddingVertical: 15,
-    paddingHorizontal: 20,
-    borderRadius: 10,
-    marginBottom: 10,
-    elevation: 2,
+  tableRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 15,
+    borderBottomWidth: 1,
+    borderBottomColor: '#222831',
   },
-  menuText: {
+  rowLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  rowIcon: {
+    marginRight: 15,
+  },
+  rowTitle: {
     fontSize: 16,
-    color: '#333333',
+    color: '#EEEEEE',
   },
-  footer: {
-    padding: 20,
-    borderTopWidth: 1,
-    borderTopColor: 'rgba(0,0,0,0.1)',
+  rowRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  rowValue: {
+    fontSize: 16,
+    color: '#EEEEEE',
+    marginRight: 10,
   },
 });
+
+export default ProfileView;

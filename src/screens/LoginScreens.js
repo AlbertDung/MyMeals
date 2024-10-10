@@ -1,5 +1,5 @@
 import React, { useState, useContext,useEffect } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, Image } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, Image, LogBox } from 'react-native';
 import { getAuth, signInWithEmailAndPassword,GoogleAuthProvider,signInWithCredential, FacebookAuthProvider } from 'firebase/auth';
 import { initializeApp } from 'firebase/app';
 import { Feather } from '@expo/vector-icons';
@@ -9,6 +9,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { FontAwesome } from '@expo/vector-icons';
 import { AuthContext } from '../components/Context/AuthContext'; // Đảm bảo đường dẫn này chính xác
 import { onGoogleButtonPress } from '../../socialSignIn';
+import { getFirestore, collection, query, where, getDocs } from 'firebase/firestore';
 import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -29,9 +30,7 @@ const firebaseConfig = {
 };
 
 const app = initializeApp(firebaseConfig);
-const auth = initializeAuth(app, {
-  persistence: getReactNativePersistence(ReactNativeAsyncStorage)
-});
+const auth = getAuth(app);
 
 const LoginScreen = () => {
   const [email, setEmail] = useState('');
@@ -40,58 +39,49 @@ const LoginScreen = () => {
   const [error, setError] = useState('');
   const navigation = useNavigation();
 
-  const { signIn } = useContext(AuthContext); // Sử dụng AuthContext
+  const { signIn } = useContext(AuthContext);
 
+const handleLogin = async () => {
+  if (!email.trim() && !password.trim()) {
+    setError('Vui lòng nhập email và mật khẩu.');
+    return;
+  }
+  if (!email.trim()) {
+    setError('Vui lòng nhập email của bạn.');
+    return;
+  }
+  if (!password.trim()) {
+    setError('Vui lòng nhập mật khẩu của bạn.');
+    return;
+  }
+  
+  try {
+    const db = getFirestore();
+    const usersRef = collection(db, 'user');
+    const q = query(usersRef, where('email', '==', email));
+    const querySnapshot = await getDocs(q);
 
-
-  // const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
-  //   clientId: '756702315456-3t6618id9kfjpqj7467chstrhvdtmps5.apps.googleusercontent.com',
-  // });
-
-
-  // useEffect(() => {
-  //   if (response?.type === 'success') {
-  //     const { id_token } = response.params;
-  //     const credential = GoogleAuthProvider.credential(id_token);
-  //     signInWithCredential(auth, credential).then(() => {
-  //       navigation.navigate('Home');
-  //     }).catch((err) => {
-  //       setError('Google Sign-In failed. Try again.');
-  //     });
-  //   }
-  // }, [response]);
-
-  const handleLogin = async () => {
-    if (!email.trim() && !password.trim()) {
-      setError('Vui lòng nhập email và mật khẩu.');
+    if (querySnapshot.empty) {
+      setError('User not found. Please check your email or sign up.');
       return;
     }
-    if (!email.trim()) {
-      setError('Vui lòng nhập email của bạn.');
+
+    const userDoc = querySnapshot.docs[0];
+    const userData = userDoc.data();
+
+    if (userData.password !== password) {
+      setError('Incorrect password. Please try again.');
       return;
     }
-    if (!password.trim()) {
-      setError('Vui lòng nhập mật khẩu của bạn.');
-      return;
-    }
-    
-    try {
-      await signInWithEmailAndPassword(auth, email, password);
-      signIn();
-    } catch (error) {
-      if (error.code === 'auth/user-not-found') {
-        setError('Không tìm thấy tài khoản với email này. Vui lòng kiểm tra lại hoặc đăng ký mới.');
-      } else if (error.code === 'auth/wrong-password') {
-        setError('Mật khẩu không chính xác. Vui lòng thử lại.');
-      } else if (error.code === 'auth/invalid-email') {
-        setError('Email không hợp lệ. Vui lòng nhập một địa chỉ email hợp lệ.');
-      } else if (error.code === 'auth/too-many-requests') {
-        setError('Quá nhiều lần thử không thành công. Vui lòng thử lại sau.');
-      } else {
-        setError('Đăng nhập thất bại. Vui lòng thử lại sau.');
-      }
-    }
-  };
+
+    // Login successful
+    signIn(userData, userDoc.id); // Pass both userData and document ID
+    navigation.navigate('Main');
+  } catch (error) {
+    console.error('Login error:', error);
+    setError('Đăng nhập thất bại. Vui lòng thử lại sau.');
+  }
+};
 
   const [fbRequest, fbResponse, fbPromptAsync] = Facebook.useAuthRequest({
     clientId: '1256945355492169', // Thay thế bằng ID ứng dụng Facebook của bạn

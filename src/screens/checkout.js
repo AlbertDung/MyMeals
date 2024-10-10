@@ -1,16 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect,useContext } from 'react';
 import { View, StyleSheet, TouchableOpacity, Image, Modal, ScrollView, Text } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useCart } from '../components/Context/CartContext';
 import * as Location from 'expo-location';
-
+import { getFirestore, collection, addDoc, doc, updateDoc, arrayUnion,setDoc } from 'firebase/firestore';  
+import { AuthContext } from '../components/Context/AuthContext';
 const Checkout = ({ route }) => {
   const [showModal, setShowModal] = useState(false);
   const [location, setLocation] = useState(null);
   const navigation = useNavigation();
-  const { cartItems, removeFromCart, updateQuantity } = useCart();
+  const { cartItems, removeFromCart, updateQuantity, clearCart } = useCart();
   const { paymentMethod, cardData } = route.params || {};
+
+  const { userData } = useContext(AuthContext);
+  const db = getFirestore();
 
   useEffect(() => {
     (async () => {
@@ -29,13 +33,59 @@ const Checkout = ({ route }) => {
     navigation.goBack();
   };
 
-  const handleConfirmOrder = () => {
-    setShowModal(true);
-    setTimeout(() => {
-      setShowModal(false);
-      navigation.navigate('MyCart');
-    }, 2000);
+  const handleConfirmOrder = async () => {
+    if (!location) {
+      Alert.alert('Error', 'Unable to get your location. Please try again.');
+      return;
+    }
+  
+    if (!paymentMethod || !cardData) {
+      Alert.alert('Error', 'Please select a payment method.');
+      return;
+    }
+  
+    try {
+      if (!userData || !userData.id) {
+        Alert.alert('Error', 'User data is missing. Please log in again.');
+        return;
+      }
+  
+      const orderData = {
+        userId: userData.id,
+        userName: userData.name,
+        userEmail: userData.email,
+        items: cartItems,
+        total: calculateTotal(),
+        deliveryFee: 0,
+        paymentMethod: paymentMethod,
+        paymentDetails: cardData,
+        location: {
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude
+        },
+        timestamp: new Date()
+      };
+  
+      // Add order to main 'order' collection
+      const orderRef = await addDoc(collection(db, 'order'), orderData);
+  
+      // Add the same order to user's 'orders' subcollection
+      const userOrderRef = doc(collection(db, 'user', userData.id, 'orders'), orderRef.id);
+      await setDoc(userOrderRef, orderData);
+      
+      clearCart();
+
+      setShowModal(true);
+      setTimeout(() => {
+        setShowModal(false);
+        navigation.navigate('MyCart');
+      }, 2000);
+    } catch (error) {
+      console.error('Error placing order:', error);
+      Alert.alert('Error', 'Unable to place your order. Please try again.');
+    }
   };
+
   const handleAddPayment =() => {
     navigation.navigate('AddPaymentScreen');
   };

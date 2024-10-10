@@ -21,8 +21,8 @@ const Card = ({ item }) => {
         <Image source={item.image} style={styles.image} />
       </View>
       <View style={styles.cardBody}>
-        <AppText text={item.title} customStyles={styles.textBold} />
-        <AppText text={item.title} customStyles={styles.textMedium} />
+        <AppText text={item.name} customStyles={styles.textBold} />
+        <AppText text={item.name} customStyles={styles.textMedium} />
         <View style={[styles.directionRow, styles.cardFooter]}>
           <AppText
             text={`$${item.price}.00`}

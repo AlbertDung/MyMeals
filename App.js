@@ -32,25 +32,6 @@ export default function App() {
     });
   }, []);
 
-
-  // const authContext = React.useMemo(
-  //   () => ({
-  //     signIn: () => {
-  //       setIsLoggedIn(true);
-  //     },
-  //     signOut: () => {
-  //       setIsLoggedIn(false);
-  //     },
-  //     markIntroAsSeen: () => {
-  //       setHasSeenIntro(true);
-  //       AsyncStorage.setItem('hasSeenIntro', 'true');
-  //     },
-  //     isLoggedIn,
-  //     hasSeenIntro,
-  //   }),
-  //   [isLoggedIn,hasSeenIntro]
-  // );
-
   const onLayoutRootView = useCallback(async () => {
     if (fontsLoaded) {
       await SplashScreen.hideAsync();

@@ -156,7 +156,7 @@ const Details = ({ route }) => {
 
         <View style={styles.content}>
           <View style={styles.header}>
-            <AppText text={item.title} customStyles={styles.title} />
+            <AppText text={item.name} customStyles={styles.title} />
             <AppText text={`$${item.price.toFixed(2)}`} customStyles={styles.price} />
           </View>
 

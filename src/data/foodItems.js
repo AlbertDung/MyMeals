@@ -1,7 +1,7 @@
 export const foodItems = [
   {
     id: 1,
-    title: "Classic Beef Burger",
+    name: "Classic Beef Burger",
     description: "A juicy beef patty with fresh lettuce, tomato, and signature sauce, served on a toasted sesame bun.",
     location: "Rabat",
     rating: 4.5,
@@ -11,7 +11,7 @@ export const foodItems = [
   },
   {
     id: 2,
-    title: "Cheese Lover's Burger",
+    name: "Cheese Lover's Burger",
     description: "Melted cheddar cheese, crispy bacon, and caramelized onions, topped with our special sauce.",
     location: "Rabat",
     rating: 4.7,
@@ -21,7 +21,7 @@ export const foodItems = [
   },
   {
     id: 3,
-    title: "Spicy Chicken Burger",
+    name: "Spicy Chicken Burger",
     description: "Crispy chicken fillet with spicy mayo, lettuce, and pickles, packed with a kick of heat.",
     location: "Rabat",
     rating: 4.6,
@@ -31,7 +31,7 @@ export const foodItems = [
   },
   {
     id: 4,
-    title: "Veggie Delight Burger",
+    name: "Veggie Delight Burger",
     description: "A flavorful vegetable patty with avocado, lettuce, tomato, and vegan mayo on a whole wheat bun.",
     location: "Rabat",
     rating: 4.3,
@@ -41,7 +41,7 @@ export const foodItems = [
   },
   {
     id: 5,
-    title: "Double Trouble Burger",
+    name: "Double Trouble Burger",
     description: "Two beef patties, double cheese, onion rings, and BBQ sauce for those with a big appetite.",
     location: "Rabat",
     rating: 4.8,
@@ -51,7 +51,7 @@ export const foodItems = [
   },
   {
     id: 6,
-    title: "Mushroom Swiss Burger",
+    name: "Mushroom Swiss Burger",
     description: "Sautéed mushrooms and Swiss cheese on a grilled beef patty, with a creamy garlic aioli.",
     location: "Rabat",
     rating: 4.4,
@@ -61,7 +61,7 @@ export const foodItems = [
   },
   {
     id: 7,
-    title: "Margherita Pizza",
+    name: "Margherita Pizza",
     description: "Classic Italian pizza topped with fresh mozzarella, tomatoes, and basil leaves.",
     location: "Casablanca",
     rating: 4.9,
@@ -71,7 +71,7 @@ export const foodItems = [
   },
   {
     id: 8,
-    title: "Pepperoni Feast Pizza",
+    name: "Pepperoni Feast Pizza",
     description: "Loaded with pepperoni slices and extra mozzarella, this pizza is a pepperoni lover’s dream.",
     location: "Casablanca",
     rating: 4.8,
@@ -81,7 +81,7 @@ export const foodItems = [
   },
   {
     id: 9,
-    title: "BBQ Chicken Pizza",
+    name: "BBQ Chicken Pizza",
     description: "Grilled chicken, BBQ sauce, red onions, and cilantro on a crispy thin crust.",
     location: "Casablanca",
     rating: 4.7,
@@ -91,7 +91,7 @@ export const foodItems = [
   },
   {
     id: 10,
-    title: "Vegetarian Pizza",
+    name: "Vegetarian Pizza",
     description: "Fresh vegetables including bell peppers, onions, olives, and mushrooms, with tomato sauce and cheese.",
     location: "Casablanca",
     rating: 4.6,
@@ -101,7 +101,7 @@ export const foodItems = [
   },
   {
     id: 11,
-    title: "Seafood Pizza",
+    name: "Seafood Pizza",
     description: "A delightful mix of shrimp, calamari, and mussels, topped with mozzarella and garlic sauce.",
     location: "Casablanca",
     rating: 4.5,
@@ -111,7 +111,7 @@ export const foodItems = [
   },
   {
     id: 12,
-    title: "Four Cheese Pizza",
+    name: "Four Cheese Pizza",
     description: "A blend of mozzarella, cheddar, parmesan, and gorgonzola, creating a cheesy masterpiece.",
     location: "Casablanca",
     rating: 4.9,
@@ -121,7 +121,7 @@ export const foodItems = [
   },
   {
     id: 13,
-    title: "Spicy Beef Tacos",
+    name: "Spicy Beef Tacos",
     description: "Tacos filled with seasoned beef, spicy salsa, cheese, and topped with fresh cilantro.",
     location: "Rabat",
     rating: 4.7,
@@ -131,7 +131,7 @@ export const foodItems = [
   },
   {
     id: 14,
-    title: "Chicken Tacos",
+    name: "Chicken Tacos",
     description: "Grilled chicken with avocado, salsa, and lime crema in soft corn tortillas.",
     location: "Rabat",
     rating: 4.6,
@@ -141,7 +141,7 @@ export const foodItems = [
   },
   {
     id: 15,
-    title: "Fish Tacos",
+    name: "Fish Tacos",
     description: "Crispy fish fillets with cabbage slaw, tangy sauce, and a squeeze of lime in soft tacos.",
     location: "Rabat",
     rating: 4.8,
@@ -151,7 +151,7 @@ export const foodItems = [
   },
   {
     id: 16,
-    title: "Vegetarian Tacos",
+    name: "Vegetarian Tacos",
     description: "Black beans, corn, avocado, and fresh salsa in soft tortillas, perfect for vegetarians.",
     location: "Rabat",
     rating: 4.5,
@@ -161,7 +161,7 @@ export const foodItems = [
   },
   {
     id: 17,
-    title: "Beef Panini",
+    name: "Beef Panini",
     description: "Grilled panini stuffed with roast beef, cheese, arugula, and Dijon mustard.",
     location: "Rabat",
     rating: 4.4,
@@ -171,7 +171,7 @@ export const foodItems = [
   },
   {
     id: 18,
-    title: "Chicken Pesto Panini",
+    name: "Chicken Pesto Panini",
     description: "Grilled chicken, pesto sauce, mozzarella, and tomatoes on toasted ciabatta.",
     location: "Rabat",
     rating: 4.5,
@@ -181,7 +181,7 @@ export const foodItems = [
   },
   {
     id: 19,
-    title: "Turkey Club Panini",
+    name: "Turkey Club Panini",
     description: "Smoked turkey, crispy bacon, Swiss cheese, lettuce, and tomato, grilled to perfection.",
     location: "Rabat",
     rating: 4.7,
@@ -191,7 +191,7 @@ export const foodItems = [
   },
   {
     id: 20,
-    title: "Caprese Panini",
+    name: "Caprese Panini",
     description: "Fresh mozzarella, tomatoes, and basil with a drizzle of balsamic glaze on ciabatta.",
     location: "Rabat",
     rating: 4.8,
@@ -201,7 +201,7 @@ export const foodItems = [
   },
   {
     id: 21,
-    title: "Ham & Cheese Panini",
+    name: "Ham & Cheese Panini",
     description: "Sliced ham, cheddar cheese, and honey mustard grilled between two crispy slices of bread.",
     location: "Rabat",
     rating: 4.6,
@@ -211,7 +211,7 @@ export const foodItems = [
   },
   {
     id: 22,
-    title: "Buffalo Chicken Panini",
+    name: "Buffalo Chicken Panini",
     description: "Buffalo sauce, grilled chicken, blue cheese, and ranch dressing all in a toasty panini.",
     location: "Rabat",
     rating: 4.9,
@@ -221,7 +221,7 @@ export const foodItems = [
   },
   {
     id: 23,
-    title: "Smoked Salmon Panini",
+    name: "Smoked Salmon Panini",
     description: "A delightful panini filled with smoked salmon, cream cheese, capers, and fresh dill on toasted ciabatta.",
     location: "Rabat",
     rating: 4.7,
@@ -231,7 +231,7 @@ export const foodItems = [
 },
 {
     id: 24,
-    title: "Veggie Panini",
+    name: "Veggie Panini",
     description: "Grilled vegetables, hummus, feta cheese, and sun-dried tomatoes, served on crispy ciabatta.",
     location: "Rabat",
     rating: 4.6,

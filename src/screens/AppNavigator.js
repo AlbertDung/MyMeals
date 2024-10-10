@@ -6,7 +6,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
-
+import { LogBox } from "react-native";
 //import ProfileView from './ProfileView';
 import AddPayment from "./AddPayment";
 import Home from "./Home";
@@ -25,6 +25,7 @@ import DishDetails from "./DishDetails";
 import Checkout from "./checkout";
 import Options from "./Options";
 import PaymentScreen from "./PaymentScreen";
+import ManageProfileView from "./manageProfile";
 import { AuthContext } from "../components/Context/AuthContext";
 // import Settings from './Settings';
 // import Help from './Help';
@@ -34,36 +35,36 @@ const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
 
 // User stack
-const UserScreens = ({ navigation }) => {
-  return (
-    <Stack.Navigator initialRouteName="User">
-      <Stack.Screen
-        name="User"
-        component={UserStack}
-        options={{
-          headerTitle: "Your Profile",
-          headerTintColor: "white",
-          headerStyle: {
-            backgroundColor: "black",
-          },
-          headerRight: () => (
-            <MaterialIcons
-              name="settings"
-              size={24}
-              style={{ color: "white", marginRight: 10 }}
-              onPress={() => navigation.navigate("Options")}
-            />
-          ),
-        }}
-      />
-      <Stack.Screen
-        name="Options"
-        component={Options}
-        options={{ title: "Options" }}
-      />
-    </Stack.Navigator>
-  );
-};
+// const UserScreens = ({ navigation }) => {
+//   return (
+//     <Stack.Navigator initialRouteName="User">
+//       <Stack.Screen
+//         name="User"
+//         component={UserStack}
+//         options={{
+//           headerTitle: "Your Profile",
+//           headerTintColor: "white",
+//           headerStyle: {
+//             backgroundColor: "black",
+//           },
+//           headerRight: () => (
+//             <MaterialIcons
+//               name="settings"
+//               size={24}
+//               style={{ color: "white", marginRight: 10 }}
+//               onPress={() => navigation.navigate("Options")}
+//             />
+//           ),
+//         }}
+//       />
+//       <Stack.Screen
+//         name="Options"
+//         component={Options}
+//         options={{ title: "Options" }}
+//       />
+//     </Stack.Navigator>
+//   );
+// };
 
 function HomeStack() {
   return (
@@ -123,6 +124,8 @@ function UserStack() {
       <Stack.Screen name="Profile" component={Profile} />
       <Stack.Screen name="MyCart" component={CartStack} />
       <Stack.Screen name="MyOrder" component={MyOrder} />
+      <Stack.Screen name="ManageProfileView" component={ManageProfileView} />
+      <Stack.Screen name="pay" component={AddPayment} />
       {/* <Stack.Screen name="AddPayment" component={PaymentStack} /> */}
       {/* <Stack.Screen name="Signout" component={AuthStack} /> */}
     </Stack.Navigator>
@@ -163,6 +166,9 @@ function IntroAngAUthStack()
 }
 
 function RootNavigator() {
+  LogBox.ignoreLogs(['@firebase/auth: Auth']);
+  LogBox.ignoreLogs(['Warning: ...']); // Ignore log notification by message
+  LogBox.ignoreAllLogs();//Ignore all log notifications
   const { isLoggedIn, hasSeenIntro } = React.useContext(AuthContext);
   //const { isLoggedIntro, hasSeenIntro } = React.useContext(AuthContext);
   return (
