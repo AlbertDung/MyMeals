@@ -1,118 +1,247 @@
-import { View, Text, Image, TouchableOpacity } from 'react-native';
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
-import MapView from 'react-native-maps';
-
+import MapView, { Marker, Polyline } from 'react-native-maps';
 import * as Icon from "react-native-feather";
-import { Marker } from 'react-native-maps';
-import { useDispatch, useSelector } from 'react-redux';
 
-
-export default function address() {
-    const restaurant = useSelector(selectRestaurant);
+export default function Address({ route }) {
     const navigation = useNavigation();
-    const dispatch = useDispatch();
+    const { orderData } = route.params;
     
-    // State để quản lý tọa độ map
     const [region, setRegion] = useState({
         latitude: 10.933124,
-        longitude: 106.745822, // Toạ độ ví dụ
+        longitude: 118.745822,
         latitudeDelta: 0.01,
         longitudeDelta: 0.01,
     });
 
-    // Thêm một tọa độ khác (giả sử là vị trí của người dùng)
     const userLocation = {
         latitude: 10.933124,
-        longitude: 106.745822, // Toạ độ ví dụ
+        longitude: 106.745822,
     };
 
-    const cancelOrder = () => {
-        navigation.navigate('Home');
-        dispatch(emptyCart());
-    };
+    const [restaurant, setRestaurant] = useState({
+        name: "Pizza Restaurant",
+        lat: 10.933124,
+        lng: 118.745822,
+    });
 
-    // Sử dụng useEffect để cập nhật tọa độ nếu restaurant có dữ liệu
+    const [driver, setDriver] = useState({
+        name: "Syed Noman",
+        //image: require('../assets/images/deliveryGuy.jpg'),
+        rating: 4.8,
+    });
+
     useEffect(() => {
-        if (restaurant) {
-            setRegion({
-                latitude: restaurant.lat,
-                longitude: restaurant.lng,
-                latitudeDelta: 0.01,
-                longitudeDelta: 0.01,
-            });
-        }
-    }, [restaurant]);
+        // Simulate fetching restaurant data
+        setRestaurant({
+            name: "Pizza Restaurant",
+            lat: 10.933124,
+            lng: 118.745822,
+        });
+
+        setRegion({
+            latitude: 10.933124,
+            longitude: 118.745822,
+            latitudeDelta: 0.01,
+            longitudeDelta: 0.01,
+        });
+    }, []);
+
+    const handleGoBack = () => {
+        navigation.goBack();
+    };
+
+    const handleViewOrderDetails = () => {
+        navigation.navigate('OrderTracking', { orderData });
+    };
 
     return (
-        <View className="flex-1">
+        <View style={styles.container}>
+            <View style={styles.header}>
+                <TouchableOpacity onPress={handleGoBack}>
+                    <Icon.ArrowLeft stroke="#4A4A4A" strokeWidth={3} />
+                </TouchableOpacity>
+                <Text style={styles.title}>Track Order</Text>
+                <View style={styles.placeholder} />
+            </View>
+
             <MapView
                 initialRegion={region}
-                className="flex-1"
+                style={styles.map}
                 mapType='standard'
             >
-                {/* Marker cho vị trí nhà hàng */}
                 <Marker
                     coordinate={{
                         latitude: region.latitude,
                         longitude: region.longitude,
                     }}
-                    title={restaurant ? restaurant.name : 'Default Location'}
-                    description={restaurant ? restaurant.description : 'This is the default location'}
-                    pinColor={themColors.bgColor(1)}
+                    title={restaurant.name}
+                    pinColor="#FF8C00"
                 />
-
-                {/* Marker cho vị trí của người dùng */}
                 <Marker
-                    coordinate={{
-                        latitude: userLocation.latitude,
-                        longitude: userLocation.longitude,
-                    }}
+                    coordinate={userLocation}
                     title="Your Location"
-                    description="This is your current location"
-                    pinColor="blue"  // Màu khác để phân biệt với nhà hàng
+                    pinColor="blue"
+                />
+                <Polyline
+                    coordinates={[
+                        { latitude: region.latitude, longitude: region.longitude },
+                        userLocation
+                    ]}
+                    strokeColor="#000"
+                    strokeWidth={3}
                 />
             </MapView>
 
-            <View className="rounded-t-3xl -mt-12 bg-white relative">
-                <View>
-                    <Text className="text-lg text-gray-700 font-semibold">
-                        Estimated Arrival
-                    </Text>
-                    <Text className="text-3xl font-extrabold text-gray-700">
-                        20-30 Minutes
-                    </Text>
-                    <Text className="mt-2 text-gray-700 font-semibold">
-                        Your order is on its way!
-                    </Text>
+            <View style={styles.infoCard}>
+                <Text style={styles.infoTitle}>Trip Route</Text>
+                <Text style={styles.infoText}>{restaurant.name} → Your Location</Text>
+                <View style={styles.tripDetails}>
+                    <View style={styles.tripDetail}>
+                        <Icon.Navigation stroke="#4A4A4A" strokeWidth={2} />
+                        <Text style={styles.tripDetailText}>4.8 km</Text>
+                    </View>
+                    <View style={styles.tripDetail}>
+                        <Icon.Clock stroke="#4A4A4A" strokeWidth={2} />
+                        <Text style={styles.tripDetailText}>15 minutes</Text>
+                    </View>
                 </View>
-                {/* <Image className="w-24 h-24" source={require('../assets/images/bikeGuy3.gif')} /> */}
-            </View>
 
-            <View
-                style={{ backgroundColor: themColors.bgColor(0.8) }}
-                className="p-2 flex-row justify-between items-center rounded-full my-5 mx-2"
-            >
-                <View className="p-1 rounded-full" style={{ backgroundColor: 'rgba(255,255,255,0.4)' }}>
-                    {/* <Image className="h-16 w-16 rounded-full" source={require('../assets/images/deliveryGuy.jpg')} /> */}
+                <View style={styles.driverInfo}>
+                    <Image source={driver.image} style={styles.driverImage} />
+                    <View style={styles.driverDetails}>
+                        <Text style={styles.driverName}>{driver.name}</Text>
+                        <View style={styles.driverRating}>
+                            <Icon.Star fill="#FFD700" stroke="#FFD700" strokeWidth={2} />
+                            <Text style={styles.driverRatingText}>{driver.rating}</Text>
+                        </View>
+                    </View>
+                    <View style={styles.driverActions}>
+                        <TouchableOpacity style={styles.driverAction}>
+                            <Icon.Phone stroke="#FF8C00" strokeWidth={2} />
+                        </TouchableOpacity>
+                        <TouchableOpacity style={styles.driverAction}>
+                            <Icon.MessageSquare stroke="#FF8C00" strokeWidth={2} />
+                        </TouchableOpacity>
+                    </View>
                 </View>
-                <View className="flex-1 ml-3">
-                    <Text className="text-lg font-bold text-white">
-                        Syed Noman
-                    </Text>
-                    <Text className="font-semibold text-white">
-                        Your Rider
-                    </Text>
-                </View>
-                <View className="flex-row items-center space-x-3 mr-3">
-                    <TouchableOpacity className="bg-white p-2 rounded-full">
-                        <Icon.Phone fill={themColors.bgColor(1)} stroke={themColors.bgColor(1)} strokeWidth={1} />
-                    </TouchableOpacity>
-                    <TouchableOpacity onPress={cancelOrder} className="bg-white p-2 rounded-full">
-                        <Icon.X stroke={'red'} strokeWidth={4} />
-                    </TouchableOpacity>
-                </View>
+
+                <TouchableOpacity style={styles.orderDetailsButton} onPress={handleViewOrderDetails}>
+                    <Text style={styles.orderDetailsButtonText}>Order Details</Text>
+                </TouchableOpacity>
             </View>
         </View>
     );
 }
+
+const styles = StyleSheet.create({
+    container: {
+        flex: 1,
+        backgroundColor: '#F5F5F5',
+    },
+    header: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: 16,
+        backgroundColor: '#FFFFFF',
+    },
+    title: {
+        fontSize: 18,
+        fontWeight: 'bold',
+    },
+    placeholder: {
+        width: 24,
+    },
+    map: {
+        flex: 1,
+    },
+    infoCard: {
+        backgroundColor: '#FFFFFF',
+        borderTopLeftRadius: 20,
+        borderTopRightRadius: 20,
+        padding: 20,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: -2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+        elevation: 5,
+    },
+    infoTitle: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginBottom: 8,
+    },
+    infoText: {
+        fontSize: 16,
+        color: '#4A4A4A',
+        marginBottom: 16,
+    },
+    tripDetails: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginBottom: 16,
+    },
+    tripDetail: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    tripDetailText: {
+        marginLeft: 8,
+        fontSize: 16,
+        color: '#4A4A4A',
+    },
+    driverInfo: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        marginBottom: 16,
+    },
+    driverImage: {
+        width: 50,
+        height: 50,
+        borderRadius: 25,
+        marginRight: 16,
+    },
+    driverDetails: {
+        flex: 1,
+    },
+    driverName: {
+        fontSize: 16,
+        fontWeight: 'bold',
+    },
+    driverRating: {
+        flexDirection: 'row',
+        alignItems: 'center',
+    },
+    driverRatingText: {
+        marginLeft: 4,
+        fontSize: 14,
+        color: '#4A4A4A',
+    },
+    driverActions: {
+        flexDirection: 'row',
+    },
+    driverAction: {
+        marginLeft: 16,
+        backgroundColor: '#FFFFFF',
+        padding: 8,
+        borderRadius: 20,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 2,
+        elevation: 2,
+    },
+    orderDetailsButton: {
+        backgroundColor: '#FF8C00',
+        borderRadius: 8,
+        padding: 16,
+        alignItems: 'center',
+    },
+    orderDetailsButtonText: {
+        fontSize: 16,
+        fontWeight: 'bold',
+        color: '#FFFFFF',
+    },
+});

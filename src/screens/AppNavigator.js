@@ -26,7 +26,8 @@ import Checkout from "./checkout";
 import Options from "./Options";
 import PaymentScreen from "./PaymentScreen";
 import ManageProfileView from "./manageProfile";
-import address from "./address";
+import Address from "./address";
+import SearchScreen from "./SearchScreen";
 import { AuthContext } from "../components/Context/AuthContext";
 // import Settings from './Settings';
 // import Help from './Help';
@@ -73,7 +74,8 @@ function HomeStack() {
       <Stack.Screen name="HomeScreen" component={Home} />
       <Stack.Screen name="Details" component={Details} />
       <Stack.Screen name="RestaurantDetails" component={RestaurantDetails} />
-      <Stack.Screen name="DishDetails" component={DishDetails} />
+      <Stack.Screen name="DishDetails" component={DishDetails} /> 
+      <Stack.Screen name="SearchScreen" component={SearchScreen} />
     </Stack.Navigator>
   );
 }
@@ -92,6 +94,7 @@ function PopularStack() {
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="PopularScreen" component={Popular} />
       <Stack.Screen name="Details" component={RestaurantDetails} />
+      <Stack.Screen name="SearchScreen" component={SearchScreen} />
     </Stack.Navigator>
   );
 }
@@ -115,6 +118,7 @@ function CartStack() {
       <Stack.Screen name="Checkout" component={Checkout} />
       <Stack.Screen name="AddPaymentScreen" component={AddPayment} />
       <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
+      <Stack.Screen name="address" component={Address} />
     </Stack.Navigator>
   );
 }
@@ -127,7 +131,7 @@ function UserStack() {
       <Stack.Screen name="MyOrder" component={MyOrder} />
       <Stack.Screen name="ManageProfileView" component={ManageProfileView} />
       <Stack.Screen name="pay" component={AddPayment} />
-      <Stack.Screen name="address" component={address} />
+      {/* <Stack.Screen name="address" component={address} /> */}
       {/* <Stack.Screen name="AddPayment" component={PaymentStack} /> */}
       {/* <Stack.Screen name="Signout" component={AuthStack} /> */}
     </Stack.Navigator>

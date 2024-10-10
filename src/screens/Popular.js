@@ -1,15 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image, SafeAreaView } from 'react-native';
+import { View, Text, FlatList, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import * as Location from 'expo-location';
 import { restaurantsData } from '../data/restaurantData';
-//import Restaurant from '../data/restaurant';//
-//import RestaurantpopularCard from './redesign';
 import RedesignedRestaurant from './redesign';
-const NearbyRestaurants = ({ navigation }) => {
+import { useNavigation } from '@react-navigation/native';
+
+const NearbyRestaurants = () => {
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
+  const navigation = useNavigation();
 
   useEffect(() => {
     (async () => {
@@ -23,6 +24,10 @@ const NearbyRestaurants = ({ navigation }) => {
       setLocation(location);
     })();
   }, []);
+
+  const handleSearchPress = () => {
+    navigation.navigate('SearchScreen');
+  };
 
   const renderRestaurantItem = ({ item }) => (
     <RedesignedRestaurant
@@ -51,7 +56,7 @@ const NearbyRestaurants = ({ navigation }) => {
             <Ionicons name="chevron-down" size={24} color="white" />
           </TouchableOpacity>
         </View>
-        <TouchableOpacity style={styles.searchBar}>
+        <TouchableOpacity style={styles.searchBar} onPress={handleSearchPress}>
           <Ionicons name="search" size={20} color="#999" />
           <Text style={styles.searchText}>Search food and restaurant</Text>
         </TouchableOpacity>

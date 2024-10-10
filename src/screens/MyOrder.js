@@ -3,7 +3,7 @@ import { StyleSheet, ScrollView, View, TouchableOpacity, Alert } from "react-nat
 import { Ionicons } from '@expo/vector-icons';
 import Screen from "../components/Screen/Screen";
 import AppHeader from "../components/AppHeader/AppHeader";
-import OrderCard from "../components/OrderCard/OrderCard";
+import OrderCard from "./OrderCard";
 import AppText from "../components/AppText/AppText";
 import { useNavigation } from '@react-navigation/native';
 import { AuthContext } from '../components/Context/AuthContext';
@@ -45,7 +45,7 @@ const MyOrder = () => {
   };
 
   const handleGoBack = () => {
-    navigation.goBack();
+    navigation.navigate('Profile');
   };
 
   const handleReorder = (order) => {

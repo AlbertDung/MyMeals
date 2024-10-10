@@ -7,7 +7,7 @@ import { colors } from "../../theme/colors";
 
 const ICON_SIZE = 25;
 
-const SearchHeader = () => {
+const SearchHeader = ({onPress}) => {
   return (
     <View style={styles.header}>
       <View style={styles.inputContainer}>
@@ -25,9 +25,9 @@ const SearchHeader = () => {
           }
         />
       </View>
-      <TouchableOpacity onPress={() => {}} style={styles.notifications}>
+      <TouchableOpacity onPress={onPress} style={styles.notifications}>
         <Ionicons
-          name="notifications-outline"
+          name="options-outline"
           color={colors.primary}
           size={ICON_SIZE}
         />

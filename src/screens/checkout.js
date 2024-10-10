@@ -6,6 +6,7 @@ import { useCart } from '../components/Context/CartContext';
 import * as Location from 'expo-location';
 import { getFirestore, collection, addDoc, doc, updateDoc, arrayUnion,setDoc } from 'firebase/firestore';  
 import { AuthContext } from '../components/Context/AuthContext';
+import Address from './address';
 const Checkout = ({ route }) => {
   const [showModal, setShowModal] = useState(false);
   const [location, setLocation] = useState(null);
@@ -79,6 +80,7 @@ const Checkout = ({ route }) => {
       setTimeout(() => {
         setShowModal(false);
         navigation.navigate('MyCart');
+        //navigation.navigate('address', { orderData });
       }, 2000);
     } catch (error) {
       console.error('Error placing order:', error);

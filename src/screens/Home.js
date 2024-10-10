@@ -23,9 +23,13 @@ const Home = () => {
   const handle = () => {
     navigation.navigate('Explore');
   };
+  
 
+  const handleSearchPress = () => {
+    navigation.navigate('SearchScreen');
+  };
   const DATA = [
-    { key: '1', component: <SearchHeader /> },
+    { key: '1', component: <SearchHeader onPress={handleSearchPress}/> },
     { key: '2', component: (
       <View style={styles.categoriesContainer1}>
         <CategoryIcon name="Morning" icon="food-croissant" onpress={handle} />

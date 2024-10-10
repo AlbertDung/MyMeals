@@ -19,7 +19,7 @@ const CartItem = ({ item, onRemove, onUpdateQuantity }) => {
     <View style={styles.container}>
       <Image source={item.image} style={styles.image} />
       <View style={styles.infoContainer}>
-        <AppText text={item.title} customStyles={styles.title} />
+        <AppText text={item.name} customStyles={styles.title} />
         <AppText text={item.location} customStyles={styles.location} />
         <AppText text={`$${(item.price * item.quantity).toFixed(2)}`} customStyles={styles.price} />
         {item.category && (
