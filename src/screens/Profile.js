@@ -4,41 +4,37 @@ import { useNavigation } from '@react-navigation/native';
 import { Ionicons, MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
 import { AuthContext } from '../components/Context/AuthContext';
 import * as ImagePicker from 'expo-image-picker';
+import { useCart } from '../components/Context/CartContext';
 const ProfileView = () => {
   const navigation = useNavigation();
-  const [avatar, setAvatar] = useState('https://via.placeholder.com/150');
   const [notificationEnabled, setNotificationEnabled] = useState(true);
   const [promoNotificationEnabled, setPromoNotificationEnabled] = useState(false);
   const [themeMode, setThemeMode] = useState('Light');
   const { signOut, userData } = useContext(AuthContext);
-  
-  const [userName, setUserName] = useState('');
-  const [userEmail, setUserEmail] = useState('');
+  const {clearCart} = useCart();
+  // Sử dụng avatar từ userData nếu có, nếu không sử dụng ảnh mặc định
+  const [avatar, setAvatar] = useState(userData?.avatar || 'https://via.placeholder.com/150');
 
   useEffect(() => {
-    const loadUserData = async () => {
-      try {
-        const storedName = await AsyncStorage.getItem('userName');
-        const storedEmail = await AsyncStorage.getItem('userEmail');
-        if (storedName) setUserName(storedName);
-        if (storedEmail) setUserEmail(storedEmail);
-      } catch (error) {
-        console.error('Error loading user data:', error);
-      }
-    };
-
-    loadUserData();
-  }, []);
+    // Cập nhật avatar khi userData thay đổi
+    if (userData && userData.avatar) {
+      setAvatar(userData.avatar);
+    }
+  }, [userData]);
 
   const handleSignOut = () => {
-    signOut(); // Gọi hàm signOut từ AuthContext
+    signOut();
+    clearCart();
   };
+
   const handleProfile = () => {
     navigation.navigate('ManageProfileView');
   };
+
   const handlePay = () => {
     navigation.navigate('pay');
   };
+
   const handle = () => {
     navigation.navigate('Profile');
   };
@@ -106,8 +102,8 @@ const ProfileView = () => {
           <Image source={{ uri: avatar }} style={styles.avatar} />
         </TouchableOpacity>
         <View style={styles.userInfo}>
-          <Text style={styles.userName}>{userData ? userData.name : 'Guest'}</Text>
-          <Text style={styles.userEmail}>{userData ? userData.email : 'guest@example.com'}</Text>
+        <Text style={styles.userName}>{userData ? userData.name : 'Guest'}</Text>
+        <Text style={styles.userEmail}>{userData ? userData.email : 'guest@example.com'}</Text>
         </View>
       </View>
 

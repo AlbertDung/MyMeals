@@ -17,6 +17,9 @@ export const AuthProvider = ({ children }) => {
             setIsLoggedIn(false);
             setUserData(null);
         },
+        updateUserData: (newData) => {
+            setUserData(prevData => ({ ...prevData, ...newData }));
+        },
         markIntroAsSeen: async () => {
             setHasSeenIntro(true);
             await AsyncStorage.setItem('hasSeenIntro', 'true');
@@ -26,7 +29,6 @@ export const AuthProvider = ({ children }) => {
         userData,
     }), [isLoggedIn, hasSeenIntro, userData]);
 
-    
     return (
         <AuthContext.Provider value={authContext}>
             {children}

@@ -1,12 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useContext, useEffect } from 'react';
 import { StyleSheet, Text, View, Image, TouchableOpacity, ScrollView, TextInput } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import * as ImagePicker from 'expo-image-picker';
+import { AuthContext } from '../components/Context/AuthContext';
+import { db, storage } from '../../firebaseConfig'; // Import từ file cấu hình của bạn
+import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
+import { doc, updateDoc } from "firebase/firestore";
 
 const ManageProfileView = () => {
   const navigation = useNavigation();
-  const [avatar, setAvatar] = useState('https://via.placeholder.com/150');
+  const { userData, updateUserData } = useContext(AuthContext);
+  const [avatar, setAvatar] = useState(userData?.avatar || 'https://via.placeholder.com/150');
+  const [name, setName] = useState(userData?.name || '');
+  const [email, setEmail] = useState(userData?.email || '');
+  const [phone, setPhone] = useState(userData?.phone || '');
+  const [address, setAddress] = useState(userData?.address || '');
 
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -21,19 +30,61 @@ const ManageProfileView = () => {
     }
   };
 
-  const renderInfoRow = (icon, title, value, editable = false) => (
+  const uploadImage = async (uri) => {
+    const response = await fetch(uri);
+    const blob = await response.blob();
+    const filename = userData.id + '_profile.jpg';
+    const storageRef = ref(storage, `avatars/${filename}`);
+    
+    await uploadBytes(storageRef, blob);
+    return await getDownloadURL(storageRef);
+  };
+
+  const saveProfile = async () => {
+    try {
+      let avatarUrl = avatar;
+      if (avatar.startsWith('file://')) {
+        avatarUrl = await uploadImage(avatar);
+      }
+
+      const userRef = doc(db, 'user', userData.id);
+      await updateDoc(userRef, {
+        name,
+        email,
+        phone,
+        address,
+        avatar: avatarUrl
+      });
+
+      // Cập nhật userData trong AuthContext
+      updateUserData({
+        name,
+        email,
+        phone,
+        address,
+        avatar: avatarUrl
+      });
+
+      alert('Profile updated successfully!');
+      navigation.goBack();
+    } catch (error) {
+      console.error('Error updating profile:', error);
+      alert('Failed to update profile. Please try again.');
+    }
+  };
+
+  const renderInfoRow = (icon, title, value, onChangeText) => (
     <View style={styles.infoRow}>
       <Ionicons name={icon} size={24} color="#EEEEEE" style={styles.infoIcon} />
       <View style={styles.infoContent}>
         <Text style={styles.infoTitle}>{title}</Text>
-        {editable ? (
-          <TextInput style={styles.infoInput} value={value} />
-        ) : (
-          <Text style={styles.infoValue}>{value}</Text>
-        )}
+        <TextInput
+          style={styles.infoInput}
+          value={value}
+          onChangeText={onChangeText}
+        />
       </View>
-      {editable && <MaterialIcons name="edit" size={24} color="#EEEEEE" />}
-      {!editable && <Ionicons name="chevron-forward" size={24} color="#EEEEEE" />}
+      <MaterialIcons name="edit" size={24} color="#EEEEEE" />
     </View>
   );
 
@@ -44,7 +95,7 @@ const ManageProfileView = () => {
           <Ionicons name="arrow-back" size={24} color="#EEEEEE" />
         </TouchableOpacity>
         <Text style={styles.headerTitle}>Edit Profile</Text>
-        <TouchableOpacity>
+        <TouchableOpacity onPress={saveProfile}>
           <Text style={styles.saveButton}>Save</Text>
         </TouchableOpacity>
       </View>
@@ -56,13 +107,10 @@ const ManageProfileView = () => {
         </View>
       </TouchableOpacity>
 
-      {renderInfoRow('person-outline', 'Name', 'Wajjahuullah', true)}
-      {renderInfoRow('lock-closed-outline', 'Password', '********')}
-      {renderInfoRow('mail-outline', 'Email', 'wajjah.ali@live.com')}
-      {renderInfoRow('call-outline', 'Phone', '+92-322-6305')}
-      {renderInfoRow('location-outline', 'Address', 'Karachi, Pakistan')}
-      {renderInfoRow('language-outline', 'Language', 'English')}
-      {renderInfoRow('male-female-outline', 'Gender', 'Male')}
+      {renderInfoRow('person-outline', 'Name', name, setName)}
+      {renderInfoRow('mail-outline', 'Email', email, setEmail)}
+      {renderInfoRow('call-outline', 'Phone', phone, setPhone)}
+      {renderInfoRow('location-outline', 'Address', address, setAddress)}
     </ScrollView>
   );
 };

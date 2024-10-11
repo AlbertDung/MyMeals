@@ -12,12 +12,16 @@ import { onGoogleButtonPress } from '../../socialSignIn';
 import { getFirestore, collection, query, where, getDocs } from 'firebase/firestore';
 import { initializeAuth, getReactNativePersistence } from 'firebase/auth';
 import ReactNativeAsyncStorage from '@react-native-async-storage/async-storage';
-
+import { ActivityIndicator } from 'react-native';
 
 import * as Google from 'expo-auth-session/providers/google';
 import * as Facebook from 'expo-auth-session/providers/facebook';
 import * as AuthSession from 'expo-auth-session'; // Import AuthSession
 
+// import { doc, setDoc, addDoc } from 'firebase/firestore';
+// import { restaurantsData } from '../data';
+// import { foodItems } from '../data';
+// import { db } from '../../firebaseConfig';
 // Initialize Firebase
 const firebaseConfig = {
   apiKey: "AIzaSyBiYg1McZL3iQPR_OkSOwmyh0HzDo0kme0",
@@ -38,9 +42,60 @@ const LoginScreen = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState('');
   const navigation = useNavigation();
+  const [isLoading, setIsLoading] = useState(false);
 
   const { signIn } = useContext(AuthContext);
 
+  // const uploadRestaurantsData = async () => {
+  //   try {
+  //     for (const restaurant of restaurantsData) {
+  //       const { id, productData, ...restaurantData } = restaurant;
+        
+  //       // Tạo document cho nhà hàng
+  //       const restaurantRef = doc(db, 'restaurant', id.toString());
+  //       await setDoc(restaurantRef, restaurantData);
+        
+  //       // Tạo subcollection "product" và thêm các sản phẩm
+  //       const productCollectionRef = collection(restaurantRef, 'product');
+  //       for (const product of productData) {
+  //         await addDoc(productCollectionRef, {
+  //           name: product.name,
+  //           price: product.price,
+  //           image: product.image // Lưu ý: Đây sẽ lưu đường dẫn local, cần xử lý riêng cho hình ảnh
+  //         });
+  //       }
+  //     }
+  //     console.log('All restaurant data uploaded successfully');
+  //   } catch (error) {
+  //     console.error('Error uploading restaurant data:', error);
+  //   }
+  // };
+
+  // const uploadFoodItems = async () => {
+  //   try {
+  //     const foodItemsCollection = collection(db, 'fooditems');
+  
+  //     for (const item of foodItems) {
+  //       // Tạo một bản sao của item để tránh thay đổi dữ liệu gốc
+  //       const itemToUpload = { ...item };
+        
+  //       // Xử lý trường image
+  //       if (itemToUpload.image && typeof itemToUpload.image === 'number') {
+  //         // Nếu image là một số (kết quả của require), chúng ta sẽ bỏ qua nó
+  //         delete itemToUpload.image;
+  //         // Hoặc bạn có thể thay thế bằng một URL placeholder
+  //         // itemToUpload.image = 'https://placeholder.com/food-image';
+  //       }
+  
+  //       // Upload item vào collection
+  //       await addDoc(foodItemsCollection, itemToUpload);
+  //     }
+  
+  //     console.log('All food items uploaded successfully');
+  //   } catch (error) {
+  //     console.error('Error uploading food items:', error);
+  //   }
+  // };
 const handleLogin = async () => {
   if (!email.trim() && !password.trim()) {
     setError('Vui lòng nhập email và mật khẩu.');
@@ -54,7 +109,9 @@ const handleLogin = async () => {
     setError('Vui lòng nhập mật khẩu của bạn.');
     return;
   }
-  
+
+  setIsLoading(true);
+
   try {
     const db = getFirestore();
     const usersRef = collection(db, 'user');
@@ -76,6 +133,8 @@ const handleLogin = async () => {
 
     // Login successful
     signIn(userData, userDoc.id); // Pass both userData and document ID
+
+    // await uploadFoodItems();
     navigation.navigate('Main');
   } catch (error) {
     console.error('Login error:', error);
@@ -161,9 +220,15 @@ const handleLogin = async () => {
               </TouchableOpacity>
             </View>
             {error ? <Text style={styles.errorText}>{error}</Text> : null}
+            {isLoading ? (
+            <View style={styles.loadingContainer}>
+              <ActivityIndicator size="large" color="#FF5E62" />
+            </View>
+          ) : (
             <TouchableOpacity style={styles.button} onPress={handleLogin}>
               <Text style={styles.buttonText}>Log In</Text>
             </TouchableOpacity>
+          )}
             <View style={styles.socialLoginContainer}>
               <TouchableOpacity style={styles.socialButton} onPress={handleGoogleSignIn}>
                 <FontAwesome name="google" size={24} color="#DB4437" />
@@ -307,6 +372,10 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
     shadowRadius: 2,
+  },
+  loadingContainer: {
+    marginVertical: 20,
+    alignItems: 'center',
   },
 });
 
