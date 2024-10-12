@@ -7,7 +7,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { LogBox } from "react-native";
-//import ProfileView from './ProfileView';
+// 
 import AddPayment from "./AddPayment";
 import Home from "./Home";
 import Details from "./Details";
@@ -29,44 +29,10 @@ import ManageProfileView from "./manageProfile";
 import Address from "./address";
 import SearchScreen from "./SearchScreen";
 import { AuthContext } from "../components/Context/AuthContext";
-// import Settings from './Settings';
-// import Help from './Help';
-
+import { useTheme } from "../components/Context/ThemeContext";
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
-
-// User stack
-// const UserScreens = ({ navigation }) => {
-//   return (
-//     <Stack.Navigator initialRouteName="User">
-//       <Stack.Screen
-//         name="User"
-//         component={UserStack}
-//         options={{
-//           headerTitle: "Your Profile",
-//           headerTintColor: "white",
-//           headerStyle: {
-//             backgroundColor: "black",
-//           },
-//           headerRight: () => (
-//             <MaterialIcons
-//               name="settings"
-//               size={24}
-//               style={{ color: "white", marginRight: 10 }}
-//               onPress={() => navigation.navigate("Options")}
-//             />
-//           ),
-//         }}
-//       />
-//       <Stack.Screen
-//         name="Options"
-//         component={Options}
-//         options={{ title: "Options" }}
-//       />
-//     </Stack.Navigator>
-//   );
-// };
 
 function HomeStack() {
   return (
@@ -131,9 +97,6 @@ function UserStack() {
       <Stack.Screen name="MyOrder" component={MyOrder} />
       <Stack.Screen name="ManageProfileView" component={ManageProfileView} />
       <Stack.Screen name="pay" component={AddPayment} />
-      {/* <Stack.Screen name="address" component={address} /> */}
-      {/* <Stack.Screen name="AddPayment" component={PaymentStack} /> */}
-      {/* <Stack.Screen name="Signout" component={AuthStack} /> */}
     </Stack.Navigator>
   );
 }
@@ -161,7 +124,7 @@ function AuthStack() {
   );
 }
 
-function IntroAngAUthStack()
+function IntroAndAuthStack()
 {
   return(
     <Stack.Navigator screenOptions={{ headerShown: false }}>
@@ -180,20 +143,18 @@ function RootNavigator() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       {!hasSeenIntro ? (
-        <Stack.Screen name="Intro" component={IntroAngAUthStack} />
+        <Stack.Screen name="Intro" component={IntroAndAuthStack} />
       ) : isLoggedIn ? (
         <Stack.Screen name="Main" component={MainTabs} />
       ) : (
         <Stack.Screen name="Auth" component={AuthStack} />
       )}
-      {/* <Stack.Screen name="Intro" component={IntroductionPage} />
-      <Stack.Screen name="Auth" component={AuthStack} />
-      <Stack.Screen name="Main" component={MainTabs} /> */}
     </Stack.Navigator>
   );
 }
 // Tab Navigator cho màn hình chính
 function MainTabs() {
+  const { isDark, colors } = useTheme();
   return (
     <Tab.Navigator 
       screenOptions={({ route }) => ({
@@ -214,8 +175,12 @@ function MainTabs() {
 
           return <Ionicons name={iconName} size={size} color={color} />;
         },
-        tabBarActiveTintColor: 'tomato',
-        tabBarInactiveTintColor: 'gray',
+        tabBarActiveTintColor: colors.same,
+        // tabBarInactiveTintColor: colors.background,
+        tabBarInactiveBackgroundColor: colors.background,
+        tabBarActiveBackgroundColor:colors.background,
+        
+        tabBarHideOnKeyboard: false,
         headerShown: false,
         tabBarShowLabel:false,
       })}
@@ -229,6 +194,7 @@ function MainTabs() {
   );
 }
 export default function AppNavigator() {
+  const { isDark, colors } = useTheme();
   return (
     <RootNavigator/>
   );

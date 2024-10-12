@@ -2,12 +2,15 @@ import React, { useState } from 'react';
 import { View, Text, Image, StyleSheet, ScrollView, TouchableOpacity, SafeAreaView, ToastAndroid } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useCart } from "../components/Context/CartContext";
+import { useTheme } from '../components/Context/ThemeContext';
 const DishDetails = ({ route, navigation }) => {
   const { dish } = route.params;
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState('Burger Only');
   const { addToCart } = useCart();
   const [specialInstructions, setSpecialInstructions] = useState([]);
+
+  const { isDark, colors } = useTheme();
   const handleQuantityChange = (change) => {
     setQuantity(Math.max(1, quantity + change));
   };
@@ -29,39 +32,39 @@ const DishDetails = ({ route, navigation }) => {
   const renderSideItem = (item) => (
     <TouchableOpacity key={item.id} style={styles.sideItem}>
       <Image source={getImageSource(item.image)} style={styles.sideItemImage} />
-      <Text style={styles.sideItemName}>{item.name}</Text>
+      <Text style={[styles.sideItemName,{color: colors.text}]}>{item.name}</Text>
     </TouchableOpacity>
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container,{backgroundColor: colors.background}]}>
       <ScrollView>
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
-            <Ionicons name="chevron-back" size={24} color="#333" />
+          <TouchableOpacity onPress={() => navigation.goBack()} style={[styles.backButton,{backgroundColor: colors.background}]}>
+            <Ionicons name="chevron-back" size={24} color={colors.text} />
           </TouchableOpacity>
         </View>
         <Image source={getImageSource(dish.image)} style={styles.image} />
         <View style={styles.infoContainer}>
-          <Text style={styles.name}>{dish.name}</Text>
-          <Text style={styles.restaurant}>{dish.restaurant}</Text>
-          <Text style={styles.price}>${dish.price.toFixed(2)}</Text>
+          <Text style={[styles.name,{color: colors.text}]}>{dish.name}</Text>
+          <Text style={[styles.restaurant,{color: colors.text}]}>{dish.restaurant}</Text>
+          <Text style={[styles.price,{color: colors.same}]}>${dish.price.toFixed(2)}</Text>
           
           <View style={styles.quantityContainer}>
-            <Text style={styles.sectionTitle}>Quantity</Text>
+            <Text style={[styles.sectionTitle,{color: colors.text}]}>Quantity</Text>
             <View style={styles.quantityControls}>
-              <TouchableOpacity onPress={() => handleQuantityChange(-1)} style={styles.quantityButton}>
-                <Text style={styles.quantityButtonText}>-</Text>
+              <TouchableOpacity onPress={() => handleQuantityChange(-1)} style={[styles.quantityButton,{backgroundColor: colors.same}]}>
+                <Text style={[styles.quantityButtonText,{color: colors.text}]}>-</Text>
               </TouchableOpacity>
-              <Text style={styles.quantity}>{quantity}</Text>
-              <TouchableOpacity onPress={() => handleQuantityChange(1)} style={styles.quantityButton}>
-                <Text style={styles.quantityButtonText}>+</Text>
+              <Text style={[styles.quantity,{color: colors.text}]}>{quantity}</Text>
+              <TouchableOpacity onPress={() => handleQuantityChange(1)} style={[styles.quantityButton,{backgroundColor: colors.same}]}>
+                <Text style={[styles.quantityButtonText,{color: colors.text}]}>+</Text>
               </TouchableOpacity>
             </View>
           </View>
 
           <View style={styles.sizeContainer}>
-            <Text style={styles.sectionTitle}>Size</Text>
+            <Text style={[styles.sectionTitle,{color: colors.text}]}>Size</Text>
             <View style={styles.sizeOptions}>
               {['Burger Only', 'Meal'].map((size) => (
                 <TouchableOpacity
@@ -76,7 +79,7 @@ const DishDetails = ({ route, navigation }) => {
           </View>
 
           <View style={styles.sidesContainer}>
-            <Text style={styles.sectionTitle}>Sides</Text>
+            <Text style={[styles.sectionTitle,{color: colors.text}]}>Sides</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.sidesScroll}>
               {[
                 { name: 'Hamburger',id: 0, image: require('../../assets/images/product/bicmac.png') },
@@ -88,7 +91,7 @@ const DishDetails = ({ route, navigation }) => {
           </View>
 
           <View style={styles.beveragesContainer}>
-            <Text style={styles.sectionTitle}>Beverages</Text>
+            <Text style={[styles.sectionTitle,{color: colors.text}]}>Beverages</Text>
             <ScrollView horizontal showsHorizontalScrollIndicator={false} style={styles.beveragesScroll}>
               {[
                 { name: 'Coca-Cola',id: 4, image: require('../../assets/images/product/cocacola.png') },
@@ -100,9 +103,9 @@ const DishDetails = ({ route, navigation }) => {
           </View>
         </View>
       </ScrollView>
-      <TouchableOpacity style={styles.addToCartButton} onPress={handleAddToCart}>
-        <Text style={styles.addToCartText}>Add To Cart</Text>
-        <Text style={styles.addToCartPrice}>${(dish.price * quantity).toFixed(2)}</Text>
+      <TouchableOpacity style={[styles.addToCartButton,{backgroundColor: colors.same}]} onPress={handleAddToCart}>
+        <Text style={[styles.addToCartText,{color: colors.text}]}>Add To Cart</Text>
+        <Text style={[styles.addToCartPrice,{color: colors.text}]}>${(dish.price * quantity).toFixed(2)}</Text>
       </TouchableOpacity>
     </SafeAreaView>
   );

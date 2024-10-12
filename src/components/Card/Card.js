@@ -5,11 +5,11 @@ import { Ionicons } from "@expo/vector-icons";
 
 import AppText from "../AppText/AppText";
 import { colors } from "../../theme/colors";
-
+import { useTheme } from "../Context/ThemeContext";
 const Card = ({ item }) => {
 
   const navigation = useNavigation();
-
+  const { isDark, colors } = useTheme();
   const handlePress = () => {
     navigation.navigate('Details', { item });
   };
@@ -27,17 +27,17 @@ const Card = ({ item }) => {
           <AppText
             text={`$${item.price}.00`}
             customStyles={{
-              color: colors.primary,
+              color: colors.text,
               fontSize: 12,
               fontFamily: "Lato-Bold",
             }}
           />
           <View style={styles.directionRow}>
-            <Ionicons name="location" size={15} color={colors.primary} />
+            <Ionicons name="location" size={15} color={colors.same} />
             <AppText text={item.location} customStyles={styles.textMedium} />
           </View>
           <View style={styles.directionRow}>
-            <Ionicons name="star" size={15} color={colors.yellow} />
+            <Ionicons name="star" size={15} color={colors.same} />
             <AppText
               text={`(${item.rating})`}
               customStyles={styles.textMedium}

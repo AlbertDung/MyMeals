@@ -9,8 +9,10 @@ import { restaurantsData, filterData2, restaurantsLogoData } from "../data";
 import RestaurantScroll from '../components/Scroll/RestaurantScroll';
 import FeaturedItems from '../components/Item/FeaturedItems';
 import TabView from '../components/TabView/TabView';
+import { useTheme } from '../components/Context/ThemeContext';
 
 const CategoryIcon = ({ name, icon, onpress }) => (
+  
   <TouchableOpacity style={styles.categoryButton} onPress={onpress}>
     <Icon name={icon} size={24} color="#fff" />
     <Text style={styles.categoryText}>{name}</Text>
@@ -19,7 +21,7 @@ const CategoryIcon = ({ name, icon, onpress }) => (
 
 const Home = () => {
   const navigation = useNavigation();
-
+  const { isDark, colors } = useTheme();
   const handle = () => {
     navigation.navigate('Explore');
   };
@@ -49,7 +51,7 @@ const Home = () => {
       />
     )},
     { key: '5', component: (
-      <View style={styles.categoriesContainer2}>
+      <View style={[styles.categoriesContainer2, {backgroundColor: colors.background}]}>
         <CategoryTabView 
           restaurants={restaurantsLogoData} 
           navigation={navigation}
@@ -64,7 +66,7 @@ const Home = () => {
   ];
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container, {backgroundColor: colors.background}]}>
       <FlatList
         data={DATA}
         renderItem={({ item }) => item.component}
@@ -84,7 +86,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#f4f4f4',
   },
   content: {
-    padding: 16,
+    padding: 5,
   },
   categoriesContainer1: {
     flexDirection: 'row',
@@ -93,13 +95,13 @@ const styles = StyleSheet.create({
   },
   categoryButton: {
     alignItems: 'center',
-    backgroundColor: '#EA5455',
+    backgroundColor: '#FF5722',
     borderRadius: 8,
     padding: 8,
     width: 64,
   },
   categoryText: {
-    color: '#fff',
+    color: '#EEEEEE',
     fontSize: 12,
     marginTop: 4,
   },
@@ -109,7 +111,7 @@ const styles = StyleSheet.create({
   },
   categoriesContainer2: {
     marginVertical: 15,
-    height: 540,
+    height: 520,
   },
 });
 

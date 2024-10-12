@@ -17,7 +17,7 @@ import { ActivityIndicator } from 'react-native';
 import * as Google from 'expo-auth-session/providers/google';
 import * as Facebook from 'expo-auth-session/providers/facebook';
 import * as AuthSession from 'expo-auth-session'; // Import AuthSession
-
+import { useTheme } from '../components/Context/ThemeContext';
 // import { doc, setDoc, addDoc } from 'firebase/firestore';
 // import { restaurantsData } from '../data';
 // import { foodItems } from '../data';
@@ -45,7 +45,7 @@ const LoginScreen = () => {
   const [isLoading, setIsLoading] = useState(false);
 
   const { signIn } = useContext(AuthContext);
-
+  const { isDark, colors } = useTheme();
   // const uploadRestaurantsData = async () => {
   //   try {
   //     for (const restaurant of restaurantsData) {
@@ -185,14 +185,14 @@ const handleLogin = async () => {
     }
   };
   return (
-    <LinearGradient colors={['#FF9966', '#FF5E62']} style={styles.gradient}>
+    <LinearGradient colors={[colors.primary, colors.background]} style={styles.gradient}>
       <SafeAreaView>
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
           <View style={styles.logoContainer}>
             <Image style={styles.logo} />
           </View>
-          <View style={styles.formContainer}>
-            <Text style={styles.title}>Welcome Back</Text>
+          <View style={[styles.formContainer, {backgroundColor: colors.background}]}>
+            <Text style={[styles.title,{color: colors.same}]}>Welcome Back</Text>
             <View style={styles.inputContainer}>
               <Feather name="mail" size={24} color="#FF5E62" style={styles.icon} />
               <TextInput
@@ -244,7 +244,7 @@ const handleLogin = async () => {
               <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
             </TouchableOpacity>
             <View style={styles.signupContainer}>
-              <Text style={styles.signupText}>Don't have an account?</Text>
+              <Text style={[styles.signupText, {color: colors.text}]}>Don't have an account?</Text>
               <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
                 <Text style={styles.signupLink}>Sign Up</Text>
               </TouchableOpacity>

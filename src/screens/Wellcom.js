@@ -12,6 +12,8 @@ import {
 import { useNavigation } from '@react-navigation/native';
 import { AuthContext } from '../components/Context/AuthContext';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { Appearance, useColorScheme } from 'react-native';
+import { useTheme } from '../components/Context/ThemeContext';
 
 const { width, height } = Dimensions.get('window');
 
@@ -21,6 +23,8 @@ const IntroductionPage = () => {
   const navigation = useNavigation();
   const { markIntroAsSeen } = useContext(AuthContext);
   const fadeAnim = useRef(new Animated.Value(0)).current;
+  const { isDark, colors } = useTheme();
+
 
   const introPages = [
     {
@@ -84,7 +88,7 @@ const IntroductionPage = () => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { backgroundColor: colors.background }]}>
       <ScrollView 
         ref={scrollViewRef}
         horizontal 
@@ -96,9 +100,9 @@ const IntroductionPage = () => {
         {introPages.map((page, index) => (
           <Animated.View key={index} style={[styles.section, { width, opacity: fadeAnim }]}>
             <Icon name={page.icon} size={100} color="#ff9900" style={styles.icon} />
-            <Text style={styles.header}>{page.header}</Text>
-            {page.subheading && <Text style={styles.subheading}>{page.subheading}</Text>}
-            {page.text && <Text style={styles.text}>{page.text}</Text>}
+            <Text style={[styles.header, {color: colors.text }]}>{page.header}</Text>
+            {page.subheading && <Text style={[styles.subheading, {color: colors.text}]}>{page.subheading}</Text>}
+            {page.text && <Text style={[styles.text, {color: colors.text}]}>{page.text}</Text>}
           </Animated.View>
         ))}
       </ScrollView>
@@ -114,7 +118,7 @@ const IntroductionPage = () => {
 
       <View style={styles.buttonContainer}>
         <TouchableOpacity style={styles.skipButton} onPress={completeIntro}>
-          <Text style={styles.skipButtonText}>Skip</Text>
+          <Text style={[styles.skipButtonText,{color: colors.text}]}>Skip</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.button} onPress={handleNext}>
           <Text style={styles.buttonText}>

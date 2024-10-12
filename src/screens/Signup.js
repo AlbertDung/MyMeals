@@ -4,7 +4,7 @@ import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { Feather, FontAwesome } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
-
+import { useTheme } from '../components/Context/ThemeContext';
 const auth = getAuth();
 
 const SignupScreen = () => {
@@ -15,6 +15,8 @@ const SignupScreen = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigation = useNavigation();
+  const { isDark, colors } = useTheme();
+
 
   const handleSignup = async () => {
     if (!email.trim() && !password.trim() && !confirmPassword.trim()) {
@@ -69,14 +71,14 @@ const SignupScreen = () => {
 
 
   return (
-    <LinearGradient colors={['#FF9966', '#FF5E62']} style={styles.gradient}>
+    <LinearGradient colors={[colors.primary, colors.background]} style={styles.gradient}>
       <KeyboardAvoidingView 
         style={styles.container} 
         behavior={Platform.OS === "ios" ? "padding" : "height"}
         keyboardVerticalOffset={Platform.OS === "ios" ? 0 : 20}
       >
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
-          <View style={styles.formContainer}>
+          <View style={[styles.formContainer, {backgroundColor: colors.background}]}>
             <Text style={styles.title}>Create Account</Text>
             <View style={styles.inputContainer}>
               <Feather name="mail" size={24} color="#FF5E62" style={styles.icon} />
@@ -130,9 +132,12 @@ const SignupScreen = () => {
                 <FontAwesome name="github" size={24} color="#333" />
               </TouchableOpacity>
             </View>
-            <TouchableOpacity style={styles.linkButton} onPress={() => navigation.navigate('Login')}>
-              <Text style={styles.linkButtonText}>Already have an account? Log In</Text>
-            </TouchableOpacity>
+            <View style={styles.linkButton}>
+              <Text style={[styles.signupText, {color: colors.text}]}>Already have an account? </Text>
+              <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+                <Text style={styles.linkButtonText}>Log In</Text>
+              </TouchableOpacity>
+            </View>
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
@@ -208,6 +213,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   linkButton: {
+    flexDirection:'row',
     marginTop: 20,
   },
   linkButtonText: {

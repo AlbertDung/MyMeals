@@ -1,7 +1,7 @@
 import React, { useState, useRef } from 'react';
 import { View, Text, FlatList, StyleSheet, TouchableOpacity, Image, Animated } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-
+import { useTheme } from '../Context/ThemeContext';
 const Tab = ({ title, active, onPress }) => (
   <TouchableOpacity
     style={[styles.tab, active && styles.activeTab]}
@@ -14,7 +14,7 @@ const Tab = ({ title, active, onPress }) => (
 
 const RestaurantItem = ({ name, logo, cuisine, rating, distance, estimatedTime, saved, onPress, onToggleSave }) => {
   const scaleValue = useRef(new Animated.Value(1)).current;
-
+  const { isDark, colors } = useTheme();
   const animateScale = () => {
     Animated.sequence([
       Animated.timing(scaleValue, {
@@ -36,25 +36,25 @@ const RestaurantItem = ({ name, logo, cuisine, rating, distance, estimatedTime, 
   };
 
   return (
-    <TouchableOpacity style={styles.restaurantItem} onPress={onPress}>
+    <TouchableOpacity style={[styles.restaurantItem,{backgroundColor: colors.background}]} onPress={onPress}>
       <Image source={logo} style={styles.restaurantLogo} />
       <View style={styles.restaurantInfo}>
-        <Text style={styles.restaurantName} numberOfLines={1}>{name}</Text>
-        <Text style={styles.restaurantCuisine} numberOfLines={1}>{cuisine}</Text>
+        <Text style={[styles.restaurantName,{color: colors.text}]} numberOfLines={1}>{name}</Text>
+        <Text style={[styles.restaurantCuisine,{color: colors.text}]} numberOfLines={1}>{cuisine}</Text>
         <View style={styles.restaurantDetails}>
-          <MaterialCommunityIcons name="star" size={14} color="#FFC107" />
-          <Text style={styles.detailText}>{rating.toFixed(1)}</Text>
-          <MaterialCommunityIcons name="map-marker" size={14} color="#757575" style={styles.icon} />
-          <Text style={styles.detailText}>{distance} km</Text>
+          <MaterialCommunityIcons name="star" size={14} color="#FF5722" />
+          <Text style={[styles.detailText,{color: colors.text}]}>{rating.toFixed(1)}</Text>
+          <MaterialCommunityIcons name="map-marker" size={14} color="#DA0037" style={styles.icon} />
+          <Text style={[styles.detailText,{color: colors.text}]}>{distance} km</Text>
           <MaterialCommunityIcons name="clock-outline" size={14} color="#757575" style={styles.icon} />
-          <Text style={styles.detailText}>{estimatedTime} min</Text>
+          <Text style={[styles.detailText,{color: colors.text}]}>{estimatedTime} min</Text>
         </View>
       </View>
       <TouchableOpacity style={styles.saveButton} onPress={handleToggleSave}>
         <Animated.View style={{ transform: [{ scale: scaleValue }] }}>
           <MaterialCommunityIcons
             name={saved ? "bookmark" : "bookmark-outline"}
-            size={20}
+            size={25}
             color="#E84545"
           />
         </Animated.View>
@@ -66,7 +66,7 @@ const RestaurantItem = ({ name, logo, cuisine, rating, distance, estimatedTime, 
 const CategoryTabView = ({ restaurants, navigation }) => {
   const [activeTab, setActiveTab] = useState('recent');
   const [favoriteRestaurants, setFavoriteRestaurants] = useState([]);
-
+  const { isDark, colors } = useTheme();
   const handlePress = (restaurant) => {
     navigation.navigate('RestaurantDetails', { restaurant });
   };
@@ -104,8 +104,8 @@ const CategoryTabView = ({ restaurants, navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
-      <View style={styles.tabContainer}>
+    <View style={[styles.container, {color: colors.background}]}>
+      <View style={[styles.tabContainer,{color: colors.background}]}>
         {tabs.map(tab => (
           <Tab
             key={tab.key}
@@ -132,7 +132,7 @@ const CategoryTabView = ({ restaurants, navigation }) => {
         )}
         keyExtractor={(item) => item.id.toString()}
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={styles.listContent}
+        contentContainerStyle={[styles.listContent,{backgroundColor: colors.background}]}
       />
     </View>
   );
@@ -141,7 +141,6 @@ const CategoryTabView = ({ restaurants, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
   },
   tabContainer: {
     flexDirection: 'row',
@@ -177,7 +176,7 @@ const styles = StyleSheet.create({
   },
   listContent: {
     //paddingHorizontal: 16,
-    paddingTop: 16,
+    paddingTop: 10,
     //paddingLeft: 0,
   },
   restaurantItem: {
@@ -194,8 +193,8 @@ const styles = StyleSheet.create({
     shadowRadius: 2,
   },
   restaurantLogo: {
-    width: 50,
-    height: 50,
+    width: 60,
+    height: 60,
     borderRadius: 8,
     marginRight: 12,
   },

@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, ScrollView, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { SharedElement } from 'react-navigation-shared-element';
 import { useNavigation } from '@react-navigation/native';
+import { useTheme } from '../Context/ThemeContext';
 const FeaturedItem = ({ id, title, image, onPress }) => (
   
   <TouchableOpacity style={styles.itemContainer} onPress={onPress}>
@@ -18,13 +19,13 @@ const FeaturedItem = ({ id, title, image, onPress }) => (
 
 const FeaturedItems = ({ items }) => {
   const navigation = useNavigation();
-
+  const { isDark, colors } = useTheme();
   const handle = () => {
     navigation.navigate('Explore');
   };
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Explore some thing new</Text>
+      <Text style={[styles.title,{color: colors.text}]}>Explore some thing new</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
         {items.map((item, index) => (
           <FeaturedItem
@@ -61,7 +62,7 @@ const styles = StyleSheet.create({
     height: 80,
     borderRadius: 40,
     borderWidth: 2,
-    borderColor: '#fff',
+    borderColor: '#DA0037',
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -76,7 +77,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontWeight: '600',
     fontSize: 14,
-    color: '#333',
+    color: '#FF5722',
   },
 });
 

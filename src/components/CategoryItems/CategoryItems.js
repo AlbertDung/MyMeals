@@ -3,6 +3,7 @@ import React from "react";
 import Card from "../Card/Card";
 import { useNavigation } from '@react-navigation/native';
 const CategoryItems = ({ category, items }) => {
+
   return (
     <FlatList
       style={styles.container}

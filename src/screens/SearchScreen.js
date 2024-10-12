@@ -5,10 +5,11 @@ import Card from '../components/Card/Card';
 import Restaurant from '../data/restaurant';
 import { restaurantsData } from '../data';
 import { categories, foodItems } from "../data";
-
+import { useTheme } from '../components/Context/ThemeContext';
 const SearchScreen = ({ navigation }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [searchResults, setSearchResults] = useState([]);
+  const { isDark, colors } = useTheme();
 
   useEffect(() => {
     if (searchQuery.length > 0) {
@@ -53,11 +54,11 @@ const SearchScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container,{backgroundColor: colors.background}]}>
       <View style={styles.searchContainer}>
-        <Ionicons name="search" size={24} color="#666" style={styles.searchIcon} />
+        <Ionicons name="search" size={24} color={colors.same} style={styles.searchIcon} />
         <TextInput
-          style={styles.searchInput}
+          style={[styles.searchInput,{color: colors.same}]}
           placeholder="Search for restaurants or food items..."
           value={searchQuery}
           onChangeText={setSearchQuery}
@@ -95,7 +96,7 @@ const styles = StyleSheet.create({
     fontSize: 16,
   },
   resultsList: {
-    paddingHorizontal: 10,
+    padding: 10,
   },
 });
 

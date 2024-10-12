@@ -3,14 +3,14 @@ import { View, Text, Image, StyleSheet, TouchableOpacity, Animated } from 'react
 import { Ionicons } from '@expo/vector-icons';
 import { SharedElement } from 'react-navigation-shared-element';
 import { useFavorites } from '../components/Context/FavoritesContext';
-
+import { useTheme } from '../components/Context/ThemeContext';
 const AnimatedIcon = Animated.createAnimatedComponent(Ionicons);
 
 const Restaurant = ({ id, name, image, rating, cuisine, distance, estimatedTime, reviews, onPress }) => {
   const { isFavorite, toggleFavorite } = useFavorites();
   const scaleValue = React.useRef(new Animated.Value(1)).current;
   const [isFav, setIsFav] = useState(false);
-
+  const { isDark, colors } = useTheme();
   useEffect(() => {
     setIsFav(isFavorite(id));
   }, [id, isFavorite]);
@@ -37,13 +37,13 @@ const Restaurant = ({ id, name, image, rating, cuisine, distance, estimatedTime,
   };
 
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress}>
+    <TouchableOpacity style={[styles.container,{backgroundColor: colors.same2}]} onPress={onPress}>
       <SharedElement id={`restaurant.${id}.image`}>
         <Image source={image} style={styles.image} />
       </SharedElement>
       <View style={styles.info}>
         <View style={styles.nameRow}>
-          <Text style={styles.name} numberOfLines={1}>{name}</Text>
+          <Text style={[styles.name,{color: colors.text}]} numberOfLines={1}>{name}</Text>
           <TouchableOpacity onPress={handleFavoritePress}>
             <AnimatedIcon
               name={isFav ? "bookmark" : "bookmark-outline"}
@@ -53,17 +53,17 @@ const Restaurant = ({ id, name, image, rating, cuisine, distance, estimatedTime,
             />
           </TouchableOpacity>
         </View>
-        <Text style={styles.cuisine}>{cuisine}</Text>
+        <Text style={[styles.cuisine, {color: colors.text}]}>{cuisine}</Text>
         <View style={styles.detailsRow}>
           <View style={styles.ratingContainer}>
-            <Ionicons name="star" size={16} color="#FFD700" />
-            <Text style={styles.rating}>{rating.toFixed(1)} ({reviews} reviews)</Text>
+            <Ionicons name="star" size={16} color={colors.same} />
+            <Text style={[styles.rating, {color: colors.text}]}>{rating.toFixed(1)} ({reviews} reviews)</Text>
           </View>
-          <Text style={styles.distance}>{distance} km</Text>
+          <Text style={[styles.distance,{color: colors.secondary}]}>{distance} km</Text>
         </View>
         <View style={styles.timeContainer}>
-          <Ionicons name="time-outline" size={16} color="#4CAF50" />
-          <Text style={styles.time}>{estimatedTime} min</Text>
+          <Ionicons name="time-outline" size={16} color={colors.same} />
+          <Text style={[styles.time,{color: colors.text}]}>{estimatedTime} min</Text>
         </View>
       </View>
     </TouchableOpacity>
@@ -74,7 +74,7 @@ const styles = StyleSheet.create({
   container: {
     width: 300,
     marginRight: 20,
-    borderRadius: 15,
+    borderRadius: 10,
     backgroundColor: 'white',
     shadowColor: "#000",
     shadowOffset: {
@@ -88,7 +88,7 @@ const styles = StyleSheet.create({
   },
   image: {
     width: '100%',
-    height: 180,
+    height: 160,
     borderTopLeftRadius: 15,
     borderTopRightRadius: 15,
   },

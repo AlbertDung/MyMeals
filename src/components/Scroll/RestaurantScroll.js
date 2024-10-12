@@ -1,10 +1,10 @@
 import React from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity, Image } from 'react-native';
 import Restaurant from '../../data/restaurant';
-
+import { useTheme } from '../Context/ThemeContext';
 const RestaurantScroll = ({ title, restaurants, onSeeAll, navigation }) => {
 
-  
+  const { isDark, colors } = useTheme();
   const handlePress = (restaurant) => {
     navigation.navigate('RestaurantDetails', { restaurant });
   };
@@ -12,9 +12,9 @@ const RestaurantScroll = ({ title, restaurants, onSeeAll, navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>{title}</Text>
+        <Text style={[styles.title, {color: colors.text}]}>{title}</Text>
         <TouchableOpacity onPress={onSeeAll}>
-          <Text style={styles.seeAll}>See All</Text>
+          <Text style={[styles.seeAll,{color: colors.same}]}>See All</Text>
         </TouchableOpacity>
       </View>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
@@ -60,7 +60,7 @@ const styles = StyleSheet.create({
   },
   seeAll: {
     fontSize: 14,
-    color: 'blue',
+    paddingRight: -5,
   },
   restaurantItem: {
     marginRight: 10,

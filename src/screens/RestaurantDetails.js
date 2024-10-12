@@ -3,12 +3,12 @@ import { View, Text, Image, StyleSheet, FlatList, TouchableOpacity, SafeAreaView
 import { useNavigation } from '@react-navigation/native';
 import { Ionicons } from '@expo/vector-icons';
 import { useFavorites } from '../components/Context/FavoritesContext';
-
+import { useTheme } from '../components/Context/ThemeContext';
 const RestaurantDetails = ({ route }) => {
   const { restaurant } = route.params;
   const navigation = useNavigation();
   const { isFavorite, toggleFavorite } = useFavorites();
-  
+  const { isDark, colors } = useTheme();
   const getImageSource = (image) => {
     if (typeof image === 'number') {
       return image;
@@ -25,23 +25,23 @@ const RestaurantDetails = ({ route }) => {
 
   const renderMenuItem = ({ item }) => (
     <TouchableOpacity 
-      style={styles.menuItem} 
+      style={[styles.menuItem,{backgroundColor: colors.same2}]} 
       onPress={() => navigation.navigate('DishDetails', { dish: item })}
     >
       <Image source={getImageSource(item.image)} style={styles.menuItemImage} />
       <View style={styles.menuItemInfo}>
-        <Text style={styles.menuItemName}>{item.name}</Text>
-        <Text style={styles.menuItemDescription} numberOfLines={2}>{item.description}</Text>
-        <Text style={styles.menuItemPrice}>${item.price.toFixed(2)}</Text>
+        <Text style={[styles.menuItemName,{color: colors.text}]}>{item.name}</Text>
+        <Text style={[styles.menuItemDescription,{color: colors.text}]} numberOfLines={2}>{item.description}</Text>
+        <Text style={[styles.menuItemPrice, {color: colors.same}]}>${item.price.toFixed(2)}</Text>
       </View>
-      <TouchableOpacity style={styles.addButton}>
+      <TouchableOpacity style={[styles.addButton,{backgroundColor: colors.same}]}>
         <Ionicons name="add" size={20} color="#FFF" />
       </TouchableOpacity>
     </TouchableOpacity>
   );
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container,{backgroundColor: colors.background}]}>
       <ScrollView stickyHeaderIndices={[1]}>
         <View>
           <Image source={getImageSource(restaurant.images)} style={styles.headerImage} />
@@ -59,41 +59,41 @@ const RestaurantDetails = ({ route }) => {
           </View>
         </View>
 
-        <View style={styles.stickyHeader}>
-          <Text style={styles.name}>{restaurant.restaurantName}</Text>
+        <View style={[styles.stickyHeader,{backgroundColor: colors.background}]}>
+          <Text style={[styles.name,{color: colors.text}]}>{restaurant.restaurantName}</Text>
         </View>
 
         <View style={styles.contentContainer}>
           <View style={styles.infoContainer}>
             <View style={styles.ratingContainer}>
               <Ionicons name="star" size={16} color="#FFD700" />
-              <Text style={styles.rating}>{restaurant.averageReview}</Text>
-              <Text style={styles.reviews}>({restaurant.numberOfReview}+ reviews)</Text>
+              <Text style={[styles.rating,{color: colors.text}]}>{restaurant.averageReview}</Text>
+              <Text style={[styles.reviews,{color: colors.text}]}>({restaurant.numberOfReview}+ reviews)</Text>
             </View>
-            <Text style={styles.cuisine}>{restaurant.foodType}</Text>
+            <Text style={[styles.cuisine,{color: colors.text}]}>{restaurant.foodType}</Text>
           </View>
 
           <View style={styles.deliveryInfo}>
             <View style={styles.deliveryItem}>
-              <Ionicons name="bicycle-outline" size={20} color="#4CAF50" />
-              <Text style={styles.deliveryText}>Free Delivery</Text>
+              <Ionicons name="bicycle-outline" size={20} color={colors.same} />
+              <Text style={[styles.deliveryText,{color: colors.text}]}>Free Delivery</Text>
             </View>
             <View style={styles.deliveryItem}>
-              <Ionicons name="time-outline" size={20} color="#FF9800" />
-              <Text style={styles.deliveryText}>{restaurant.deliveryTime} min</Text>
+              <Ionicons name="time-outline" size={20} color={colors.same} />
+              <Text style={[styles.deliveryText,{color: colors.text}]}>{restaurant.deliveryTime} min</Text>
             </View>
           </View>
 
-          <TouchableOpacity style={styles.takeAwayButton}>
+          <TouchableOpacity style={[styles.takeAwayButton,{backgroundColor: colors.same}]}>
             <Text style={styles.takeAwayText}>Order Take Away</Text>
           </TouchableOpacity>
 
-          <Text style={styles.menuTitle}>Menu</Text>
+          <Text style={[styles.menuTitle,{color: colors.text}]}>Menu</Text>
           <FlatList
             data={restaurant.productData}
             renderItem={renderMenuItem}
             keyExtractor={(item) => item.name}
-            contentContainerStyle={styles.menuList}
+            contentContainerStyle={[styles.menuList,{backgroundColor: colors.background}]}
             scrollEnabled={false}
           />
         </View>

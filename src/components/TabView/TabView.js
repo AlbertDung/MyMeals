@@ -5,7 +5,7 @@ import { TabView } from "react-native-tab-view";
 import { categories, foodItems } from "../../data";
 import CategoryItems from "../CategoryItems/CategoryItems";
 import TabBar from "../TabBar/TabBar";
-
+import { useTheme } from "../Context/ThemeContext";
 const Tab = () => {
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);

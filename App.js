@@ -9,6 +9,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { CartProvider } from "./src/components/Context/CartContext";
 import { FavoritesProvider } from "./src/components/Context/FavoritesContext";
 import { AuthContext, AuthProvider } from "./src/components/Context/AuthContext";
+import { ThemeProvider } from "./src/components/Context/ThemeContext";
 import AppNavigator from "./src/screens/AppNavigator";
 SplashScreen.preventAutoHideAsync();
 
@@ -43,18 +44,20 @@ export default function App() {
   }
 
   return (
-    <AuthProvider>
-      <CartProvider>
-        <FavoritesProvider>
-          <StatusBar barStyle="dark-content" backgroundColor="black" />
-          <NavigationContainer>
-            <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
-              <AppNavigator />
-            </View>
-          </NavigationContainer>
-        </FavoritesProvider>
-      </CartProvider>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <CartProvider>
+          <FavoritesProvider>
+            <StatusBar barStyle="dark-content" />
+            <NavigationContainer>
+              <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
+                <AppNavigator />
+              </View>
+            </NavigationContainer>
+          </FavoritesProvider>
+        </CartProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }
 

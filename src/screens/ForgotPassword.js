@@ -3,13 +3,14 @@ import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingVi
 import { getAuth, sendPasswordResetEmail } from 'firebase/auth';
 import { Feather } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
-
+import { useTheme } from '../components/Context/ThemeContext';
 const auth = getAuth();
 
 const ForgotPasswordScreen = () => {
   const [email, setEmail] = useState('');
   const [message, setMessage] = useState('');
   const navigation = useNavigation();
+  const { isDark, colors } = useTheme();
 
   const handleResetPassword = async () => {
     try {
@@ -25,8 +26,8 @@ const ForgotPasswordScreen = () => {
       style={styles.container} 
       behavior={Platform.OS === "ios" ? "padding" : "height"}
     >
-      <View style={styles.innerContainer}>
-        <Text style={styles.title}>Reset Password</Text>
+      <View style={[styles.innerContainer,{backgroundColor: colors.background}]}>
+        <Text style={[styles.title,{color: colors.text}]}>Reset Password</Text>
         <View style={styles.inputContainer}>
           <Feather name="mail" size={24} color="#007AFF" style={styles.icon} />
           <TextInput
@@ -39,11 +40,11 @@ const ForgotPasswordScreen = () => {
           />
         </View>
         {message ? <Text style={styles.messageText}>{message}</Text> : null}
-        <TouchableOpacity style={styles.button} onPress={handleResetPassword}>
+        <TouchableOpacity style={[styles.button, {backgroundColor: colors.same}]} onPress={handleResetPassword}>
           <Text style={styles.buttonText}>Send Reset Email</Text>
         </TouchableOpacity>
         <TouchableOpacity style={styles.linkButton} onPress={() => navigation.navigate('Login')}>
-          <Text style={styles.linkButtonText}>Back to Login</Text>
+          <Text style={[styles.linkButtonText, {color: colors.same}]}>Back to Login</Text>
         </TouchableOpacity>
       </View>
     </KeyboardAvoidingView>
@@ -112,7 +113,7 @@ const styles = StyleSheet.create({
   },
   linkButtonText: {
     color: '#007AFF',
-    fontSize: 16,
+    fontSize: 17,
   },
 });
 
