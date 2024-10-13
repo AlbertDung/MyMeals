@@ -3,8 +3,10 @@ import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { colors } from '../../theme/colors';
 import AppText from '../AppText/AppText';
-
+import { useTheme } from '../Context/ThemeContext';
 const DishItem = ({ item, onRemove, onUpdateQuantity }) => {
+  const { isDark, colors } = useTheme();
+
   const handleIncrement = () => {
     onUpdateQuantity(item.id, item.quantity + 1);
   };
@@ -16,7 +18,7 @@ const DishItem = ({ item, onRemove, onUpdateQuantity }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container,{backgroundColor: colors.same2}]}>
       <Image source={item.image} style={styles.image} />
       <View style={styles.infoContainer}>
         <AppText text={item.name} customStyles={styles.name} />
@@ -31,15 +33,15 @@ const DishItem = ({ item, onRemove, onUpdateQuantity }) => {
       </View>
       <View style={styles.quantityContainer}>
         <TouchableOpacity onPress={handleDecrement} style={styles.quantityButton}>
-          <Ionicons name="remove" size={20} color={colors.primary} />
+          <Ionicons name="remove" size={20} color={colors.same} />
         </TouchableOpacity>
         <AppText text={item.quantity.toString()} customStyles={styles.quantity} />
         <TouchableOpacity onPress={handleIncrement} style={styles.quantityButton}>
-          <Ionicons name="add" size={20} color={colors.primary} />
+          <Ionicons name="add" size={20} color={colors.same} />
         </TouchableOpacity>
       </View>
       <TouchableOpacity onPress={() => onRemove(item.id)} style={styles.removeButton}>
-        <Ionicons name="trash-outline" size={24} color={colors.danger} />
+        <Ionicons name="trash-outline" size={24} color={colors.same} />
       </TouchableOpacity>
     </View>
   );
@@ -48,11 +50,21 @@ const DishItem = ({ item, onRemove, onUpdateQuantity }) => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    padding: 15,
+    padding: 10,
     backgroundColor: colors.white,
-    borderRadius: 10,
+    marginHorizontal: 15,
+    borderRadius: 12,
     marginBottom: 10,
     alignItems: 'center',
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+    marginVertical: 8,
   },
   image: {
     width: 80,

@@ -9,6 +9,8 @@ import { useNavigation } from '@react-navigation/native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import RestaurantCard from '../components/Card/RestaurantCard';
 const AnimatedIcon = Animated.createAnimatedComponent(MaterialCommunityIcons);
+
+import { useTheme } from '../components/Context/ThemeContext';
 const handleQuantityChange = (item, newQuantity) => {
     if (newQuantity > 0) {
       updateFavoriteQuantity(item.id, newQuantity);
@@ -22,7 +24,7 @@ const handleQuantityChange = (item, newQuantity) => {
     const { favorites, removeFavorite, isFavorite } = useFavorites();
     const navigation = useNavigation();
     const restaurants = favorites.filter(item => item.type === 'restaurant');
-  
+    const { isDark, colors } = useTheme();
     const handleCardPress = (item) => {
       navigation.navigate('RestaurantDetails', { restaurant: item });
     };
@@ -56,9 +58,9 @@ const handleQuantityChange = (item, newQuantity) => {
         contentContainerStyle={styles.listContainer}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <MaterialCommunityIcons name="store-outline" size={80} color="#CCC" />
-            <Text style={styles.emptyText}>No favorite restaurants yet</Text>
-            <Text style={styles.emptySubText}>Explore restaurants and tap the heart to add them to your favorites!</Text>
+            <MaterialCommunityIcons name="store-outline" size={80} color={colors.same} />
+            <Text style={[styles.emptyText,{color: colors.text}]}>No favorite restaurants yet</Text>
+            <Text style={[styles.emptySubText,{color: colors.text}]}>Explore restaurants and tap the heart to add them to your favorites!</Text>
           </View>
         }
       />
@@ -69,7 +71,7 @@ const handleQuantityChange = (item, newQuantity) => {
     const { favorites, removeFavorite, isFavorite } = useFavorites();
     const navigation = useNavigation();
     const dishes = favorites.filter(item => item.type === 'dish');
-  
+    const { isDark, colors } = useTheme();
     const handleCardPress = (item) => {
       navigation.navigate('Details', { item });
     };
@@ -97,9 +99,9 @@ const handleQuantityChange = (item, newQuantity) => {
         showsVerticalScrollIndicator={false}
         ListEmptyComponent={
           <View style={styles.emptyContainer}>
-            <MaterialCommunityIcons name="food-outline" size={80} color="#CCC" />
-            <Text style={styles.emptyText}>No favorite dishes yet</Text>
-            <Text style={styles.emptySubText}>Explore dishes and tap the heart to add them to your favorites!</Text>
+            <MaterialCommunityIcons name="food-outline" size={80} color={colors.same} />
+            <Text style={[styles.emptyText,{color: colors.text}]}>No favorite dishes yet</Text>
+            <Text style={[styles.emptySubText,{color: colors.text}]}>Explore dishes and tap the heart to add them to your favorites!</Text>
           </View>
         }
       />
@@ -108,11 +110,12 @@ const handleQuantityChange = (item, newQuantity) => {
 
 const HistoryTab = () => {
   // Implement history logic here
+  const { isDark, colors } = useTheme();
   return (
     <View style={styles.emptyContainer}>
-      <MaterialCommunityIcons name="history" size={80} color="#CCC" />
-      <Text style={styles.emptyText}>No history yet</Text>
-      <Text style={styles.emptySubText}>Your browsing and order history will appear here!</Text>
+      <MaterialCommunityIcons name="history" size={80} color={colors.same} />
+      <Text style={[styles.emptyText,{color: colors.text}]}>No history yet</Text>
+      <Text style={[styles.emptySubText,{color: colors.text}]}>Your browsing and order history will appear here!</Text>
     </View>
   );
 };
@@ -130,15 +133,16 @@ const Favorites = () => {
     { key: 'dishes', title: 'Dishes' },
     { key: 'history', title: 'History' },
   ]);
+  const { isDark, colors } = useTheme();
 
   const renderTabBar = props => (
     <TabBar
       {...props}
       indicatorStyle={styles.tabIndicator}
-      style={styles.tabBar}
-      labelStyle={styles.tabLabel}
+      style={[styles.tabBar,{backgroundColor: colors.same2}]}
+      labelStyle={[styles.tabLabel,{color : colors.text}]}
       activeColor="#FF6B6B"
-      inactiveColor="#333"
+      // inactiveColor="#F5F7F8"
     />
   );
 

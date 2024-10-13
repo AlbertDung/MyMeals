@@ -1,27 +1,28 @@
 import React from 'react';
 import { View, Text, Image, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
-
+import { useTheme } from '../Context/ThemeContext';
 const RestaurantCard = ({ restaurant, onPress, onFavoritePress, isFavorite }) => {
+  const { isDark, colors } = useTheme();
   return (
-    <TouchableOpacity style={styles.container} onPress={onPress}>
+    <TouchableOpacity style={[styles.container,{backgroundColor: colors.same2}]} onPress={onPress}>
       <Image source={restaurant.image} style={styles.image} />
       <View style={styles.infoContainer}>
-        <Text style={styles.name}>{restaurant.name}</Text>
-        <Text style={styles.cuisine}>{restaurant.cuisine}</Text>
+        <Text style={[styles.name,{color: colors.text}]}>{restaurant.name}</Text>
+        <Text style={[styles.cuisine,{color: colors.text}]}>{restaurant.cuisine}</Text>
         <View style={styles.detailsRow}>
           <View style={styles.ratingContainer}>
-            <Ionicons name="star" size={16} color="#FFD700" />
-            <Text style={styles.rating}>{restaurant.rating} ({restaurant.reviews} reviews)</Text>
+            <Ionicons name="star" size={16} color={colors.same} />
+            <Text style={[styles.rating,{color: colors.text}]}>{restaurant.rating} ({restaurant.reviews} reviews)</Text>
           </View>
-          <Text style={styles.distance}>{restaurant.distance} km</Text>
+          <Text style={[styles.distance,{color: colors.same}]}>{restaurant.distance} km</Text>
         </View>
       </View>
-      <TouchableOpacity style={styles.favoriteButton} onPress={onFavoritePress}>
+      <TouchableOpacity style={[styles.favoriteButton,{backgroundColor: colors.same2}]} onPress={onFavoritePress}>
         <Ionicons
           name={isFavorite ? "bookmark" : "bookmark-outline"}
           size={24}
-          color={isFavorite ? "#FF6B6B" : "#333"}
+          color={isFavorite ? colors.same : "#333"}
         />
       </TouchableOpacity>
     </TouchableOpacity>

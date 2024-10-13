@@ -2,11 +2,11 @@ import React, { useState } from 'react';
 import { View, StyleSheet, TextInput } from 'react-native';
 import AppText from '../AppText/AppText';
 import { colors } from '../../theme/colors';
-
+import { useTheme } from '../Context/ThemeContext';
 const BitcoinForm = ({ onSubmit }) => {
   const [address, setAddress] = useState('');
   const [amount, setAmount] = useState('');
-
+  const { isDark, colors } = useTheme();
   const handleSubmit = () => {
     onSubmit({
       type: 'bitcoin',
@@ -16,11 +16,11 @@ const BitcoinForm = ({ onSubmit }) => {
   };
 
   return (
-    <View style={styles.form}>
+    <View style={[styles.form,{backgroundColor: colors.same2}]}>
       <View style={styles.inputGroup}>
         <AppText text="BITCOIN ADDRESS" customStyles={styles.label} />
         <TextInput
-          style={styles.input}
+          style={[styles.input,{color: colors.text}]}
           value={address}
           onChangeText={(text) => {
             setAddress(text);
@@ -30,7 +30,7 @@ const BitcoinForm = ({ onSubmit }) => {
           autoCapitalize="none"
         />
       </View>
-      <View style={styles.inputGroup}>
+      <View style={[styles.inputGroup,{color: colors.text}]}>
         <AppText text="AMOUNT (BTC)" customStyles={styles.label} />
         <TextInput
           style={styles.input}
@@ -65,7 +65,7 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: colors.lightGray,
+    borderColor: colors.primary,
     borderRadius: 8,
     padding: 10,
   },

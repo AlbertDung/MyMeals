@@ -6,11 +6,13 @@ import * as Location from 'expo-location';
 import { restaurantsData } from '../data/restaurantData';
 import RedesignedRestaurant from './redesign';
 import { useNavigation } from '@react-navigation/native';
-
+import { useTheme } from '../components/Context/ThemeContext';
 const NearbyRestaurants = () => {
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
   const navigation = useNavigation();
+  const { isDark, colors } = useTheme();
+
 
   useEffect(() => {
     (async () => {
@@ -46,24 +48,24 @@ const NearbyRestaurants = () => {
   return (
     <SafeAreaView style={styles.container}>
       <LinearGradient
-        colors={['#FF9966', '#FF5E62']}
+        colors={[colors.primary, colors.background]}
         style={styles.header}
       >
         <View style={styles.locationContainer}>
-          <Ionicons name="location-sharp" size={24} color="white" />
-          <Text style={styles.locationText}>3.3a Main Street New York</Text>
+          <Ionicons name="location-sharp" size={24} color={colors.same} />
+          <Text style={[styles.locationText,{color: colors.text}]}>3.3a Main Street New York</Text>
           <TouchableOpacity>
-            <Ionicons name="chevron-down" size={24} color="white" />
+            <Ionicons name="chevron-down" size={24} color={colors.same}/>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity style={styles.searchBar} onPress={handleSearchPress}>
-          <Ionicons name="search" size={20} color="#999" />
-          <Text style={styles.searchText}>Search food and restaurant</Text>
+        <TouchableOpacity style={[styles.searchBar,{backgroundColor: colors.same2}]} onPress={handleSearchPress}>
+          <Ionicons name="search" size={20} color={colors.same} />
+          <Text style={[styles.searchText,{color: colors.text}]}>Search food and restaurant</Text>
         </TouchableOpacity>
       </LinearGradient>
-      <View style={styles.content}>
-        <Text style={styles.sectionTitle}>Near By Restaurants</Text>
-        <Text style={styles.subtitle}>{restaurantsData.length}+ Restaurants found near you</Text>
+      <View style={[styles.content,{backgroundColor: colors.background}]}>
+        <Text style={[styles.sectionTitle,{color: colors.text}]}>Near By Restaurants</Text>
+        <Text style={[styles.subtitle,{color: colors.text}]}>{restaurantsData.length}+ Restaurants found near you</Text>
         <FlatList
           data={restaurantsData}
           renderItem={renderRestaurantItem}

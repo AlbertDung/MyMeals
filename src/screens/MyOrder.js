@@ -10,13 +10,14 @@ import { AuthContext } from '../components/Context/AuthContext';
 import { useCart } from "../components/Context/CartContext";
 import { getFirestore, collection, query, getDocs } from 'firebase/firestore';
 import { colors } from "../theme/colors";
-
+import { useTheme } from "../components/Context/ThemeContext";
 const MyOrder = () => {
   const navigation = useNavigation();
   const [orders, setOrders] = useState([]);
   const { userData } = useContext(AuthContext);
   const { addToCart, clearCart } = useCart();
   const db = getFirestore();
+  const { isDark, colors } = useTheme();
 
   useEffect(() => {
     if (userData) {
@@ -59,7 +60,7 @@ const MyOrder = () => {
       <AppHeader title="My Orders" onPress={handleGoBack} />
       {orders.length === 0 ? (
         <View style={styles.emptyOrdersContainer}>
-          <Ionicons name="document-outline" size={100} color={colors.medium} />
+          <Ionicons name="document-outline" size={100} color={colors.same} />
           <AppText text="You have no orders" customStyles={styles.emptyOrdersText} />
         </View>
       ) : (

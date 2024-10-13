@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import { View, StyleSheet, TextInput } from 'react-native';
 import AppText from '../AppText/AppText';
 import { colors } from '../../theme/colors';
-
+import { useTheme } from '../Context/ThemeContext';
 const PayPalForm = ({ onSubmit }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const { isDark, colors } = useTheme();
 
   const handleSubmit = () => {
     onSubmit({
@@ -18,11 +19,11 @@ const PayPalForm = ({ onSubmit }) => {
   };
 
   return (
-    <View style={styles.form}>
+    <View style={[styles.form,{backgroundColor: colors.same2}]}>
       <View style={styles.inputGroup}>
         <AppText text="EMAIL" customStyles={styles.label} />
         <TextInput
-          style={styles.input}
+          style={[styles.input,{color: colors.text}]}
           value={email}
           onChangeText={(text) => {
             setEmail(text);
@@ -36,7 +37,7 @@ const PayPalForm = ({ onSubmit }) => {
       <View style={styles.inputGroup}>
         <AppText text="PASSWORD" customStyles={styles.label} />
         <TextInput
-          style={styles.input}
+          style={[styles.input,{color: colors.text}]}
           value={password}
           onChangeText={(text) => {
             setPassword(text);
@@ -52,7 +53,7 @@ const PayPalForm = ({ onSubmit }) => {
 
 const styles = StyleSheet.create({
   form: {
-    backgroundColor: colors.white,
+    
     borderRadius: 12,
     padding: 20,
     marginTop: 20,
@@ -68,7 +69,7 @@ const styles = StyleSheet.create({
   },
   input: {
     borderWidth: 1,
-    borderColor: colors.lightGray,
+    borderColor: colors.primary,
     borderRadius: 8,
     padding: 10,
   },

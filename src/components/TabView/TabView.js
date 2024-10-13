@@ -9,6 +9,7 @@ import { useTheme } from "../Context/ThemeContext";
 const Tab = () => {
   const layout = useWindowDimensions();
   const [index, setIndex] = useState(0);
+  const { isDark, colors } = useTheme();
   const [routes] = useState(
     categories.map((category) => ({
       key: category.toLowerCase(),

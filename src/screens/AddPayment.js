@@ -10,11 +10,11 @@ import { useNavigation } from '@react-navigation/native';
 import CreditCardForm from '../components/Card/CreditCardForm';
 import PayPalForm from '../components/Card/PayPalForm';
 import BitcoinForm from '../components/Card/BitcoinForm';
-
+import { useTheme } from '../components/Context/ThemeContext';
 
 const PaymentMethodItem = ({ method, onSelect, isSelected }) => (
   <TouchableOpacity 
-    style={[styles.paymentMethod, isSelected && styles.selectedPaymentMethod]} 
+    style={[styles.paymentMethod, isSelected && styles.selectedPaymentMethod,{backgroundColor: colors.same2}]} 
     onPress={() => onSelect(method.id)}
   >
     {method.icon}
@@ -30,10 +30,10 @@ const AddPayment = () => {
   const [selectedMethod, setSelectedMethod] = useState(null);
   const [cardData, setCardData] = useState(null);
   const navigation = useNavigation();
-
+  const { isDark, colors } = useTheme();
   const paymentMethods = [
     { id: 'paypal', title: 'PayPal', description: 'Faster & safer way to send money', icon: <Ionicons name="logo-paypal" size={24} color="#0070BA" /> },
-    { id: 'card', title: 'Credit Card', description: 'Visa, MasterCard, Visa or AMEX', icon: <Ionicons name="card-outline" size={24} color="#2C3E50" /> },
+    { id: 'card', title: 'Credit Card', description: 'Visa, MasterCard, Visa or AMEX', icon: <Ionicons name="card-outline" size={24} color="#0D7377" /> },
     { id: 'bitcoin', title: 'Bitcoin Wallet', description: 'Send the amount to your Bitcoin wallet', icon: <Ionicons name="logo-bitcoin" size={24} color="#F7931A" /> },
   ];
 
@@ -66,7 +66,7 @@ const AddPayment = () => {
     <Screen customStyles={styles.container}>
       <View style={styles.header}>
         <TouchableOpacity onPress={handleGoBack}>
-          <Ionicons name="arrow-back" size={24} color={colors.primary} />
+          <Ionicons name="arrow-back" size={24} color={colors.same} />
         </TouchableOpacity>
         <AppText text="Add A Payment Method" customStyles={styles.title} />
         <View style={styles.placeholder} />

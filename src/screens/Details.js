@@ -10,7 +10,7 @@ import AppText from "../components/AppText/AppText";
 import Button from "../components/Button/Button";
 import { useFavorites } from "../components/Context/FavoritesContext";
 import { useCart } from "../components/Context/CartContext";
-
+import { useTheme } from "../components/Context/ThemeContext";
 const Details = ({ route }) => {
   const { item } = route.params;
   const [quantity, setQuantity] = useState(1);
@@ -22,7 +22,7 @@ const Details = ({ route }) => {
   const { addToCart } = useCart();
   const [selectedTab, setSelectedTab] = useState('Details');
   const [specialInstructions, setSpecialInstructions] = useState([]);
-
+  const { isDark, colors } = useTheme();
   useEffect(() => {
     setIsFav(isFavorite(item.id));
   }, [item, isFavorite]);
@@ -74,15 +74,15 @@ const Details = ({ route }) => {
           <View>
             <AppText text="Choice of top burger" customStyles={styles.sectionTitle} />
             <View style={styles.optionItem}>
-              <Ionicons name="checkbox-outline" size={24} color="#4CAF50" />
+              <Ionicons name="checkbox-outline" size={24} color={colors.same} />
               <AppText text="Extra Savory Sauce" customStyles={styles.optionText} />
             </View>
             <View style={styles.optionItem}>
-              <Ionicons name="checkbox-outline" size={24} color="#4CAF50" />
+              <Ionicons name="checkbox-outline" size={24} color={colors.same}/>
               <AppText text="Extra Cheese" customStyles={styles.optionText} />
             </View>
             <View style={styles.optionItem}>
-              <Ionicons name="checkbox-outline" size={24} color="#4CAF50" />
+              <Ionicons name="checkbox-outline" size={24} color={colors.same} />
               <AppText text="Extra tomatoes" customStyles={styles.optionText} />
             </View>
           </View>
@@ -146,7 +146,7 @@ const Details = ({ route }) => {
                 <Ionicons 
                   name={isFav ? "heart" : "heart-outline"} 
                   size={28} 
-                  color={isFav ? '#FF4081' : '#FFF'} 
+                  color={isFav ? '#DA0037' : '#FFF'} 
                   onPress={toggleFavorite}
                 />
               </TouchableOpacity>
@@ -154,22 +154,22 @@ const Details = ({ route }) => {
           </View>
         </TouchableOpacity>
 
-        <View style={styles.content}>
+        <View style={[styles.content,{backgroundColor: colors.background}]}>
           <View style={styles.header}>
             <AppText text={item.name} customStyles={styles.title} />
             <AppText text={`$${item.price.toFixed(2)}`} customStyles={styles.price} />
           </View>
 
           <View style={styles.ratingContainer}>
-            <Ionicons name="star" size={18} color="#FFD700" />
+            <Ionicons name="star" size={18} color={colors.same} />
             <AppText text={item.rating.toFixed(1)} customStyles={styles.ratingText} />
             <AppText text={`(${item.reviews})`} customStyles={styles.reviewsText} />
             <View style={styles.deliveryInfo}>
-              <Ionicons name="time-outline" size={18} color="#666" />
-              <AppText text={`${item.cookTime} min`} customStyles={styles.deliveryText} />
+              <Ionicons name="time-outline" size={18} color={colors.same} />
+              <AppText text={`15 min`} customStyles={styles.deliveryText} />
             </View>
             <View style={styles.deliveryInfo}>
-              <Ionicons name="bicycle-outline" size={18} color="#4CAF50" />
+              <Ionicons name="bicycle-outline" size={18} color={colors.same} />
               <AppText text="Free Delivery" customStyles={styles.freeDeliveryText} />
             </View>
           </View>
@@ -192,20 +192,20 @@ const Details = ({ route }) => {
           {renderTabContent()}
 
           <TouchableOpacity style={styles.specialInstructionsButton}>
-            <Ionicons name="add-circle-outline" size={24} color="#4CAF50" />
+            <Ionicons name="add-circle-outline" size={24} color={colors.same} />
             <AppText text="Add special instructions" customStyles={styles.specialInstructionsText} />
           </TouchableOpacity>
         </View>
       </Animated.ScrollView>
 
-      <BlurView intensity={50} style={styles.footer}>
+      <BlurView intensity={5} style={styles.footer}>
         <View style={styles.quantityContainer}>
           <TouchableOpacity onPress={() => setQuantity(Math.max(1, quantity - 1))}>
-            <Ionicons name="remove-circle-outline" size={32} color="#4CAF50" />
+            <Ionicons name="remove-circle-outline" size={32} color={colors.same} />
           </TouchableOpacity>
           <AppText text={quantity} customStyles={styles.quantityText} />
           <TouchableOpacity onPress={() => setQuantity(quantity + 1)}>
-            <Ionicons name="add-circle-outline" size={32} color="#4CAF50" />
+            <Ionicons name="add-circle-outline" size={32} color={colors.same} />
           </TouchableOpacity>
         </View>
         <Button
@@ -345,7 +345,7 @@ const styles = StyleSheet.create({
   },
   selectedTab: {
     borderBottomWidth: 2,
-    borderBottomColor: '#4CAF50',
+    borderBottomColor: '#FF5722',
   },
   tabText: {
     fontSize: 16,
@@ -397,7 +397,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 20,
     borderTopWidth: 1,
-    borderTopColor: '#E0E0E0',
+    borderTopColor: '#FF5722',
   },
   quantityContainer: {
     flexDirection: 'row',
@@ -409,7 +409,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 15,
   },
   addToCartButton: {
-    backgroundColor: '#4CAF50',
+    backgroundColor: '#FF5722',
     paddingVertical: 12,
     paddingHorizontal: 20,
     borderRadius: 10,
@@ -418,7 +418,7 @@ const styles = StyleSheet.create({
   buttonLabel: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#FFF',
+    color: '#EDEDED',
   },
 });
 

@@ -9,7 +9,7 @@ import { useCart } from "../components/Context/CartContext";
 import { useNavigation } from '@react-navigation/native';
 import { AuthContext } from '../components/Context/AuthContext';
 import { getFirestore, collection, query, getDocs } from 'firebase/firestore';
-
+import { useTheme } from "../components/Context/ThemeContext";
 const MyCart = () => {
   const { cartItems, removeFromCart, updateQuantity, addToCart, clearCart } = useCart();
   const navigation = useNavigation();
@@ -17,6 +17,8 @@ const MyCart = () => {
   const [preOrders, setPreOrders] = useState([]);
   const { userData } = useContext(AuthContext);
   const db = getFirestore();
+  const { isDark, colors } = useTheme();
+
 
   useEffect(() => {
     if (activeTab === 'preorder' && userData) {
@@ -54,7 +56,7 @@ const MyCart = () => {
     if (!cartItems || cartItems.length === 0) {
       return (
         <View style={styles.emptyCartContainer}>
-          <Ionicons name="cart-outline" size={100} color={colors.medium} />
+          <Ionicons name="cart-outline" size={100} color={colors.same} />
           <AppText text="Your cart is empty" customStyles={styles.emptyCartText} />
           <TouchableOpacity style={styles.browseButton} onPress={() => navigation.navigate('Home')}>
             <AppText text="Browse Menu" customStyles={styles.browseButtonText} />
@@ -69,8 +71,8 @@ const MyCart = () => {
           {cartItems.map(renderCartItem)}
         </ScrollView>
         {renderSummary()}
-        <TouchableOpacity style={styles.checkoutButton} onPress={handleCheckOut}>
-          <AppText text="Proceed to Checkout" customStyles={styles.checkoutButtonText} />
+        <TouchableOpacity style={[styles.checkoutButton,{backgroundColor: colors.same}]} onPress={handleCheckOut}>
+          <AppText text="Proceed to Checkout" customStyles={[styles.checkoutButtonText,{colors: colors.same2}]} />
         </TouchableOpacity>
       </>
     );
@@ -80,7 +82,7 @@ const MyCart = () => {
     if (preOrders.length === 0) {
       return (
         <View style={styles.emptyCartContainer}>
-          <Ionicons name="document-outline" size={100} color={colors.medium} />
+          <Ionicons name="document-outline" size={100} color={colors.same} />
           <AppText text="You have no previous orders" customStyles={styles.emptyCartText} />
         </View>
       );
@@ -89,7 +91,7 @@ const MyCart = () => {
     return (
       <ScrollView showsVerticalScrollIndicator={false} style={styles.scrollView}>
         {preOrders.map((order) => (
-          <View key={order.id} style={styles.preOrderCard}>
+          <View key={order.id} style={[styles.preOrderCard,{backgroundColor: colors.same2}]}>
             <AppText text={`Order #${order.id.slice(0, 8)}`} customStyles={styles.preOrderTitle} />
             <AppText text={`Total: $${order.total.toFixed(2)}`} customStyles={styles.preOrderTotal} />
             <AppText text={`Date: ${order.timestamp.toDate().toLocaleDateString()}`} customStyles={styles.preOrderDate} />
@@ -134,7 +136,7 @@ const MyCart = () => {
     const total = subTotal + deliveryFee + tip;
 
     return (
-      <View style={styles.summaryCard}>
+      <View style={[styles.summaryCard,{backgroundColor: colors.background}]}>
         <View style={styles.summaryItem}>
           <AppText text="Subtotal" customStyles={styles.summaryText} />
           <AppText text={`$${subTotal.toFixed(2)}`} customStyles={styles.summaryValue} />
@@ -160,7 +162,7 @@ const MyCart = () => {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView style={[styles.container,{backgroundColor: colors.background}]}>
       <View style={styles.header}>
         <AppText text="My Cart" customStyles={styles.title} />
       </View>
@@ -192,9 +194,9 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'center',
-    paddingVertical: 10,
+    paddingVertical: 12,
     borderBottomWidth: 1,
-    borderBottomColor: colors.light,
+    borderBottomColor: colors.primary,
   },
   title: {
     fontSize: 20,
@@ -287,9 +289,19 @@ const styles = StyleSheet.create({
   },
   preOrderCard: {
     backgroundColor: colors.light,
-    padding: 15,
+    padding: 13,
     marginVertical: 10,
     borderRadius: 5,
+    marginHorizontal:15,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+    marginBottom: '8',
   },
   preOrderTitle: {
     fontSize: 18,

@@ -5,6 +5,7 @@ import { Ionicons, MaterialIcons, FontAwesome5 } from '@expo/vector-icons';
 import { AuthContext } from '../components/Context/AuthContext';
 import * as ImagePicker from 'expo-image-picker';
 import { useCart } from '../components/Context/CartContext';
+import { useTheme } from '../components/Context/ThemeContext';
 const ProfileView = () => {
   const navigation = useNavigation();
   const [notificationEnabled, setNotificationEnabled] = useState(true);
@@ -14,7 +15,7 @@ const ProfileView = () => {
   const {clearCart} = useCart();
   // Sử dụng avatar từ userData nếu có, nếu không sử dụng ảnh mặc định
   const [avatar, setAvatar] = useState(userData?.avatar || 'https://via.placeholder.com/150');
-
+  const { isDark, colors } = useTheme();
   useEffect(() => {
     // Cập nhật avatar khi userData thay đổi
     if (userData && userData.avatar) {
@@ -39,7 +40,7 @@ const ProfileView = () => {
     navigation.navigate('Profile');
   };
   const renderFunctionBar = () => (
-    <View style={styles.functionBar}>
+    <View style={[styles.functionBar,{backgroundColor: colors.same2},{borderBottomColor: colors.background}]}>
       {[
         { name: 'My All Order', icon: 'receipt-outline', screen: 'MyOrder' },
         { name: 'Offer & Promos', icon: 'gift-outline', screen: 'MyCart' },
@@ -50,8 +51,8 @@ const ProfileView = () => {
           style={styles.functionItem} 
           onPress={() => navigation.navigate(item.screen)}
         >
-          <Ionicons name={item.icon} size={24} color="#EEEEEE" />
-          <Text style={styles.functionText}>{item.name}</Text>
+          <Ionicons name={item.icon} size={24} color={colors.same}/>
+          <Text style={[styles.functionText,{color: colors.text}]}>{item.name}</Text>
         </TouchableOpacity>
       ))}
     </View>
@@ -72,10 +73,10 @@ const ProfileView = () => {
   };
 
   const renderTableRow = (onPress,icon, title, value, hasArrow = true, isSwitch = false, onToggle = null) => (
-    <TouchableOpacity style={styles.tableRow} onPress={onPress}>
+    <TouchableOpacity style={[styles.tableRow,{borderBottomColor: colors.background}]} onPress={onPress}>
       <View style={styles.rowLeft}>
-        <Ionicons name={icon} size={24} color="#EEEEEE" style={styles.rowIcon} />
-        <Text style={styles.rowTitle}>{title}</Text>
+        <Ionicons name={icon} size={24} color={colors.same} style={styles.rowIcon} />
+        <Text style={[styles.rowTitle,{color: colors.text}]}>{title}</Text>
       </View>
       <View style={styles.rowRight}>
         {isSwitch ? (
@@ -87,8 +88,8 @@ const ProfileView = () => {
           />
         ) : (
           <>
-            <Text style={styles.rowValue}>{value}</Text>
-            {hasArrow && <Ionicons name="chevron-forward" size={24} color="#903749" />}
+            <Text style={[styles.rowValue,{color: colors.text}]}>{value}</Text>
+            {hasArrow && <Ionicons name="chevron-forward" size={24} color={colors.same} />}
           </>
         )}
       </View>
@@ -96,33 +97,33 @@ const ProfileView = () => {
   );
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
+    <ScrollView style={[styles.container,{backgroundColor: colors.background}]}>
+      <View style={[styles.header,{backgroundColor: colors.background}]}>
       <TouchableOpacity onPress={pickImage}>
           <Image source={{ uri: avatar }} style={styles.avatar} />
         </TouchableOpacity>
         <View style={styles.userInfo}>
-        <Text style={styles.userName}>{userData ? userData.name : 'Guest'}</Text>
-        <Text style={styles.userEmail}>{userData ? userData.email : 'guest@example.com'}</Text>
+        <Text style={[styles.userName,{color: colors.text}]}>{userData ? userData.name : 'Guest'}</Text>
+        <Text style={[styles.userEmail,{color: colors.text}]}>{userData ? userData.email : 'guest@example.com'}</Text>
         </View>
       </View>
 
       {renderFunctionBar()}
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>My account</Text>
+      <View style={[styles.section,{backgroundColor: colors.same2}]}>
+        <Text style={[styles.sectionTitle,{color: colors.text},{backgroundColor: colors.same2}]}>My account</Text>
         {renderTableRow(handleProfile,'person-outline', 'Manage profile', '', true)}
         {renderTableRow(handlePay,'card-outline', 'Payment', '', true)}
       </View>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>Notification</Text>
+      <View style={[styles.section,{backgroundColor: colors.same2}]}>
+        <Text style={[styles.sectionTitle,{color: colors.text},{backgroundColor: colors.same2}]}>Notification</Text>
         {renderTableRow(handle,'notifications-outline', 'Notification', notificationEnabled, false, true, setNotificationEnabled)}
         {renderTableRow(handle,'megaphone-outline', 'Promotional Notification', promoNotificationEnabled, false, true, setPromoNotificationEnabled)}
       </View>
 
-      <View style={styles.section}>
-        <Text style={styles.sectionTitle}>More</Text>
+      <View style={[styles.section,{backgroundColor: colors.same2}]}>
+        <Text style={[styles.sectionTitle,{color: colors.text},{backgroundColor: colors.same2}]}>More</Text>
         {renderTableRow(handle,'moon-outline', 'Theme mode', themeMode, true)}
         {renderTableRow(handleSignOut,'log-out-outline', 'Log Out', '', false)}
       </View>
@@ -167,6 +168,22 @@ const styles = StyleSheet.create({
     backgroundColor: '#222831',
     borderBottomWidth: 1,
     borderBottomColor: '#222831',
+    flexDirection: 'row',
+    padding: 10,
+
+    marginHorizontal: 15,
+    borderRadius: 12,
+    marginBottom: 10,
+    
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+    marginVertical: 8,
   },
   functionItem: {
     alignItems: 'center',
@@ -179,8 +196,24 @@ const styles = StyleSheet.create({
   section: {
     marginTop: 20,
     backgroundColor: '#222831',
-    borderTopWidth: 1,
-    borderTopColor: '#903749',
+    // borderTopWidth: 1,
+    // borderTopColor: '#903749',
+    // flexDirection: 'row',
+    padding: 5,
+
+    marginHorizontal: 15,
+    borderRadius: 12,
+    marginBottom: 10,
+    
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+    marginVertical: 8,
   },
   sectionTitle: {
     fontSize: 18,
@@ -196,6 +229,7 @@ const styles = StyleSheet.create({
     padding: 15,
     borderBottomWidth: 1,
     borderBottomColor: '#222831',
+    
   },
   rowLeft: {
     flexDirection: 'row',

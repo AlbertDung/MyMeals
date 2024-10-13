@@ -4,10 +4,12 @@ import { Image, StyleSheet, View, TouchableOpacity, Text, Dimensions } from 'rea
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import Quantity from '../Quantity/Quantity';
+import { useTheme } from "../Context/ThemeContext";
 const { width } = Dimensions.get('window');
 
 const FavoriteCard = ({ item, onPress, onFavoritePress, onQuantityChange, onDelete }) => {
   const [quantity, setQuantity] = useState(1);
+  const { isDark, colors } = useTheme();
   const increaseQuantity = () => {
     setQuantity((quantity) => quantity + 1);
   };

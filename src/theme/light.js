@@ -4,6 +4,7 @@ export const lights = {
     text: "#444444",
     secondary: "#DA0037",
     same: "#FF5722",
-    same2: "#EDEDED",
+    same2: "#F5F7F8",
+    input: "#EDEDED",
   };
   

@@ -7,6 +7,7 @@ import * as Location from 'expo-location';
 import { getFirestore, collection, addDoc, doc, updateDoc, arrayUnion,setDoc } from 'firebase/firestore';  
 import { AuthContext } from '../components/Context/AuthContext';
 import Address from './address';
+import { useTheme } from '../components/Context/ThemeContext';
 const Checkout = ({ route }) => {
   const [showModal, setShowModal] = useState(false);
   const [location, setLocation] = useState(null);
@@ -16,7 +17,7 @@ const Checkout = ({ route }) => {
 
   const { userData } = useContext(AuthContext);
   const db = getFirestore();
-
+  const { isDark, colors } = useTheme();
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -131,81 +132,81 @@ const Checkout = ({ route }) => {
     <View style={styles.cartItem} key={item.id}>
       <Image source={item.image} style={styles.itemImage} />
       <View style={styles.itemDetails}>
-        <Text style={styles.itemName}>{item.name}</Text>
-        <Text style={styles.itemPrice}>${item.price.toFixed(2)}</Text>
+        <Text style={[styles.itemName,{color: colors.text}]}>{item.name}</Text>
+        <Text style={[styles.itemPrice,{color: colors.text}]}>${item.price.toFixed(2)}</Text>
       </View>
       <View style={styles.quantityControl}>
         <TouchableOpacity onPress={() => updateQuantity(item.id, item.quantity - 1)}>
-          <Ionicons name="remove-circle-outline" size={24} color="#4A4A4A" />
+          <Ionicons name="remove-circle-outline" size={24} color={colors.same} />
         </TouchableOpacity>
-        <Text style={styles.quantity}>{item.quantity}</Text>
+        <Text style={[styles.quantity,{color: colors.text}]}>{item.quantity}</Text>
         <TouchableOpacity onPress={() => updateQuantity(item.id, item.quantity + 1)}>
-          <Ionicons name="add-circle-outline" size={24} color="#4A4A4A" />
+          <Ionicons name="add-circle-outline" size={24} color={colors.same} />
         </TouchableOpacity>
       </View>
     </View>
   );
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container,{backgroundColor: colors.background}]}>
       <ScrollView showsVerticalScrollIndicator={false}>
-        <View style={styles.header}>
+        <View style={[styles.header,{backgroundColor: colors.background}]}>
           <TouchableOpacity onPress={handleGoBack}>
-            <Ionicons name="arrow-back" size={24} color="#4A4A4A" />
+            <Ionicons name="arrow-back" size={24} color={colors.same} />
           </TouchableOpacity>
-          <Text style={styles.title}>Checkout</Text>
+          <Text style={[styles.title,{color: colors.text}]}>Checkout</Text>
           <View style={styles.placeholder} />
         </View>
 
-        <View style={styles.section}>
+        <View style={[styles.section,{backgroundColor: colors.same2}]}>
           <View style={styles.sectionHeader}>
-            <Ionicons name="location-outline" size={24} color="#4A4A4A" />
-            <Text style={styles.sectionTitle}>Deliver To</Text>
+            <Ionicons name="location-outline" size={24} color={colors.same} />
+            <Text style={[styles.sectionTitle,{color: colors.text}]}>Deliver To</Text>
           </View>
           <View style={styles.locationInfo}>
-            <Text style={styles.locationText}>
+            <Text style={[styles.locationText,{color: colors.text}]}>
               {location ? `Lat: ${location.coords.latitude.toFixed(4)}, Long: ${location.coords.longitude.toFixed(4)}` : 'Retrieving location...'}
             </Text>
           </View>
         </View>
 
-        <View style={styles.section}>
+        <View style={[styles.section,{backgroundColor: colors.same2}]}>
           <View style={styles.sectionHeader}>
-            <Ionicons name="cart-outline" size={24} color="#4A4A4A" />
-            <Text style={styles.sectionTitle}>Your Order</Text>
+            <Ionicons name="cart-outline" size={24} color={colors.same} />
+            <Text style={[styles.sectionTitle,{color: colors.text}]}>Your Order</Text>
           </View>
           {cartItems.map(renderCartItem)}
         </View>
 
-        <View style={styles.section}>
-        <View style={styles.sectionHeader}>
-          <Ionicons name="card-outline" size={24} color="#4A4A4A" />
-          <Text style={styles.sectionTitle}>Payment Method</Text>
+        <View style={[styles.section,{backgroundColor: colors.same2}]}>
+          <View style={styles.sectionHeader}>
+            <Ionicons name="card-outline" size={24} color={colors.same} />
+            <Text style={[styles.sectionTitle,{color: colors.text}]}>Payment Method</Text>
+          </View>
+          {renderPaymentMethod()}
+          <TouchableOpacity style={styles.addPaymentMethod} onPress={handleAddPayment}>
+            <Text style={[styles.addPaymentMethodText,{color: colors.text}]}>Change Payment Method</Text>
+          </TouchableOpacity>
         </View>
-        {renderPaymentMethod()}
-        <TouchableOpacity style={styles.addPaymentMethod} onPress={handleAddPayment}>
-          <Text style={styles.addPaymentMethodText}>Change Payment Method</Text>
-        </TouchableOpacity>
-      </View>
 
-        <TouchableOpacity style={styles.promoCode}>
-          <Ionicons name="pricetag-outline" size={24} color="#4A4A4A" />
-          <Text style={styles.promoCodeText}>Add Promo Code</Text>
-          <Ionicons name="chevron-forward" size={24} color="#4A4A4A" />
+        <TouchableOpacity style={[styles.promoCode,{backgroundColor: colors.same2}]}>
+          <Ionicons name="pricetag-outline" size={24} color={colors.same} />
+          <Text style={[styles.promoCodeText,{color: colors.text}]}>Add Promo Code</Text>
+          <Ionicons name="chevron-forward" size={24} color={colors.same} />
         </TouchableOpacity>
 
-        <View style={styles.totalSection}>
+        <View style={[styles.totalSection,{backgroundColor: colors.same2}]}>
           <View style={styles.totalRow}>
-            <Text style={styles.totalLabel}>Item Total</Text>
-            <Text style={styles.totalValue}>${calculateTotal().toFixed(2)}</Text>
+            <Text style={[styles.totalLabel,{color: colors.text}]}>Item Total</Text>
+            <Text style={[styles.totalValue,{color: colors.text}]}>${calculateTotal().toFixed(2)}</Text>
           </View>
           <View style={styles.totalRow}>
-            <Text style={styles.totalLabel}>Delivery Fee</Text>
-            <Text style={styles.totalValue}>Free</Text>
+            <Text style={[styles.totalLabel,{color: colors.text}]}>Delivery Fee</Text>
+            <Text style={[styles.totalValue,{color: colors.text}]}>Free</Text>
           </View>
           <View style={styles.totalRow}>
-            <Text style={styles.totalLabel}>Total</Text>
-            <Text style={styles.totalValue}>${calculateTotal().toFixed(2)}</Text>
+            <Text style={[styles.totalLabel,{color: colors.text}]}>Total</Text>
+            <Text style={[styles.totalValue,{color: colors.text}]}>${calculateTotal().toFixed(2)}</Text>
           </View>
         </View>
       </ScrollView>
@@ -221,10 +222,10 @@ const Checkout = ({ route }) => {
         onRequestClose={() => setShowModal(false)}
       >
         <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
+          <View style={[styles.modalContent,{backgroundColor: colors.same2}]}>
             <Ionicons name="checkmark-circle" size={50} color="#4CD964" />
-            <Text style={styles.modalText}>Order Placed Successfully</Text>
-            <Text style={styles.modalSubText}>
+            <Text style={[styles.modalText,{color: colors.text}]}>Order Placed Successfully</Text>
+            <Text style={[styles.modalSubText,{color: colors.text}]}>
               Your order will be delivered within 25 minutes. Enjoy your meal!
             </Text>
           </View>
@@ -246,7 +247,7 @@ const styles = StyleSheet.create({
     padding: 16,
     backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
+    borderBottomColor: '#FF5722',
   },
   title: {
     fontSize: 20,

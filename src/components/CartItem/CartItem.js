@@ -3,8 +3,9 @@ import { Image, StyleSheet, View, TouchableOpacity } from "react-native";
 import { Ionicons } from '@expo/vector-icons';
 import AppText from "../AppText/AppText";
 import { colors } from "../../theme/colors";
-
+import { useTheme } from "../Context/ThemeContext";
 const CartItem = ({ item, onRemove, onUpdateQuantity }) => {
+  const { isDark, colors } = useTheme();
   const handleIncrement = () => {
     onUpdateQuantity(item.quantity + 1);
   };
@@ -16,7 +17,7 @@ const CartItem = ({ item, onRemove, onUpdateQuantity }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container,{backgroundColor: colors.same2}]}>
       <Image source={item.image} style={styles.image} />
       <View style={styles.infoContainer}>
         <AppText text={item.name} customStyles={styles.title} />
@@ -28,15 +29,15 @@ const CartItem = ({ item, onRemove, onUpdateQuantity }) => {
       </View>
       <View style={styles.quantityContainer}>
         <TouchableOpacity onPress={handleDecrement} style={styles.quantityButton}>
-          <Ionicons name="remove" size={20} color={colors.primary} />
+          <Ionicons name="remove" size={20} color={colors.same} />
         </TouchableOpacity>
         <AppText text={item.quantity.toString()} customStyles={styles.quantity} />
         <TouchableOpacity onPress={handleIncrement} style={styles.quantityButton}>
-          <Ionicons name="add" size={20} color={colors.primary} />
+          <Ionicons name="add" size={20} color={colors.same} />
         </TouchableOpacity>
       </View>
       <TouchableOpacity onPress={onRemove} style={styles.removeButton}>
-        <Ionicons name="trash-outline" size={24} color={colors.danger} />
+        <Ionicons name="trash-outline" size={24} color={colors.same} />
       </TouchableOpacity>
     </View>
   );
@@ -45,7 +46,7 @@ const CartItem = ({ item, onRemove, onUpdateQuantity }) => {
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
-    padding: 15,
+    padding: 10,
     backgroundColor: colors.white,
     borderRadius: 12,
     marginHorizontal: 15,

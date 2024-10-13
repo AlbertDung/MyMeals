@@ -193,10 +193,10 @@ const handleLogin = async () => {
           </View>
           <View style={[styles.formContainer, {backgroundColor: colors.background}]}>
             <Text style={[styles.title,{color: colors.same}]}>Welcome Back</Text>
-            <View style={styles.inputContainer}>
+            <View style={[styles.inputContainer,{backgroundColor: colors.same2}]}>
               <Feather name="mail" size={24} color="#FF5E62" style={styles.icon} />
               <TextInput
-                style={styles.input}
+                style={[styles.input,{color: colors.text}]}
                 placeholder="Email"
                 placeholderTextColor="#999"
                 value={email}
@@ -205,10 +205,10 @@ const handleLogin = async () => {
                 autoCapitalize="none"
               />
             </View>
-            <View style={styles.inputContainer}>
+            <View style={[styles.inputContainer,{backgroundColor: colors.same2}]}>
               <Feather name="lock" size={24} color="#FF5E62" style={styles.icon} />
               <TextInput
-                style={styles.input}
+                style={[styles.input,{color: colors.text}]}
                 placeholder="Password"
                 placeholderTextColor="#999"
                 value={password}
