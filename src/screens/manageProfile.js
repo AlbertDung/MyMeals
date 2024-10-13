@@ -7,7 +7,7 @@ import { AuthContext } from '../components/Context/AuthContext';
 import { db, storage } from '../../firebaseConfig'; // Import từ file cấu hình của bạn
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { doc, updateDoc } from "firebase/firestore";
-
+import { useTheme } from '../components/Context/ThemeContext';
 const ManageProfileView = () => {
   const navigation = useNavigation();
   const { userData, updateUserData } = useContext(AuthContext);
@@ -16,7 +16,7 @@ const ManageProfileView = () => {
   const [email, setEmail] = useState(userData?.email || '');
   const [phone, setPhone] = useState(userData?.phone || '');
   const [address, setAddress] = useState(userData?.address || '');
-
+  const { isDark, colors } = useTheme();
   const pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
       mediaTypes: ImagePicker.MediaTypeOptions.Images,
@@ -74,36 +74,36 @@ const ManageProfileView = () => {
   };
 
   const renderInfoRow = (icon, title, value, onChangeText) => (
-    <View style={styles.infoRow}>
-      <Ionicons name={icon} size={24} color="#EEEEEE" style={styles.infoIcon} />
-      <View style={styles.infoContent}>
-        <Text style={styles.infoTitle}>{title}</Text>
+    <View style={[styles.infoRow,{backgroundColor: colors.same2}]}>
+      <Ionicons name={icon} size={24} color={colors.same} style={styles.infoIcon} />
+      <View style={[styles.infoContent,{backgroundColor: colors.same2}]}>
+        <Text style={[styles.infoTitle,{color: colors.same}]}>{title}</Text>
         <TextInput
-          style={styles.infoInput}
+          style={[styles.infoInput,{color: colors.text}]}
           value={value}
           onChangeText={onChangeText}
         />
       </View>
-      <MaterialIcons name="edit" size={24} color="#EEEEEE" />
+      <MaterialIcons name="edit" size={24} color={colors.same} />
     </View>
   );
 
   return (
-    <ScrollView style={styles.container}>
-      <View style={styles.header}>
+    <ScrollView style={[styles.container,{backgroundColor: colors.background}]}>
+      <View style={[styles.header,{backgroundColor: colors.background}]}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
-          <Ionicons name="arrow-back" size={24} color="#EEEEEE" />
+          <Ionicons name="arrow-back" size={24} color={colors.same}/>
         </TouchableOpacity>
-        <Text style={styles.headerTitle}>Edit Profile</Text>
+        <Text style={[styles.headerTitle,{color: colors.text}]}>Edit Profile</Text>
         <TouchableOpacity onPress={saveProfile}>
-          <Text style={styles.saveButton}>Save</Text>
+          <Text style={[styles.saveButton,{color: colors.same}]}>Save</Text>
         </TouchableOpacity>
       </View>
 
       <TouchableOpacity style={styles.avatarContainer} onPress={pickImage}>
         <Image source={{ uri: avatar }} style={styles.avatar} />
-        <View style={styles.editIconContainer}>
-          <MaterialIcons name="edit" size={20} color="#EEEEEE" />
+        <View style={[styles.editIconContainer,{backgroundColor: colors.same2}]}>
+          <MaterialIcons name="edit" size={20} color={colors.same}/>
         </View>
       </TouchableOpacity>
 
@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
   },
   editIconContainer: {
     position: 'absolute',
-    right: 0,
+    right: 20,
     bottom: 0,
     backgroundColor: '#903749',
     borderRadius: 15,
@@ -164,8 +164,24 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     padding: 15,
     backgroundColor: '#222831',
-    borderBottomWidth: 1,
-    borderBottomColor: '#903749',
+    // borderBottomWidth: 1,
+    // borderBottomColor: '#903749',
+    flexDirection: 'row',
+    padding: 10,
+
+    marginHorizontal: 15,
+    borderRadius: 12,
+    marginBottom: 10,
+    
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+    marginVertical: 8,
   },
   infoIcon: {
     marginRight: 15,

@@ -44,7 +44,7 @@ const ProfileView = () => {
       {[
         { name: 'My All Order', icon: 'receipt-outline', screen: 'MyOrder' },
         { name: 'Offer & Promos', icon: 'gift-outline', screen: 'MyCart' },
-        { name: 'Delivery Address', icon: 'location-outline' } // Update the screen name as needed
+        { name: 'Delivery Address', icon: 'location-outline'} // Update the screen name as needed
       ].map((item, index) => (
         <TouchableOpacity 
           key={index} 
@@ -99,7 +99,7 @@ const ProfileView = () => {
   return (
     <ScrollView style={[styles.container,{backgroundColor: colors.background}]}>
       <View style={[styles.header,{backgroundColor: colors.background}]}>
-      <TouchableOpacity onPress={pickImage}>
+      <TouchableOpacity onPress={handleProfile}>
           <Image source={{ uri: avatar }} style={styles.avatar} />
         </TouchableOpacity>
         <View style={styles.userInfo}>
