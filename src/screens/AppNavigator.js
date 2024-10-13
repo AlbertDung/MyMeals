@@ -32,6 +32,7 @@ import Address from "./address";
 import SearchScreen from "./SearchScreen";
 import { AuthContext } from "../components/Context/AuthContext";
 import { useTheme } from "../components/Context/ThemeContext";
+import CustomTabBar from "./ball";
 import { AnimatedTabBarNavigator } from "react-native-animated-nav-tab-bar";
 const TABBAR_HEIGHT = 60;
 const TABBAR_VERTICAL_PADDING = 5;
@@ -157,10 +158,10 @@ function RootNavigator() {
   );
 }
 
-const CustomTabBar = ({ state, descriptors, navigation }) => {
+const CustomTabBar2 = ({ state, descriptors, navigation }) => {
   const { isDark, colors } = useTheme();
   return (
-    <View style={[styles.tabBarContainer,{backgroundColor: colors.background}]}>
+    <View style={[styles.tabBarContainer,{backgroundColor: colors.same2}]}>
       {state.routes.map((route, index) => {
         const { options } = descriptors[route.key];
         const label = options.tabBarLabel !== undefined ? options.tabBarLabel : options.title !== undefined ? options.title : route.name;
@@ -228,47 +229,8 @@ function TabScreenWrapper({ children }) {
 // Tab Navigator cho màn hình chính
 function MainTabs() {
   const { isDark, colors } = useTheme();
-  return (
-    <Tab.Navigator 
-      screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
-          let iconName;
-
-          if (route.name === "Home") {
-            iconName = focused ? "home" : "home-outline";
-          } else if (route.name === "Explore") {
-            iconName = focused ? "compass" : "compass-outline";
-          } else if (route.name === "My Cart") {
-            iconName = focused ? "cart" : "cart-outline";
-          } else if (route.name === "Favorites") {
-            iconName = focused ? "heart" : "heart-outline";
-          } else if (route.name === "User ") {
-            iconName = focused ? "person" : "person-outline";
-          }
-
-          return <Ionicons name={iconName} size={size} color={color} />;
-        },
-        tabBarActiveTintColor: colors.same,
-        // tabBarInactiveTintColor: colors.background,
-        tabBarInactiveBackgroundColor: colors.background,
-        tabBarActiveBackgroundColor:colors.background,
-        
-        tabBarHideOnKeyboard: false,
-        headerShown: false,
-        tabBarShowLabel:false,
-      })}
-      
-    >
-      <Tab.Screen name="Home" component={HomeStack} />
-      <Tab.Screen name="Explore" component={PopularStack} />
-      <Tab.Screen name="My Cart" component={CartStack} />
-      <Tab.Screen name="Favorites" component={FavoritesStack} />
-      <Tab.Screen name="User " component={UserStack} />
-    </Tab.Navigator>
-  );
   // return (
-  //   <Tab.Navigator
-  //     tabBar={(props) => <CustomTabBar {...props} />}
+  //   <Tab.Navigator 
   //     screenOptions={({ route }) => ({
   //       tabBarIcon: ({ focused, color, size }) => {
   //         let iconName;
@@ -285,7 +247,7 @@ function MainTabs() {
   //           iconName = focused ? "person" : "person-outline";
   //         }
 
-  //         return { props: { name: iconName } };
+  //         return <Ionicons name={iconName} size={size} color={color} />;
   //       },
   //       tabBarActiveTintColor: colors.same,
   //       // tabBarInactiveTintColor: colors.background,
@@ -296,12 +258,53 @@ function MainTabs() {
   //       headerShown: false,
   //       tabBarShowLabel:false,
   //     })}
+      
   //   >
-  //     {/* <Tab.Screen name="Home" component={HomeStack} />
+  //     <Tab.Screen name="Home" component={HomeStack} />
   //     <Tab.Screen name="Explore" component={PopularStack} />
   //     <Tab.Screen name="My Cart" component={CartStack} />
   //     <Tab.Screen name="Favorites" component={FavoritesStack} />
-  //     <Tab.Screen name="User " component={UserStack} /> */}
+  //     <Tab.Screen name="User " component={UserStack} />
+  //   </Tab.Navigator>
+  // );
+  return (
+    <Tab.Navigator
+      tabBar={(props) => <CustomTabBar {...props} />}
+      screenOptions={({ route }) => ({
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;
+
+          if (route.name === "Home") {
+            iconName = focused ? "home" : "home-outline";
+          } else if (route.name === "Explore") {
+            iconName = focused ? "compass" : "compass-outline";
+          } else if (route.name === "My Cart") {
+            iconName = focused ? "cart" : "cart-outline";
+          } else if (route.name === "Favorites") {
+            iconName = focused ? "heart" : "heart-outline";
+          } else if (route.name === "User ") {
+            iconName = focused ? "person" : "person-outline";
+          }
+
+          return { props: { name: iconName } };
+        },
+        tabBarActiveTintColor: colors.same,
+        // tabBarInactiveTintColor: colors.background,
+        tabBarInactiveBackgroundColor: colors.background,
+        tabBarActiveBackgroundColor:colors.background,
+        
+        tabBarHideOnKeyboard: false,
+        headerShown: false,
+        tabBarShowLabel:false,
+      })}
+    >
+       <Tab.Screen name="Home" component={HomeStack} />
+      <Tab.Screen name="Explore" component={PopularStack} />
+      <Tab.Screen name="My Cart" component={CartStack} />
+      <Tab.Screen name="Favorites" component={FavoritesStack} />
+      <Tab.Screen name="User " component={UserStack} /> 
+      </Tab.Navigator>
+  );
 
   //       <Tab.Screen name="Home" options={{ tabBarLabel: 'Home' }}>
   //         {(props) => (
@@ -350,14 +353,15 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     position: 'absolute',
     bottom: TABBAR_VERTICAL_PADDING,
-    left: 20,
-    right: 20,
+    bottom:10,
+    left: 15,
+    right: 15,
     backgroundColor: 'white',
-    borderRadius: 25,
+    borderRadius: 15,
     height: TABBAR_HEIGHT,
     alignItems: 'center',
     justifyContent: 'space-around',
-    paddingHorizontal: 10,
+    paddingHorizontal: 5,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,

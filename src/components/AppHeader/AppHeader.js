@@ -10,9 +10,9 @@ import { colors } from "../../theme/colors";
 const AppHeader = ({ title, customTitleStyles, endButton, onBackPress }) => {
   return (
     <View style={styles.container}>
-      <TouchableOpacity style={styles.backButton} onPress={onBackPress}>
+      {/* <TouchableOpacity style={styles.backButton} onPress={onBackPress}>
         <Feather name="chevron-left" color={colors.primary} size={25} />
-      </TouchableOpacity>
+      </TouchableOpacity> */}
       <View style={styles.titleContainer}>
         <AppText
           text={title}

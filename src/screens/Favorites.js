@@ -148,7 +148,7 @@ const Favorites = () => {
 
   return (
     <Screen style={styles.screen}>
-      <AppHeader title="My Favorites" customTitleStyles={styles.headerTitle} />
+      <AppHeader title="My Favorites" customTitleStyles={[styles.headerTitle,{colors: colors.same}]} />
       <TabView
         navigationState={{ index, routes }}
         renderScene={renderScene}

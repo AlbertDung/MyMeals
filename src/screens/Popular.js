@@ -83,8 +83,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#F7F8FA',
   },
   header: {
-    padding: 20,
-    paddingTop: 40,
+    padding: 10,
+    paddingTop: 20,
   },
   locationContainer: {
     flexDirection: 'row',
@@ -110,7 +110,7 @@ const styles = StyleSheet.create({
   },
   content: {
     flex: 1,
-    padding: 20,
+    padding: 15,
   },
   sectionTitle: {
     fontSize: 22,

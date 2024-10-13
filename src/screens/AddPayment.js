@@ -106,6 +106,7 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: colors.background,
     padding: 20,
+    paddingBottom: 70,
   },
   header: {
     flexDirection: 'row',
@@ -173,6 +174,7 @@ const styles = StyleSheet.create({
     fontFamily: "Lato-Bold",
     fontSize: 18,
     color: colors.white,
+    
   },
 });
 

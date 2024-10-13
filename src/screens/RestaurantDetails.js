@@ -199,7 +199,7 @@ const styles = StyleSheet.create({
     color: '#333',
   },
   menuList: {
-    paddingBottom: 20,
+    paddingBottom: 70,
   },
   menuItem: {
     flexDirection: 'row',
@@ -215,8 +215,8 @@ const styles = StyleSheet.create({
     elevation: 3,
   },
   menuItemImage: {
-    width: 80,
-    height: 80,
+    width: 60,
+    height: 60,
     borderRadius: 8,
   },
   menuItemInfo: {

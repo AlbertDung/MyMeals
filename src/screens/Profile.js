@@ -73,7 +73,7 @@ const ProfileView = () => {
   };
 
   const renderTableRow = (onPress,icon, title, value, hasArrow = true, isSwitch = false, onToggle = null) => (
-    <TouchableOpacity style={[styles.tableRow,{borderBottomColor: colors.background}]} onPress={onPress}>
+    <TouchableOpacity style={[styles.tableRow,{borderBottomColor: colors.same2}]} onPress={onPress}>
       <View style={styles.rowLeft}>
         <Ionicons name={icon} size={24} color={colors.same} style={styles.rowIcon} />
         <Text style={[styles.rowTitle,{color: colors.text}]}>{title}</Text>
@@ -122,7 +122,7 @@ const ProfileView = () => {
         {renderTableRow(handle,'megaphone-outline', 'Promotional Notification', promoNotificationEnabled, false, true, setPromoNotificationEnabled)}
       </View>
 
-      <View style={[styles.section,{backgroundColor: colors.same2}]}>
+      <View style={[styles.section2,{backgroundColor: colors.same2}]}>
         <Text style={[styles.sectionTitle,{color: colors.text},{backgroundColor: colors.same2}]}>More</Text>
         {renderTableRow(handle,'moon-outline', 'Theme mode', themeMode, true)}
         {renderTableRow(handleSignOut,'log-out-outline', 'Log Out', '', false)}
@@ -135,6 +135,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#222831',
+   
   },
   header: {
     flexDirection: 'row',
@@ -214,6 +215,29 @@ const styles = StyleSheet.create({
     shadowRadius: 3,
     elevation: 3,
     marginVertical: 8,
+  },
+  section2: {
+    marginTop: 20,
+    backgroundColor: '#222831',
+    // borderTopWidth: 1,
+    // borderTopColor: '#903749',
+    // flexDirection: 'row',
+    padding: 5,
+
+    marginHorizontal: 15,
+    borderRadius: 12,
+    marginBottom: 10,
+    
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
+    elevation: 3,
+    marginVertical: 8,
+    marginBottom: 100,
   },
   sectionTitle: {
     fontSize: 18,

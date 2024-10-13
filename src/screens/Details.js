@@ -398,6 +398,7 @@ const styles = StyleSheet.create({
     padding: 20,
     borderTopWidth: 1,
     borderTopColor: '#FF5722',
+    paddingBottom:80,
   },
   quantityContainer: {
     flexDirection: 'row',

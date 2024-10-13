@@ -189,6 +189,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff',
+    paddingBottom:70,
   },
   header: {
     flexDirection: 'row',
@@ -248,7 +249,8 @@ const styles = StyleSheet.create({
   summaryCard: {
     backgroundColor: colors.light,
     padding: 15,
-    marginTop: 20,
+    marginTop: 5,
+    
   },
   summaryItem: {
     flexDirection: 'row',
@@ -280,7 +282,11 @@ const styles = StyleSheet.create({
     backgroundColor: colors.primary,
     padding: 15,
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: 0,
+    borderRadius: 10,
+    
+    margin:15,
+    marginBottom: 10,
   },
   checkoutButtonText: {
     color: '#fff',

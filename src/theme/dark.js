@@ -5,6 +5,6 @@ export const colors = {
     secondary: "#DA0037",
     same: "#FF5722",
     same2: "#444444",
-    input: "#444444",
+    input: "#EDEDED",
   };
   

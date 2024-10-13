@@ -244,6 +244,7 @@ const styles = StyleSheet.create({
     padding: 16,
     margin: 20,
     borderRadius: 12,
+    marginBottom: 70,
   },
   addToCartText: {
     color: '#fff',

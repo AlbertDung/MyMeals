@@ -46,7 +46,7 @@ const MyOrder = () => {
   };
 
   const handleGoBack = () => {
-    navigation.navigate('Profile');
+    navigation.goBack();
   };
 
   const handleReorder = (order) => {
@@ -83,6 +83,7 @@ export default MyOrder;
 const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
+    paddingBottom:100,
   },
   emptyOrdersContainer: {
     flex: 1,

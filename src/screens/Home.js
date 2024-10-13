@@ -63,6 +63,11 @@ const Home = () => {
         <TabView />
       </SafeAreaView>
     ) },
+    { key: '7', component: (
+      <SafeAreaView style={styles.foodCategories2}>
+        
+      </SafeAreaView>
+    ) },
   ];
 
   return (
@@ -84,6 +89,7 @@ const styles = StyleSheet.create({
   container: {
     // flex: 1,
     backgroundColor: '#f4f4f4',
+    
   },
   content: {
     padding: 5,
@@ -107,7 +113,10 @@ const styles = StyleSheet.create({
   },
   foodCategories: {
     marginTop: 15,
-    height: 2010, // Adjust this value as needed
+    height: 2300, // Adjust this value as needed
+  },
+  foodCategories2: {
+    height: 10, // Adjust this value as needed
   },
   categoriesContainer2: {
     marginVertical: 15,
