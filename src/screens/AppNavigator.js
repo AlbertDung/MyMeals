@@ -1,5 +1,5 @@
 import React, { useState, useCallback,useEffect } from "react";
-import { StyleSheet, View, StatusBar } from "react-native";
+import { StyleSheet, View, StatusBar ,Dimensions,TouchableOpacity,SafeAreaView} from "react-native";
 import { useFonts } from "expo-font";
 import * as SplashScreen from "expo-splash-screen";
 import { NavigationContainer } from '@react-navigation/native';
@@ -7,6 +7,8 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Ionicons, MaterialIcons } from '@expo/vector-icons';
 import { LogBox } from "react-native";
+import Animated, { useAnimatedStyle, withSpring } from 'react-native-reanimated';
+
 // 
 import AddPayment from "./AddPayment";
 import Home from "./Home";
@@ -30,10 +32,12 @@ import Address from "./address";
 import SearchScreen from "./SearchScreen";
 import { AuthContext } from "../components/Context/AuthContext";
 import { useTheme } from "../components/Context/ThemeContext";
-
+import { AnimatedTabBarNavigator } from "react-native-animated-nav-tab-bar";
+const TABBAR_HEIGHT = 60;
+const TABBAR_VERTICAL_PADDING = 5;
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
-
+const { width, height } = Dimensions.get('window');
 function HomeStack() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false}}>
@@ -152,6 +156,75 @@ function RootNavigator() {
     </Stack.Navigator>
   );
 }
+
+const CustomTabBar = ({ state, descriptors, navigation }) => {
+  const { isDark, colors } = useTheme();
+  return (
+    <View style={[styles.tabBarContainer,{backgroundColor: colors.background}]}>
+      {state.routes.map((route, index) => {
+        const { options } = descriptors[route.key];
+        const label = options.tabBarLabel !== undefined ? options.tabBarLabel : options.title !== undefined ? options.title : route.name;
+
+        const isFocused = state.index === index;
+
+        const onPress = () => {
+          const event = navigation.emit({
+            type: 'tabPress',
+            target: route.key,
+            canPreventDefault: true,
+          });
+
+          if (!isFocused && !event.defaultPrevented) {
+            navigation.navigate(route.name);
+          }
+        };
+
+        const animatedStyle = useAnimatedStyle(() => {
+          return {
+            transform: [
+              {
+                scale: withSpring(isFocused ? 1.2 : 1, {
+                  stiffness: 300,
+                  damping: 20,
+                }),
+              },
+            ],
+          };
+        });
+
+        return (
+          <TouchableOpacity
+            key={index}
+            accessibilityRole="button"
+            accessibilityState={isFocused ? { selected: true } : {}}
+            accessibilityLabel={options.tabBarAccessibilityLabel}
+            testID={options.tabBarTestID}
+            onPress={onPress}
+            style={styles.tabButton}
+          >
+            <Animated.View style={[styles.tabIconContainer, animatedStyle]}>
+              <Ionicons
+                name={isFocused ? options.tabBarIcon({ focused: true }).props.name : options.tabBarIcon({ focused: false }).props.name}
+                size={24}
+                color={isFocused ? colors.same : colors.text}
+              />
+            </Animated.View>
+          </TouchableOpacity>
+        );
+      })}
+    </View>
+  );
+};
+function TabScreenWrapper({ children }) {
+  const { isDark, colors } = useTheme();
+  return (
+    // <SafeAreaView style={[styles.screenWrapper,{backgroundColor: colors.ba}]}>
+      <View style={[styles.screenContent]}>
+        {children}
+      </View>
+    // </SafeAreaView>
+  );
+}
 // Tab Navigator cho màn hình chính
 function MainTabs() {
   const { isDark, colors } = useTheme();
@@ -184,6 +257,7 @@ function MainTabs() {
         headerShown: false,
         tabBarShowLabel:false,
       })}
+      
     >
       <Tab.Screen name="Home" component={HomeStack} />
       <Tab.Screen name="Explore" component={PopularStack} />
@@ -192,7 +266,130 @@ function MainTabs() {
       <Tab.Screen name="User " component={UserStack} />
     </Tab.Navigator>
   );
+  // return (
+  //   <Tab.Navigator
+  //     tabBar={(props) => <CustomTabBar {...props} />}
+  //     screenOptions={({ route }) => ({
+  //       tabBarIcon: ({ focused, color, size }) => {
+  //         let iconName;
+
+  //         if (route.name === "Home") {
+  //           iconName = focused ? "home" : "home-outline";
+  //         } else if (route.name === "Explore") {
+  //           iconName = focused ? "compass" : "compass-outline";
+  //         } else if (route.name === "My Cart") {
+  //           iconName = focused ? "cart" : "cart-outline";
+  //         } else if (route.name === "Favorites") {
+  //           iconName = focused ? "heart" : "heart-outline";
+  //         } else if (route.name === "User ") {
+  //           iconName = focused ? "person" : "person-outline";
+  //         }
+
+  //         return { props: { name: iconName } };
+  //       },
+  //       tabBarActiveTintColor: colors.same,
+  //       // tabBarInactiveTintColor: colors.background,
+  //       tabBarInactiveBackgroundColor: colors.background,
+  //       tabBarActiveBackgroundColor:colors.background,
+        
+  //       tabBarHideOnKeyboard: false,
+  //       headerShown: false,
+  //       tabBarShowLabel:false,
+  //     })}
+  //   >
+  //     {/* <Tab.Screen name="Home" component={HomeStack} />
+  //     <Tab.Screen name="Explore" component={PopularStack} />
+  //     <Tab.Screen name="My Cart" component={CartStack} />
+  //     <Tab.Screen name="Favorites" component={FavoritesStack} />
+  //     <Tab.Screen name="User " component={UserStack} /> */}
+
+  //       <Tab.Screen name="Home" options={{ tabBarLabel: 'Home' }}>
+  //         {(props) => (
+  //           <TabScreenWrapper>
+  //             <HomeStack {...props} />
+  //           </TabScreenWrapper>
+  //         )}
+  //       </Tab.Screen>
+  //       <Tab.Screen name="Explore" options={{ tabBarLabel: 'Explore' }}>
+  //         {(props) => (
+  //           <TabScreenWrapper>
+  //             <PopularStack {...props} />
+  //           </TabScreenWrapper>
+  //         )}
+  //       </Tab.Screen>
+  //       <Tab.Screen name="My Cart" options={{ tabBarLabel: 'Cart' }}>
+  //         {(props) => (
+  //           <TabScreenWrapper>
+  //             <CartStack {...props} />
+  //           </TabScreenWrapper>
+  //         )}
+  //       </Tab.Screen>
+  //       <Tab.Screen name="Favorites" options={{ tabBarLabel: 'Favorites' }}>
+  //         {(props) => (
+  //           <TabScreenWrapper>
+  //             <FavoritesStack {...props} />
+  //           </TabScreenWrapper>
+  //         )}
+  //       </Tab.Screen>
+  //       <Tab.Screen name="User " options={{ tabBarLabel: 'User' }}>
+  //         {(props) => (
+  //           <TabScreenWrapper>
+  //             <UserStack {...props} />
+  //           </TabScreenWrapper>
+  //         )}
+  //       </Tab.Screen>
+  //   </Tab.Navigator>
+  // );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    // flex: 1,
+  },
+  tabBarContainer: {
+    flexDirection: 'row',
+    position: 'absolute',
+    bottom: TABBAR_VERTICAL_PADDING,
+    left: 20,
+    right: 20,
+    backgroundColor: 'white',
+    borderRadius: 25,
+    height: TABBAR_HEIGHT,
+    alignItems: 'center',
+    justifyContent: 'space-around',
+    paddingHorizontal: 10,
+    shadowColor: '#000',
+    shadowOffset: {
+      width: 0,
+      height: 10,
+    },
+    shadowOpacity: 0.1,
+    shadowRadius: 10,
+    elevation: 10,
+  },
+  tabButton: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  tabIconContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    width: 50,
+    height: 50,
+  },
+  screenWrapper: {
+    flex: 1,
+    backgroundColor: 'transparent',
+    
+  },
+  screenContent: {
+    flex: 1,
+    paddingBottom: TABBAR_HEIGHT + TABBAR_VERTICAL_PADDING * 2,
+    backgroundColor: 'rgba(0, 0, 0, 0)', // Cho nền tối bán trong suốt
+  },
+});
+
 export default function AppNavigator() {
   const { isDark, colors } = useTheme();
   return (
