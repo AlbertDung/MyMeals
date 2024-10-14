@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     color: '#EEEEEE',
   },
   userEmail: {
-    fontSize: 16,
+    fontSize: 11,
     color: '#EEEEEE',
   },
   functionBar: {

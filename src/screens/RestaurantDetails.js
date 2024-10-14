@@ -47,9 +47,9 @@ const RestaurantDetails = ({ route }) => {
           <Image source={getImageSource(restaurant.images)} style={styles.headerImage} />
           <View style={styles.headerOverlay}>
             <TouchableOpacity style={styles.iconButton} onPress={() => navigation.goBack()}>
-              <Ionicons name="arrow-back" size={24} color="#fff" />
+              <Ionicons name="arrow-back" size={24} color={colors.same} />
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.iconButton,{backgroundColor: colors.same2}]} onPress={handleToggleFavorite}>
+            <TouchableOpacity style={[styles.iconButton,{backgroundColor: colors.text}]} onPress={handleToggleFavorite}>
               <Ionicons 
                 name={isFavorite(restaurant.id) ? "bookmark" : "bookmark-outline"} 
                 size={24} 

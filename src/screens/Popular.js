@@ -7,6 +7,7 @@ import { restaurantsData } from '../data/restaurantData';
 import RedesignedRestaurant from './redesign';
 import { useNavigation } from '@react-navigation/native';
 import { useTheme } from '../components/Context/ThemeContext';
+import SearchHeader from '../components/SearchHeader/SearchHeader';
 const NearbyRestaurants = () => {
   const [location, setLocation] = useState(null);
   const [errorMsg, setErrorMsg] = useState(null);
@@ -27,8 +28,8 @@ const NearbyRestaurants = () => {
     })();
   }, []);
 
-  const handleSearchPress = () => {
-    navigation.navigate('SearchScreen');
+  const handleSearchPress = (searchText) => {
+    navigation.navigate('SearchScreen', { initialSearchQuery: searchText });
   };
 
   const renderRestaurantItem = ({ item }) => (
@@ -58,10 +59,11 @@ const NearbyRestaurants = () => {
             <Ionicons name="chevron-down" size={24} color={colors.same}/>
           </TouchableOpacity>
         </View>
-        <TouchableOpacity style={[styles.searchBar,{backgroundColor: colors.same2}]} onPress={handleSearchPress}>
+        {/* <TouchableOpacity style={[styles.searchBar,{backgroundColor: colors.same2}]} onPress={handleSearchPress}>
           <Ionicons name="search" size={20} color={colors.same} />
           <Text style={[styles.searchText,{color: colors.text}]}>Search food and restaurant</Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
+        <SearchHeader onPress={() => navigation.navigate('SearchScreen')} onSearch={handleSearchPress} />
       </LinearGradient>
       <View style={[styles.content,{backgroundColor: colors.background}]}>
         <Text style={[styles.sectionTitle,{color: colors.text}]}>Near By Restaurants</Text>

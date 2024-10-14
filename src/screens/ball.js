@@ -12,7 +12,7 @@ import { useTheme } from "../components/Context/ThemeContext";
 
 const { width } = Dimensions.get('window');
 const TABBAR_HEIGHT = 60;
-const TAB_WIDTH = width / 5; // Assuming 5 tabs
+const TAB_WIDTH = (width / 5)-7; // Assuming 5 tabs
 
 const CustomTabBar = ({ state, descriptors, navigation }) => {
   const { isDark, colors } = useTheme();
@@ -74,7 +74,7 @@ const CustomTabBar = ({ state, descriptors, navigation }) => {
               <Ionicons
                 name={isFocused ? options.tabBarIcon({ focused: true }).props.name : options.tabBarIcon({ focused: false }).props.name}
                 size={24}
-                color={isFocused ? colors.input : colors.text}
+                color={isFocused ? colors.input : colors.same}
               />
             </Animated.View>
           </TouchableOpacity>
@@ -104,6 +104,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.1,
     shadowRadius: 10,
     elevation: 10,
+    //width: 360,
   },
   tabButton: {
     flex: 1,
@@ -117,10 +118,11 @@ const styles = StyleSheet.create({
     height: 50,
   },
   ball: {
-    width: TAB_WIDTH-10,
+    width: TAB_WIDTH,
     height: TABBAR_HEIGHT,
     borderRadius: 15,
     position: 'absolute',
+    
   },
 });
 

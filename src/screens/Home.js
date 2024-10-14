@@ -27,11 +27,12 @@ const Home = () => {
   };
   
 
-  const handleSearchPress = () => {
-    navigation.navigate('SearchScreen');
+  const handleSearchPress = (searchText) => {
+    navigation.navigate('SearchScreen', { initialSearchQuery: searchText });
   };
+  
   const DATA = [
-    { key: '1', component: <SearchHeader onPress={handleSearchPress}/> },
+    { key: '1', component: <SearchHeader onPress={() => navigation.navigate('SearchScreen')} onSearch={handleSearchPress} /> },
     { key: '2', component: (
       <View style={styles.categoriesContainer1}>
         <CategoryIcon name="Morning" icon="food-croissant" onpress={handle} />
