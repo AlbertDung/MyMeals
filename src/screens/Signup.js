@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ScrollView } from 'react-native';
+import { View, Text, TextInput, TouchableOpacity, StyleSheet, KeyboardAvoidingView, Platform, ScrollView, Alert } from 'react-native';
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth';
 import { Feather, FontAwesome } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useTheme } from '../components/Context/ThemeContext';
+import { db } from '../../firebaseConfig'; // Import db from your firebaseConfig file
+import { collection, addDoc, query, where, getDocs } from 'firebase/firestore'; // Import Firestore functions
+
 const auth = getAuth();
 
 const SignupScreen = () => {
@@ -16,7 +19,6 @@ const SignupScreen = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const navigation = useNavigation();
   const { isDark, colors } = useTheme();
-
 
   const handleSignup = async () => {
     if (!email.trim() && !password.trim() && !confirmPassword.trim()) {
@@ -45,22 +47,48 @@ const SignupScreen = () => {
     }
     
     try {
-      await createUserWithEmailAndPassword(auth, email, password);
+      // await createUserWithEmailAndPassword(auth, email, password);
+      // Alert.alert(
+      //   'Đăng ký thành công',
+      //   'Tài khoản của bạn đã được tạo thành công. Bạn có thể đăng nhập ngay bây giờ.',
+      //   [{ text: 'OK', onPress: () => navigation.navigate('Login') }]
+      // );
+      // Check if email already exists
+      const userQuery = query(collection(db, "user"), where("email", "==", email));
+      const userQuerySnapshot = await getDocs(userQuery);
+      
+      if (!userQuerySnapshot.empty) {
+        setError('Email này đã được sử dụng. Vui lòng chọn một email khác hoặc đăng nhập.');
+        return;
+      }
+
+      // Add new user to Firestore
+      const newUser = {
+        email: email,
+        password: password, // Note: In a real application, you should hash the password before storing it
+        createdAt: new Date(),
+      };
+
+      const docRef = await addDoc(collection(db, "user"), newUser);
+
       Alert.alert(
         'Đăng ký thành công',
         'Tài khoản của bạn đã được tạo thành công. Bạn có thể đăng nhập ngay bây giờ.',
         [{ text: 'OK', onPress: () => navigation.navigate('Login') }]
       );
+
     } catch (error) {
-      if (error.code === 'auth/email-already-in-use') {
-        setError('Email này đã được sử dụng. Vui lòng chọn một email khác hoặc đăng nhập.');
-      } else if (error.code === 'auth/invalid-email') {
-        setError('Email không hợp lệ. Vui lòng nhập một địa chỉ email hợp lệ.');
-      } else if (error.code === 'auth/weak-password') {
-        setError('Mật khẩu quá yếu. Vui lòng chọn một mật khẩu mạnh hơn.');
-      } else {
-        setError('Đăng ký thất bại. Vui lòng thử lại sau.');
-      }
+      // if (error.code === 'auth/email-already-in-use') {
+      //   setError('Email này đã được sử dụng. Vui lòng chọn một email khác hoặc đăng nhập.');
+      // } else if (error.code === 'auth/invalid-email') {
+      //   setError('Email không hợp lệ. Vui lòng nhập một địa chỉ email hợp lệ.');
+      // } else if (error.code === 'auth/weak-password') {
+      //   setError('Mật khẩu quá yếu. Vui lòng chọn một mật khẩu mạnh hơn.');
+      // } else {
+      //   setError('Đăng ký thất bại. Vui lòng thử lại sau.');
+      // }
+      console.error("Error adding document: ", error);
+      setError('Đăng ký thất bại. Vui lòng thử lại sau.');
     }
   };
   const handleSocialSignup = (platform) => {
@@ -71,7 +99,7 @@ const SignupScreen = () => {
 
 
   return (
-    <LinearGradient colors={[colors.primary, colors.background]} style={styles.gradient}>
+    <LinearGradient colors={[colors.background, colors.primary]} style={styles.gradient}>
       <KeyboardAvoidingView 
         style={styles.container} 
         behavior={Platform.OS === "ios" ? "padding" : "height"}
@@ -219,6 +247,7 @@ const styles = StyleSheet.create({
   linkButtonText: {
     color: '#FF5E62',
     fontSize: 16,
+    fontWeight: 'bold',
   },
   socialSignupContainer: {
     flexDirection: 'row',

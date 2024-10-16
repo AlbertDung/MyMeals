@@ -96,51 +96,54 @@ const LoginScreen = () => {
   //     console.error('Error uploading food items:', error);
   //   }
   // };
-const handleLogin = async () => {
-  if (!email.trim() && !password.trim()) {
-    setError('Vui lòng nhập email và mật khẩu.');
-    return;
-  }
-  if (!email.trim()) {
-    setError('Vui lòng nhập email của bạn.');
-    return;
-  }
-  if (!password.trim()) {
-    setError('Vui lòng nhập mật khẩu của bạn.');
-    return;
-  }
-
-  setIsLoading(true);
-
-  try {
-    const db = getFirestore();
-    const usersRef = collection(db, 'user');
-    const q = query(usersRef, where('email', '==', email));
-    const querySnapshot = await getDocs(q);
-
-    if (querySnapshot.empty) {
-      setError('User not found. Please check your email or sign up.');
+  const handleLogin = async () => {
+    if (!email.trim() && !password.trim()) {
+      setError('Vui lòng nhập email và mật khẩu.');
       return;
     }
-
-    const userDoc = querySnapshot.docs[0];
-    const userData = userDoc.data();
-
-    if (userData.password !== password) {
-      setError('Incorrect password. Please try again.');
+    if (!email.trim()) {
+      setError('Vui lòng nhập email của bạn.');
       return;
     }
-
-    // Login successful
-    signIn(userData, userDoc.id); // Pass both userData and document ID
-
-    // await uploadFoodItems();
-    navigation.navigate('Main');
-  } catch (error) {
-    console.error('Login error:', error);
-    setError('Đăng nhập thất bại. Vui lòng thử lại sau.');
-  }
-};
+    if (!password.trim()) {
+      setError('Vui lòng nhập mật khẩu của bạn.');
+      return;
+    }
+  
+    setIsLoading(true);
+    setError(''); // Clear any previous errors
+  
+    try {
+      const db = getFirestore();
+      const usersRef = collection(db, 'user');
+      const q = query(usersRef, where('email', '==', email));
+      const querySnapshot = await getDocs(q);
+  
+      if (querySnapshot.empty) {
+        setError('User not found. Please check your email or sign up.');
+        setIsLoading(false); // Stop loading
+        return;
+      }
+  
+      const userDoc = querySnapshot.docs[0];
+      const userData = userDoc.data();
+  
+      if (userData.password !== password) {
+        setError('Incorrect password. Please try again.');
+        setIsLoading(false); // Stop loading
+        return;
+      }
+  
+      // Login successful
+      signIn(userData, userDoc.id); // Pass both userData and document ID
+      navigation.navigate('Main');
+    } catch (error) {
+      console.error('Login error:', error);
+      setError('Đăng nhập thất bại. Vui lòng thử lại sau.');
+    } finally {
+      setIsLoading(false); // Ensure loading stops in all cases
+    }
+  };
 
   const [fbRequest, fbResponse, fbPromptAsync] = Facebook.useAuthRequest({
     clientId: '1256945355492169', // Thay thế bằng ID ứng dụng Facebook của bạn

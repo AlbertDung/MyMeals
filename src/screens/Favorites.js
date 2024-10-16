@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
   listContainer: {
     paddingHorizontal: 16,
     paddingTop: 16,
-    paddingBottom: 24,
+    paddingBottom: 70,
     flexGrow: 1,
   },
   tabBar: {

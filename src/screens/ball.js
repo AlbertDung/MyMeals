@@ -12,7 +12,7 @@ import { useTheme } from "../components/Context/ThemeContext";
 
 const { width } = Dimensions.get('window');
 const TABBAR_HEIGHT = 60;
-const TAB_WIDTH = (width / 5)-7; // Assuming 5 tabs
+const TAB_WIDTH = (width / 5)-6; // Assuming 5 tabs
 
 const CustomTabBar = ({ state, descriptors, navigation }) => {
   const { isDark, colors } = useTheme();

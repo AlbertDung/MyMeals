@@ -11,6 +11,7 @@ import { FavoritesProvider } from "./src/components/Context/FavoritesContext";
 import { AuthContext, AuthProvider } from "./src/components/Context/AuthContext";
 import { ThemeProvider } from "./src/components/Context/ThemeContext";
 import AppNavigator from "./src/screens/AppNavigator";
+import { useTheme } from "./src/components/Context/ThemeContext";
 SplashScreen.preventAutoHideAsync();
 
 export default function App() {
@@ -23,6 +24,7 @@ export default function App() {
 
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [hasSeenIntro, setHasSeenIntro] = useState(false);
+  //const { isDark, colors } = useTheme();
 
   useEffect(() => {
     // Check if the user has seen the intro before
@@ -48,7 +50,7 @@ export default function App() {
       <AuthProvider>
         <CartProvider>
           <FavoritesProvider>
-            <StatusBar barStyle="dark-content" />
+          <StatusBar backgroundColor={'#171717'} barStyle="light-content" />
             <NavigationContainer>
               <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
                 <AppNavigator />

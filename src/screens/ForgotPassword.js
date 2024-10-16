@@ -29,7 +29,7 @@ const ForgotPasswordScreen = () => {
       <View style={[styles.innerContainer,{backgroundColor: colors.background}]}>
         <Text style={[styles.title,{color: colors.text}]}>Reset Password</Text>
         <View style={styles.inputContainer}>
-          <Feather name="mail" size={24} color="#007AFF" style={styles.icon} />
+          <Feather name="mail" size={24} color={colors.same} style={styles.icon} />
           <TextInput
             style={styles.input}
             placeholder="Enter your email"

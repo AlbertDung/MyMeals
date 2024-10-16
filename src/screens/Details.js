@@ -163,7 +163,7 @@ const Details = ({ route }) => {
           <View style={styles.ratingContainer}>
             <Ionicons name="star" size={18} color={colors.same} />
             <AppText text={item.rating.toFixed(1)} customStyles={styles.ratingText} />
-            <AppText text={`(${item.reviews})`} customStyles={styles.reviewsText} />
+            {/* <AppText text={`(${item.reviews})`} customStyles={styles.reviewsText} /> */}
             <View style={styles.deliveryInfo}>
               <Ionicons name="time-outline" size={18} color={colors.same} />
               <AppText text={`15 min`} customStyles={styles.deliveryText} />

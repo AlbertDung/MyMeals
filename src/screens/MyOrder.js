@@ -57,7 +57,9 @@ const MyOrder = () => {
 
   return (
     <Screen>
-      <AppHeader title="My Orders" onPress={handleGoBack} />
+       <View style={styles.header}>
+        <AppHeader title="My Orders" onPress={handleGoBack} customTitleStyles={styles.title}/>
+      </View>
       {orders.length === 0 ? (
         <View style={styles.emptyOrdersContainer}>
           <Ionicons name="document-outline" size={100} color={colors.same} />
@@ -94,5 +96,18 @@ const styles = StyleSheet.create({
     fontSize: 18,
     color: colors.medium,
     marginTop: 20,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginLeft: 150,
+  },
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: colors.primary,
   },
 });
