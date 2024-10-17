@@ -3,62 +3,78 @@ import { View, Text, Image, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import MapView, { Marker, Polyline } from 'react-native-maps';
 import * as Icon from "react-native-feather";
+import { useTheme } from '../components/Context/ThemeContext';
+import AppText from '../components/AppText/AppText';
+import { colors } from "../theme/colors";
+import { Ionicons } from '@expo/vector-icons';
 
 export default function Address({ route }) {
     const navigation = useNavigation();
-    const { orderData } = route.params;
+    const { isDark, colors } = useTheme();
+    // const { orderData } = route.params;
     
-    const [region, setRegion] = useState({
-        latitude: 10.933124,
-        longitude: 118.745822,
-        latitudeDelta: 0.01,
-        longitudeDelta: 0.01,
-    });
-
-    const userLocation = {
-        latitude: 10.933124,
-        longitude: 106.745822,
-    };
-
-    const [restaurant, setRestaurant] = useState({
-        name: "Pizza Restaurant",
-        lat: 10.933124,
-        lng: 118.745822,
-    });
-
-    const [driver, setDriver] = useState({
-        name: "Syed Noman",
-        //image: require('../assets/images/deliveryGuy.jpg'),
-        rating: 4.8,
-    });
-
-    useEffect(() => {
-        // Simulate fetching restaurant data
-        setRestaurant({
-            name: "Pizza Restaurant",
-            lat: 10.933124,
-            lng: 118.745822,
-        });
-
-        setRegion({
-            latitude: 10.933124,
-            longitude: 118.745822,
-            latitudeDelta: 0.01,
-            longitudeDelta: 0.01,
-        });
-    }, []);
-
     const handleGoBack = () => {
         navigation.goBack();
-    };
+      };
+    // const [region, setRegion] = useState({
+    //     latitude: 10.933124,
+    //     longitude: 118.745822,
+    //     latitudeDelta: 0.01,
+    //     longitudeDelta: 0.01,
+    // });
 
-    const handleViewOrderDetails = () => {
-        navigation.navigate('OrderTracking', { orderData });
-    };
+    // const userLocation = {
+    //     latitude: 10.933124,
+    //     longitude: 106.745822,
+    // };
+
+    // const [restaurant, setRestaurant] = useState({
+    //     name: "Pizza Restaurant",
+    //     lat: 10.933124,
+    //     lng: 118.745822,
+    // });
+
+    // const [driver, setDriver] = useState({
+    //     name: "Syed Noman",
+    //     //image: require('../assets/images/deliveryGuy.jpg'),
+    //     rating: 4.8,
+    // });
+
+    // useEffect(() => {
+    //     // Simulate fetching restaurant data
+    //     setRestaurant({
+    //         name: "Pizza Restaurant",
+    //         lat: 10.933124,
+    //         lng: 118.745822,
+    //     });
+
+    //     setRegion({
+    //         latitude: 10.933124,
+    //         longitude: 118.745822,
+    //         latitudeDelta: 0.01,
+    //         longitudeDelta: 0.01,
+    //     });
+    // }, []);
+
+    // const handleGoBack = () => {
+    //     navigation.goBack();
+    // };
+
+    // const handleViewOrderDetails = () => {
+    //     navigation.navigate('OrderTracking', { orderData });
+    // };
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container,{backgroundColor: colors.background}]}>
+            
             <View style={styles.header}>
+                <TouchableOpacity onPress={handleGoBack}>
+                    <Ionicons name="arrow-back" size={24} color={colors.same} />
+                </TouchableOpacity>
+                <AppText text="ADDRESS" customStyles={styles.title2} />
+                <View style={styles.placeholder} />
+            </View>
+            {/* <View style={styles.header}>
                 <TouchableOpacity onPress={handleGoBack}>
                     <Icon.ArrowLeft stroke="#4A4A4A" strokeWidth={3} />
                 </TouchableOpacity>
@@ -130,7 +146,9 @@ export default function Address({ route }) {
                 <TouchableOpacity style={styles.orderDetailsButton} onPress={handleViewOrderDetails}>
                     <Text style={styles.orderDetailsButtonText}>Order Details</Text>
                 </TouchableOpacity>
-            </View>
+            </View> */}
+            <Text style={[styles.title,{color: colors.text}]}>Không có 10$ và visa card để đăng kí API GOOGLE CLOUDE</Text>
+            <Text style={[styles.title,{color: colors.text}]}>Dùng con vợ này tượng trưng nhé</Text>
         </View>
     );
 }
@@ -140,16 +158,28 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#F5F5F5',
     },
+    placeholder: {
+        width: 24,
+      },
     header: {
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        padding: 16,
-        backgroundColor: '#FFFFFF',
+        paddingVertical: 12,
+        borderBottomWidth: 1,
+        borderBottomColor: colors.primary,
+        marginBottom:20,
+        padding:20,
     },
     title: {
         fontSize: 18,
         fontWeight: 'bold',
+        padding:20,
+    },
+    title2: {
+        fontSize: 18,
+        fontWeight: 'bold',
+       
     },
     placeholder: {
         width: 24,

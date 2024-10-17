@@ -54,7 +54,9 @@ const NearbyRestaurants = () => {
       >
         <View style={styles.locationContainer}>
           <Ionicons name="location-sharp" size={24} color={colors.same} />
-          <Text style={[styles.locationText,{color: colors.text}]}>3.3a Main Street New York</Text>
+          <Text style={[styles.locationText,{color: colors.text}]}>
+              {location ? `Lat: ${location.coords.latitude.toFixed(4)}, Long: ${location.coords.longitude.toFixed(4)}` : 'Retrieving location...'}
+          </Text>
           <TouchableOpacity>
             <Ionicons name="chevron-down" size={24} color={colors.same}/>
           </TouchableOpacity>

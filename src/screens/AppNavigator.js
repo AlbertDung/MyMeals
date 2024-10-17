@@ -33,6 +33,7 @@ import SearchScreen from "./SearchScreen";
 import { AuthContext } from "../components/Context/AuthContext";
 import { useTheme } from "../components/Context/ThemeContext";
 import CustomTabBar from "./ball";
+import UserPayment from "./Userpayment";
 import { AnimatedTabBarNavigator } from "react-native-animated-nav-tab-bar";
 const TABBAR_HEIGHT = 60;
 const TABBAR_VERTICAL_PADDING = 5;
@@ -101,7 +102,8 @@ function UserStack() {
       <Stack.Screen name="MyCart" component={CartStack} />
       <Stack.Screen name="MyOrder" component={MyOrder} />
       <Stack.Screen name="ManageProfileView" component={ManageProfileView} />
-      <Stack.Screen name="pay" component={AddPayment} />
+      <Stack.Screen name="pay" component={UserPayment} />
+      <Stack.Screen name="address" component={Address} />
     </Stack.Navigator>
   );
 }

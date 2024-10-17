@@ -44,7 +44,7 @@ const ProfileView = () => {
       {[
         { name: 'My All Order', icon: 'receipt-outline', screen: 'MyOrder' },
         { name: 'Offer & Promos', icon: 'gift-outline', screen: 'MyCart' },
-        { name: 'Delivery Address', icon: 'location-outline'} // Update the screen name as needed
+        { name: 'Delivery Address', icon: 'location-outline',screen: 'address' } // Update the screen name as needed
       ].map((item, index) => (
         <TouchableOpacity 
           key={index} 

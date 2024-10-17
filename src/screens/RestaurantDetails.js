@@ -49,7 +49,7 @@ const RestaurantDetails = ({ route }) => {
             <TouchableOpacity style={styles.iconButton} onPress={() => navigation.goBack()}>
               <Ionicons name="arrow-back" size={24} color={colors.same} />
             </TouchableOpacity>
-            <TouchableOpacity style={[styles.iconButton,{backgroundColor: colors.text}]} onPress={handleToggleFavorite}>
+            <TouchableOpacity style={[styles.iconButton]} onPress={handleToggleFavorite}>
               <Ionicons 
                 name={isFavorite(restaurant.id) ? "bookmark" : "bookmark-outline"} 
                 size={24} 
