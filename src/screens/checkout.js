@@ -1,5 +1,5 @@
 import React, { useState, useEffect,useContext } from 'react';
-import { View, StyleSheet, TouchableOpacity, Image, Modal, ScrollView, Text } from 'react-native';
+import { View, StyleSheet, TouchableOpacity, Image, Modal, ScrollView, Text,Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useNavigation } from '@react-navigation/native';
 import { useCart } from '../components/Context/CartContext';
@@ -52,6 +52,21 @@ const Checkout = ({ route }) => {
         return;
       }
   
+      if (!userData.name) {
+        Alert.alert(
+          'Profile Incomplete',
+          'Please complete your profile with your name before placing an order.',
+          [
+            {
+              text: 'Go to Profile',
+              onPress: () => navigation.navigate('ManageProfileView')
+            },
+            { text: 'Cancel', style: 'cancel' }
+          ]
+        );
+        return;
+      }
+  
       const orderData = {
         userId: userData.id,
         userName: userData.name,
@@ -76,18 +91,18 @@ const Checkout = ({ route }) => {
       await setDoc(userOrderRef, orderData);
       
       clearCart();
-
+  
       setShowModal(true);
       setTimeout(() => {
         setShowModal(false);
         navigation.navigate('MyCart');
-        //navigation.navigate('address', { orderData });
       }, 2000);
     } catch (error) {
       console.error('Error placing order:', error);
       Alert.alert('Error', 'Unable to place your order. Please try again.');
     }
   };
+  
 
   const handleAddPayment =() => {
     navigation.navigate('AddPaymentScreen');

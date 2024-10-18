@@ -67,6 +67,8 @@ function PopularStack() {
       <Stack.Screen name="PopularScreen" component={Popular} />
       <Stack.Screen name="Details" component={RestaurantDetails} />
       <Stack.Screen name="SearchScreen" component={SearchScreen} />
+      <Stack.Screen name="RestaurantDetails" component={RestaurantDetails} />
+      <Stack.Screen name="DishDetails" component={DishDetails} /> 
     </Stack.Navigator>
   );
 }
@@ -91,6 +93,7 @@ function CartStack() {
       <Stack.Screen name="AddPaymentScreen" component={AddPayment} />
       <Stack.Screen name="PaymentScreen" component={PaymentScreen} />
       <Stack.Screen name="address" component={Address} />
+      <Stack.Screen name="ManageProfileView" component={ManageProfileView} />
     </Stack.Navigator>
   );
 }

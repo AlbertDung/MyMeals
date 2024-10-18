@@ -48,16 +48,18 @@ export default function App() {
   return (
     <ThemeProvider>
       <AuthProvider>
+      <FavoritesProvider>
         <CartProvider>
-          <FavoritesProvider>
+          
           <StatusBar backgroundColor={'#171717'} barStyle="light-content" />
             <NavigationContainer>
               <View style={{ flex: 1 }} onLayout={onLayoutRootView}>
                 <AppNavigator />
               </View>
             </NavigationContainer>
-          </FavoritesProvider>
+          
         </CartProvider>
+        </FavoritesProvider>
       </AuthProvider>
     </ThemeProvider>
   );

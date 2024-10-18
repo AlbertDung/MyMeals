@@ -6,16 +6,21 @@ import { AuthContext } from '../components/Context/AuthContext';
 import * as ImagePicker from 'expo-image-picker';
 import { useCart } from '../components/Context/CartContext';
 import { useTheme } from '../components/Context/ThemeContext';
+import { useFavorites } from '../components/Context/FavoritesContext';
+
 const ProfileView = () => {
   const navigation = useNavigation();
   const [notificationEnabled, setNotificationEnabled] = useState(true);
   const [promoNotificationEnabled, setPromoNotificationEnabled] = useState(false);
-  const [themeMode, setThemeMode] = useState('Light');
+  
   const { signOut, userData } = useContext(AuthContext);
   const {clearCart} = useCart();
+  const {clearFavorites} = useFavorites();
   // Sử dụng avatar từ userData nếu có, nếu không sử dụng ảnh mặc định
   const [avatar, setAvatar] = useState(userData?.avatar || 'https://via.placeholder.com/150');
-  const { isDark, colors } = useTheme();
+  const { isDark, colors ,setIsDark } = useTheme();
+  const [themeMode, setThemeMode] = useState(isDark ? 'Light' : 'Dark');
+  
   useEffect(() => {
     // Cập nhật avatar khi userData thay đổi
     if (userData && userData.avatar) {
@@ -26,6 +31,7 @@ const ProfileView = () => {
   const handleSignOut = () => {
     signOut();
     clearCart();
+    clearFavorites();
   };
 
   const handleProfile = () => {
@@ -39,6 +45,12 @@ const ProfileView = () => {
   const handle = () => {
     navigation.navigate('Profile');
   };
+
+  const handleThemeChange = () => {
+    setIsDark(!isDark);
+    setThemeMode(isDark ? 'Light' : 'Dark');
+  };
+  
   const renderFunctionBar = () => (
     <View style={[styles.functionBar,{backgroundColor: colors.same2},{borderBottomColor: colors.background}]}>
       {[
@@ -72,11 +84,11 @@ const ProfileView = () => {
     }
   };
 
-  const renderTableRow = (onPress,icon, title, value, hasArrow = true, isSwitch = false, onToggle = null) => (
-    <TouchableOpacity style={[styles.tableRow,{borderBottomColor: colors.same2}]} onPress={onPress}>
+  const renderTableRow = (onPress, icon, title, value, hasArrow = true, isSwitch = false, onToggle = null) => (
+    <TouchableOpacity style={[styles.tableRow, { borderBottomColor: colors.same2 }]} onPress={onPress}>
       <View style={styles.rowLeft}>
         <Ionicons name={icon} size={24} color={colors.same} style={styles.rowIcon} />
-        <Text style={[styles.rowTitle,{color: colors.text}]}>{title}</Text>
+        <Text style={[styles.rowTitle, { color: colors.text }]}>{title}</Text>
       </View>
       <View style={styles.rowRight}>
         {isSwitch ? (
@@ -88,7 +100,7 @@ const ProfileView = () => {
           />
         ) : (
           <>
-            <Text style={[styles.rowValue,{color: colors.text}]}>{value}</Text>
+            <Text style={[styles.rowValue, { color: colors.text }]}>{value}</Text>
             {hasArrow && <Ionicons name="chevron-forward" size={24} color={colors.same} />}
           </>
         )}
@@ -124,7 +136,14 @@ const ProfileView = () => {
 
       <View style={[styles.section2,{backgroundColor: colors.same2}]}>
         <Text style={[styles.sectionTitle,{color: colors.text},{backgroundColor: colors.same2}]}>More</Text>
-        {renderTableRow(handle,'moon-outline', 'Theme mode', themeMode, true)}
+        {/* {renderTableRow(handle,'moon-outline', 'Theme', themeMode, true)} */}
+        {renderTableRow(
+          handleThemeChange,
+          isDark ? 'sunny-outline' : 'moon-outline',
+          'Theme mode',
+          themeMode,
+          true
+        )}
         {renderTableRow(handleSignOut,'log-out-outline', 'Log Out', '', false)}
       </View>
     </ScrollView>

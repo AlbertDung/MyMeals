@@ -65,7 +65,7 @@ const NearbyRestaurants = () => {
           <Ionicons name="search" size={20} color={colors.same} />
           <Text style={[styles.searchText,{color: colors.text}]}>Search food and restaurant</Text>
         </TouchableOpacity> */}
-        <SearchHeader onPress={() => navigation.navigate('SearchScreen')} onSearch={handleSearchPress} />
+        {/* <SearchHeader onPress={() => navigation.navigate('SearchScreen')} onSearch={handleSearchPress} /> */}
       </LinearGradient>
       <View style={[styles.content,{backgroundColor: colors.background}]}>
         <Text style={[styles.sectionTitle,{color: colors.text}]}>Near By Restaurants</Text>

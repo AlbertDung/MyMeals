@@ -4,7 +4,7 @@ import { Ionicons } from '@expo/vector-icons';
 import { useRoute } from '@react-navigation/native';
 import Card from '../components/Card/Card';
 import Restaurant from '../data/restaurant';
-import { restaurantsData } from '../data';
+import { restaurantsData, filterData2, restaurantsLogoData } from "../data";
 import { foodItems } from "../data";
 import { colors } from "../theme/colors";
 import { useTheme } from '../components/Context/ThemeContext';
