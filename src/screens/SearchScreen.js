@@ -1,14 +1,18 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, FlatList, StyleSheet, ScrollView } from 'react-native';
+import { View, TextInput, FlatList, StyleSheet, ScrollView, TouchableOpacity, Image, Alert } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRoute } from '@react-navigation/native';
+import * as ImagePicker from 'expo-image-picker';
+import * as FileSystem from 'expo-file-system';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import Card from '../components/Card/Card';
 import Restaurant from '../data/restaurant';
-import { restaurantsData, filterData2, restaurantsLogoData } from "../data";
-import { foodItems } from "../data";
-import { colors } from "../theme/colors";
+import { restaurantsData, foodItems } from "../data";
 import { useTheme } from '../components/Context/ThemeContext';
 import AppText from '../components/AppText/AppText';
+import { colors } from "../theme/colors";
+const SEARCH_HISTORY_KEY = '@search_history';
+const IMAGE_DIRECTORY = `${FileSystem.documentDirectory}search_images/`;
 
 const SearchScreen = ({ navigation }) => {
   const route = useRoute();
@@ -17,14 +21,195 @@ const SearchScreen = ({ navigation }) => {
   const [restaurants, setRestaurants] = useState([]);
   const [foods, setFoods] = useState([]);
   const { isDark, colors } = useTheme();
+  const [searchHistory, setSearchHistory] = useState([]);
+  const [showHistory, setShowHistory] = useState(false);
 
   useEffect(() => {
+    setupImageDirectory();
+    requestPermissions();
+    loadSearchHistory();
     performSearch(initialSearchQuery);
   }, []);
 
   useEffect(() => {
     performSearch(searchQuery);
   }, [searchQuery]);
+
+  const setupImageDirectory = async () => {
+    try {
+      const dirInfo = await FileSystem.getInfoAsync(IMAGE_DIRECTORY);
+      if (!dirInfo.exists) {
+        await FileSystem.makeDirectoryAsync(IMAGE_DIRECTORY, { intermediates: true });
+      }
+    } catch (error) {
+      console.error('Error setting up image directory:', error);
+    }
+  };
+
+  const requestPermissions = async () => {
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permission needed', 'This app needs camera permission to work properly.');
+    }
+  };
+
+  const loadSearchHistory = async () => {
+    try {
+      const history = await AsyncStorage.getItem(SEARCH_HISTORY_KEY);
+      if (history) {
+        setSearchHistory(JSON.parse(history));
+      }
+    } catch (error) {
+      console.error('Error loading search history:', error);
+    }
+  };
+
+  const saveImage = async (uri) => {
+    try {
+      const fileName = `image_${Date.now()}.jpg`;
+      const newPath = `${IMAGE_DIRECTORY}${fileName}`;
+      await FileSystem.copyAsync({
+        from: uri,
+        to: newPath
+      });
+      return newPath;
+    } catch (error) {
+      console.error('Error saving image:', error);
+      return null;
+    }
+  };
+
+  const saveImageToHistory = async (imageUri) => {
+    try {
+      const savedImageUri = await saveImage(imageUri);
+      if (savedImageUri) {
+        const newHistory = [
+          {
+            id: Date.now().toString(),
+            uri: savedImageUri,
+            timestamp: new Date().toISOString()
+          },
+          ...searchHistory
+        ];
+        setSearchHistory(newHistory);
+        await AsyncStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(newHistory));
+      }
+    } catch (error) {
+      console.error('Error saving to history:', error);
+    }
+  };
+
+  const removeFromHistory = async (id) => {
+    try {
+      const itemToRemove = searchHistory.find(item => item.id === id);
+      if (itemToRemove) {
+        await FileSystem.deleteAsync(itemToRemove.uri);
+      }
+      
+      const newHistory = searchHistory.filter(item => item.id !== id);
+      setSearchHistory(newHistory);
+      await AsyncStorage.setItem(SEARCH_HISTORY_KEY, JSON.stringify(newHistory));
+    } catch (error) {
+      console.error('Error removing from history:', error);
+    }
+  };
+
+  const clearHistory = async () => {
+    try {
+      // Delete all images in the directory
+      for (const item of searchHistory) {
+        try {
+          await FileSystem.deleteAsync(item.uri);
+        } catch (error) {
+          console.error('Error deleting image:', error);
+        }
+      }
+      
+      await AsyncStorage.removeItem(SEARCH_HISTORY_KEY);
+      setSearchHistory([]);
+    } catch (error) {
+      console.error('Error clearing history:', error);
+    }
+  };
+
+  const takePicture = async () => {
+    try {
+      const result = await ImagePicker.launchCameraAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        quality: 0.8,
+        allowsEditing: true,
+        aspect: [4, 3],
+      });
+
+      if (!result.canceled) {
+        await saveImageToHistory(result.assets[0].uri);
+        await performImageSearch(result.assets[0].uri);
+      }
+    } catch (error) {
+      console.error('Error taking picture:', error);
+    }
+  };
+
+  const pickImage = async () => {
+    try {
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        quality: 0.8,
+        allowsEditing: true,
+        aspect: [4, 3],
+      });
+
+      if (!result.canceled) {
+        await saveImageToHistory(result.assets[0].uri);
+        await performImageSearch(result.assets[0].uri);
+      }
+    } catch (error) {
+      console.error('Error picking image:', error);
+    }
+  };
+
+  const performImageSearch = async (imageUri) => {
+    // Placeholder for ML model integration
+    // TODO: Implement image classification using CNN model
+    console.log('Image search with:', imageUri);
+    
+    // For now, we'll just show all food items as a demonstration
+    setFoods(foodItems);
+  };
+
+  const renderImageHistoryItem = ({ item }) => (
+    <View style={styles.historyItem}>
+      <Image source={{ uri: item.uri }} style={styles.historyImage} />
+      <TouchableOpacity 
+        style={styles.deleteButton}
+        onPress={() => removeFromHistory(item.id)}
+      >
+        <Ionicons name="close-circle" size={24} color="red" />
+      </TouchableOpacity>
+    </View>
+  );
+  
+
+
+  const renderSearchOptions = () => (
+    <View style={styles.searchOptions}>
+      <TouchableOpacity style={styles.searchOption} onPress={takePicture}>
+        <Ionicons name="camera" size={24} color={colors.same} />
+        <AppText text="Take Photo" customStyles={styles.optionText} />
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.searchOption} onPress={pickImage}>
+        <Ionicons name="images" size={24} color={colors.same} />
+        <AppText text="Choose from Gallery" customStyles={styles.optionText} />
+      </TouchableOpacity>
+      <TouchableOpacity 
+        style={styles.searchOption} 
+        onPress={() => setShowHistory(!showHistory)}
+      >
+        <Ionicons name="time" size={24} color={colors.same} />
+        <AppText text="Search History" customStyles={styles.optionText} />
+      </TouchableOpacity>
+    </View>
+  );
 
   const performSearch = (query) => {
     if (query.length > 0) {
@@ -70,6 +255,7 @@ const SearchScreen = ({ navigation }) => {
       <View style={styles.header}>
         <AppText text="SEARCH RESULTS" customStyles={styles.title} />
       </View>
+      
       <View style={styles.searchContainer}>
         <Ionicons name="search" size={24} color={colors.same} style={styles.searchIcon} />
         <TextInput
@@ -79,6 +265,27 @@ const SearchScreen = ({ navigation }) => {
           onChangeText={setSearchQuery}
         />
       </View>
+
+      {renderSearchOptions()}
+
+      {showHistory && searchHistory.length > 0 && (
+        <View style={styles.historyContainer}>
+          <View style={styles.historyHeader}>
+            <AppText text="Search History" customStyles={styles.sectionTitle} />
+            <TouchableOpacity onPress={clearHistory}>
+              <AppText text="Clear All" customStyles={styles.clearButton} />
+            </TouchableOpacity>
+          </View>
+          <FlatList
+            data={searchHistory}
+            renderItem={renderImageHistoryItem}
+            keyExtractor={(item) => item.id}
+            horizontal
+            showsHorizontalScrollIndicator={false}
+            contentContainerStyle={styles.historyList}
+          />
+        </View>
+      )}
       
       {restaurants.length > 0 && (
         <View style={styles.sectionContainer}>
@@ -142,6 +349,53 @@ const styles = StyleSheet.create({
     height: 40,
     fontSize: 16,
   },
+  searchOptions: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    padding: 10,
+    borderBottomWidth: 1,
+    borderBottomColor: '#eee',
+  },
+  searchOption: {
+    alignItems: 'center',
+  },
+  optionText: {
+    marginTop: 5,
+    fontSize: 12,
+  },
+  historyContainer: {
+    marginTop: 10,
+    paddingHorizontal: 10,
+  },
+  historyHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 10,
+  },
+  historyList: {
+    paddingVertical: 10,
+  },
+  historyItem: {
+    marginRight: 10,
+    position: 'relative',
+  },
+  historyImage: {
+    width: 80,
+    height: 80,
+    borderRadius: 8,
+  },
+  deleteButton: {
+    position: 'absolute',
+    top: -8,
+    right: -8,
+    backgroundColor: 'white',
+    borderRadius: 12,
+  },
+  clearButton: {
+    color: 'red',
+    fontSize: 14,
+  },
   sectionContainer: {
     marginTop: 20,
   },
@@ -156,11 +410,7 @@ const styles = StyleSheet.create({
   },
   foodList: {
     paddingHorizontal: 5,
-    paddingBottom:70,
-  },
-  foodItemContainer: {
-    width: '50%',
-    padding: 5,
+    paddingBottom: 70,
   },
 });
 
