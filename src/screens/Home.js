@@ -126,3 +126,10 @@ const styles = StyleSheet.create({
 });
 
 export default Home;
+
+
+
+
+// Please help me with a very important task of implementing a harmonious design, applying visual rules, convenient, efficient, 
+// working well, responsive on all devices, logically arranged, reasonable, easy to see, easy to read, popular with users, rounded
+//  appropriately.
