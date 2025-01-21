@@ -4,10 +4,10 @@
     "slug": "MyMeals",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/Designer.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/Designer.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -17,7 +17,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
+        "foregroundImage": "./assets/Designer.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.albert.mymeals"
@@ -25,5 +25,6 @@
     "web": {
       "favicon": "./assets/favicon.png"
     }
+    
   }
 }
