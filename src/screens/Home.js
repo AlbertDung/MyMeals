@@ -27,12 +27,16 @@ const Home = () => {
   };
   
 
-  const handleSearchPress = (searchText) => {
-    navigation.navigate('SearchScreen', { initialSearchQuery: searchText });
+  const handleSearchPress = (searchParams) => {
+    navigation.navigate('SearchScreen', searchParams);
   };
   
   const DATA = [
-    { key: '1', component: <SearchHeader onPress={() => navigation.navigate('SearchScreen')} onSearch={handleSearchPress} /> },
+    { key: '1', component: <SearchHeader 
+      onPress={() => navigation.navigate('SearchScreen')} 
+      onSearch={handleSearchPress}
+      placeholder="Search for food, restaurants..."
+    /> },
     { key: '2', component: (
       <View style={styles.categoriesContainer1}>
         <CategoryIcon name="Morning" icon="food-croissant" onpress={handle} />

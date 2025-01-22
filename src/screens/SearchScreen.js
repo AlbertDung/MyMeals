@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, TextInput, FlatList, StyleSheet, ScrollView, TouchableOpacity, Image, Alert } from 'react-native';
+import { View, TextInput, FlatList, StyleSheet, ScrollView, TouchableOpacity, Image, Alert,ActivityIndicator } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useRoute } from '@react-navigation/native';
 import * as ImagePicker from 'expo-image-picker';
@@ -16,8 +16,17 @@ const IMAGE_DIRECTORY = `${FileSystem.documentDirectory}search_images/`;
 
 const SearchScreen = ({ navigation }) => {
   const route = useRoute();
-  const initialSearchQuery = route.params?.initialSearchQuery || '';
+  const { 
+    initialSearchQuery = '', 
+    imageUri = null, 
+    voiceText = null,
+    searchType = 'text'
+  } = route.params || {};
   const [searchQuery, setSearchQuery] = useState(initialSearchQuery);
+  const [searchResults, setSearchResults] = useState({ restaurants: [], foods: [] });
+  const [isLoading, setIsLoading] = useState(false);
+
+  
   const [restaurants, setRestaurants] = useState([]);
   const [foods, setFoods] = useState([]);
   const { isDark, colors } = useTheme();
@@ -34,6 +43,41 @@ const SearchScreen = ({ navigation }) => {
   useEffect(() => {
     performSearch(searchQuery);
   }, [searchQuery]);
+  
+  useEffect(() => {
+    handleInitialSearch();
+  }, [imageUri, voiceText, initialSearchQuery]);
+
+  const handleInitialSearch = async () => {
+    setIsLoading(true);
+    try {
+      switch (searchType) {
+        case 'image':
+          if (imageUri) {
+            await saveImageToHistory(imageUri);
+            await performImageSearch(imageUri);
+          }
+          break;
+        case 'voice':
+          if (voiceText) {
+            setSearchQuery(voiceText);
+            performSearch(voiceText);
+          }
+          break;
+        case 'text':
+          if (initialSearchQuery) {
+            performSearch(initialSearchQuery);
+          }
+          break;
+      }
+    } catch (error) {
+      console.error('Search error:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  
 
   const setupImageDirectory = async () => {
     try {
@@ -169,12 +213,17 @@ const SearchScreen = ({ navigation }) => {
   };
 
   const performImageSearch = async (imageUri) => {
-    // Placeholder for ML model integration
-    // TODO: Implement image classification using CNN model
-    console.log('Image search with:', imageUri);
+    // Here you would integrate with your image recognition service
+    // For now, we'll simulate a search based on the image
+    console.log('Performing image search with:', imageUri);
     
-    // For now, we'll just show all food items as a demonstration
-    setFoods(foodItems);
+    // Simulated results - in a real app, this would come from your backend
+    const sampleResults = {
+      restaurants: restaurantsData.slice(0, 3),
+      foods: foodItems.filter(item => item.category === 'popular')
+    };
+    
+    setSearchResults(sampleResults);
   };
 
   const renderImageHistoryItem = ({ item }) => (
@@ -217,15 +266,18 @@ const SearchScreen = ({ navigation }) => {
         restaurant.restaurantName.toLowerCase().includes(query.toLowerCase()) ||
         restaurant.foodType.toLowerCase().includes(query.toLowerCase())
       );
+      
       const filteredFoodItems = foodItems.filter(item => 
         item.name.toLowerCase().includes(query.toLowerCase()) ||
         item.category.toLowerCase().includes(query.toLowerCase())
       );
-      setRestaurants(filteredRestaurants);
-      setFoods(filteredFoodItems);
+
+      setSearchResults({
+        restaurants: filteredRestaurants,
+        foods: filteredFoodItems
+      });
     } else {
-      setRestaurants([]);
-      setFoods([]);
+      setSearchResults({ restaurants: [], foods: [] });
     }
   };
 
@@ -312,6 +364,41 @@ const SearchScreen = ({ navigation }) => {
             contentContainerStyle={styles.foodList}
           />
         </View>
+      )}
+
+{isLoading ? (
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color={colors.primary} />
+        </View>
+      ) : (
+        <>
+          {searchResults.restaurants.length > 0 && (
+            <View style={styles.sectionContainer}>
+              <AppText text="Restaurants" customStyles={styles.sectionTitle} />
+              <FlatList
+                data={searchResults.restaurants}
+                renderItem={renderRestaurant}
+                keyExtractor={(item) => item.id.toString()}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                contentContainerStyle={styles.restaurantList}
+              />
+            </View>
+          )}
+          
+          {searchResults.foods.length > 0 && (
+            <View style={styles.sectionContainer}>
+              <AppText text="Food Items" customStyles={styles.sectionTitle} />
+              <FlatList
+                data={searchResults.foods}
+                renderItem={renderFoodItem}
+                keyExtractor={(item) => item.id.toString()}
+                numColumns={2}
+                contentContainerStyle={styles.foodList}
+              />
+            </View>
+          )}
+        </>
       )}
     </ScrollView>
   );

@@ -43,7 +43,12 @@ const SearchHeader = ({
   }, []);
 
   const navigateToSearch = (searchParams) => {
-    navigation.navigate('SearchScreen', searchParams);
+    // Enhanced navigation with search type
+    navigation.navigate('SearchScreen', {
+      ...searchParams,
+      searchType: searchParams.imageUri ? 'image' : 
+                 searchParams.voiceText ? 'voice' : 'text'
+    });
   };
 
   const handleSpeechResults = (e) => {
@@ -51,7 +56,10 @@ const SearchHeader = ({
       const searchText = e.value[0];
       setModalVisible(false);
       setIsListening(false);
-      navigateToSearch({ initialSearchQuery: searchText });
+      navigateToSearch({ 
+        initialSearchQuery: searchText,
+        voiceText: searchText 
+      });
     }
   };
 
@@ -77,7 +85,10 @@ const SearchHeader = ({
 
   const handleTextSearch = (text) => {
     if (text && text.trim()) {
-      navigateToSearch({ initialSearchQuery: text });
+      navigateToSearch({ 
+        initialSearchQuery: text,
+        searchType: 'text' 
+      });
     }
   };
 
@@ -114,7 +125,10 @@ const SearchHeader = ({
       });
 
       if (!result.canceled) {
-        navigateToSearch({ imageUri: result.assets[0].uri });
+        navigateToSearch({ 
+          imageUri: result.assets[0].uri,
+          searchType: 'image'
+        });
       }
     } catch (error) {
       console.error('Error taking picture:', error);
@@ -138,7 +152,10 @@ const SearchHeader = ({
       });
 
       if (!result.canceled) {
-        navigateToSearch({ imageUri: result.assets[0].uri });
+        navigateToSearch({ 
+          imageUri: result.assets[0].uri,
+          searchType: 'image'
+        });
       }
     } catch (error) {
       console.error('Error picking image:', error);
@@ -156,7 +173,7 @@ const SearchHeader = ({
       alignItems: 'center',
       paddingHorizontal: 5,
       paddingVertical: 10,
-      paddingBottom: 100,
+      paddingBottom: 150,
       
     },
     inputContainer: {
@@ -328,7 +345,7 @@ const SearchHeader = ({
             style={styles.dropdownOption} 
             onPress={takePicture}
           >
-            <MaterialIcons name="camera-alt" size={ICON_SIZE} color={isDark ? colors.text : '#666'} />
+            <SimpleLineIcons name="camera" size={ICON_SIZE} color={isDark ? colors.same : colors.same } />
             <Text style={[styles.dropdownText, { color: isDark ? colors.text : '#333' }]}>
               Take Photo
             </Text>
@@ -338,7 +355,7 @@ const SearchHeader = ({
             style={styles.dropdownOption} 
             onPress={pickImage}
           >
-            <MaterialIcons name="photo-library" size={ICON_SIZE} color={isDark ? colors.text : '#666'} />
+            <MaterialIcons name="photo-library" size={ICON_SIZE} color={isDark ? colors.same : colors.same} />
             <Text style={[styles.dropdownText, { color: isDark ? colors.text : '#333' }]}>
               Choose from Gallery
             </Text>
