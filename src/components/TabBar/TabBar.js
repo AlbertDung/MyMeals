@@ -4,19 +4,30 @@ import AppText from "../AppText/AppText";
 import { colors } from "../../theme/colors";
 
 const TabBar = ({ jumpTo, navigationState: { index, routes } }) => {
+  const isTabActive = (tabKey) => {
+    const currentRoute = routes[index];
+    return currentRoute.key === tabKey;
+  };
+
   return (
     <View style={styles.container}>
-      {routes.map(({ key, title }, routeIndex) => (
+      {routes.map((route) => (
         <TouchableOpacity
-          key={key}
-          onPress={() => jumpTo(key)}
-          style={styles.tabBarItem}
+          key={route.key}
+          onPress={() => jumpTo(route.key)}
+          style={[
+            styles.tabBarItem,
+            isTabActive(route.key) && styles.activeTabItem
+          ]}
         >
           <AppText
-            text={title}
+            text={route.title}
             customStyles={[
               styles.tabBarLabel,
-              { color: routeIndex === index ? colors.primary : colors.medium },
+              { 
+                color: isTabActive(route.key) ? colors.white : colors.primary,
+                fontSize: isTabActive(route.key) ? 20 : 14
+              }
             ]}
           />
         </TouchableOpacity>
@@ -36,7 +47,16 @@ const styles = StyleSheet.create({
     justifyContent: "space-around",
     paddingVertical: 5,
   },
+  tabBarItem: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 10,
+  },
+  activeTabItem: {
+    backgroundColor: colors.primary // 10% opacity of primary color
+  },
   tabBarLabel: {
     fontFamily: "Lato-Black",
-  },
+    textAlign: 'center',
+  }
 });
