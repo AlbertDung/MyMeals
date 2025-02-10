@@ -171,8 +171,8 @@ const SearchHeader = ({
     header: {
       flexDirection: 'row',
       alignItems: 'center',
-      paddingHorizontal: 5,
-      paddingVertical: 10,
+      paddingHorizontal: 0,
+      paddingVertical: 5,
       paddingBottom: 150,
       
     },
