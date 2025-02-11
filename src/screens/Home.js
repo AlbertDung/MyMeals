@@ -1,14 +1,11 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React from 'react';
 import { 
   StyleSheet, 
   View, 
   Text, 
   TouchableOpacity, 
-  FlatList, 
-  Image, 
-  Dimensions, 
-  Animated,
-  Pressable 
+  FlatList,
+  Dimensions 
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useNavigation } from '@react-navigation/native';
@@ -20,131 +17,10 @@ import RestaurantScroll from '../components/Scroll/RestaurantScroll';
 import FeaturedItems from '../components/Item/FeaturedItems';
 import TabView from '../components/TabView/TabView';
 import { useTheme } from '../components/Context/ThemeContext';
-
+import BannerAds from '../components/Banner/BannerAds';
+import RestaurantBannerAds from '../components/Banner/RestaurantBannerAds';
+import { colors } from '../theme/dark';
 const { width } = Dimensions.get('window');
-const BANNER_TIMER = 10000; // 5 seconds for auto-play
-
-const BannerCarousel = ({ data }) => {
-  const [activeIndex, setActiveIndex] = useState(0);
-  const scrollX = useRef(new Animated.Value(0)).current;
-  const flatListRef = useRef(null);
-  const timerRef = useRef(null);
-
-  useEffect(() => {
-    startAutoPlay();
-    return () => {
-      if (timerRef.current) {
-        clearInterval(timerRef.current);
-      }
-    };
-  }, []);
-
-  const startAutoPlay = () => {
-    timerRef.current = setInterval(() => {
-      const nextIndex = (activeIndex + 1) % data.length;
-      flatListRef.current?.scrollToIndex({
-        index: nextIndex,
-        animated: true
-      });
-      setActiveIndex(nextIndex);
-    }, BANNER_TIMER);
-  };
-
-  const pauseAutoPlay = () => {
-    if (timerRef.current) {
-      clearInterval(timerRef.current);
-    }
-  };
-
-  const resumeAutoPlay = () => {
-    startAutoPlay();
-  };
-
-  const renderBanner = ({ item }) => (
-    <Pressable 
-      style={styles.bannerContainer}
-      onPress={() => item.onPress && item.onPress()}
-    >
-      <Image
-        source={{ uri: item.image }}
-        style={styles.bannerImage}
-        resizeMode="cover"
-      />
-      {item.badge && (
-        <View style={styles.badgeContainer}>
-          <Text style={styles.badgeText}>{item.badge}</Text>
-        </View>
-      )}
-      {item.title && (
-        <View style={styles.bannerTitleContainer}>
-          <Text style={styles.bannerTitle}>{item.title}</Text>
-          {item.subtitle && (
-            <Text style={styles.bannerSubtitle}>{item.subtitle}</Text>
-          )}
-        </View>
-      )}
-    </Pressable>
-  );
-
-  const renderDotIndicator = () => (
-    <View style={styles.paginationDots}>
-      {data.map((_, index) => {
-        const inputRange = [
-          (index - 1) * width,
-          index * width,
-          (index + 1) * width,
-        ];
-
-        const dotWidth = scrollX.interpolate({
-          inputRange,
-          outputRange: [8, 16, 8],
-          extrapolate: 'clamp',
-        });
-
-        const opacity = scrollX.interpolate({
-          inputRange,
-          outputRange: [0.4, 1, 0.4],
-          extrapolate: 'clamp',
-        });
-
-        return (
-          <Animated.View
-            key={`dot-${index}`}
-            style={[styles.dot, { width: dotWidth, opacity }]}
-          />
-        );
-      })}
-    </View>
-  );
-
-  return (
-    <View>
-      <FlatList
-        ref={flatListRef}
-        data={data}
-        renderItem={renderBanner}
-        keyExtractor={(item) => item.id}
-        horizontal
-        pagingEnabled
-        showsHorizontalScrollIndicator={false}
-        onScroll={Animated.event(
-          [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-          { useNativeDriver: false }
-        )}
-        onScrollBegin={pauseAutoPlay}
-        onScrollEndDrag={resumeAutoPlay}
-        onMomentumScrollEnd={(event) => {
-          const newIndex = Math.round(event.nativeEvent.contentOffset.x / width);
-          setActiveIndex(newIndex);
-        }}
-        snapToInterval={width}
-        decelerationRate="fast"
-        snapToAlignment="center"
-      />
-      {renderDotIndicator()}
-    </View>
-  );
-};
 
 const CategoryIcon = ({ name, icon, onPress, color = "#FF5722", badge }) => (
   <TouchableOpacity 
@@ -161,31 +37,9 @@ const CategoryIcon = ({ name, icon, onPress, color = "#FF5722", badge }) => (
   </TouchableOpacity>
 );
 
-const PromotionCard = ({ title, description, discount, image, onPress }) => (
-  <TouchableOpacity 
-    style={styles.promotionCard}
-    onPress={onPress}
-  >
-    <Image 
-      source={{ uri: image }} 
-      style={styles.promotionImage}
-      resizeMode="cover"
-    />
-    <View style={styles.promotionContent}>
-      <View style={styles.promotionTextContent}>
-        <Text style={styles.promotionTitle}>{title}</Text>
-        <Text style={styles.promotionDescription}>{description}</Text>
-      </View>
-      <View style={styles.discountBadge}>
-        <Text style={styles.discountText}>{discount}</Text>
-      </View>
-    </View>
-  </TouchableOpacity>
-);
-
 const SectionHeader = ({ title, onSeeAll }) => (
   <View style={styles.sectionHeader}>
-    <Text style={styles.sectionTitle}>{title}</Text>
+    <Text style={[styles.sectionTitle,{color: colors.text}]}>{title}</Text>
     {onSeeAll && (
       <TouchableOpacity onPress={onSeeAll}>
         <Text style={styles.seeAllText}>See All</Text>
@@ -213,26 +67,74 @@ const Home = () => {
       badge: 'TRENDING',
       title: 'Weekend Deal',
       subtitle: 'Free delivery on selected restaurants',
-      onPress: () => navigation.navigate('SpecialOffer')
+      onPress: () => navigation.navigate('WeekendDeal')
     },
     { 
       id: '3', 
-      image: 'https://placeholder.com/banner2.jpg',
-      badge: 'TRENDING',
-      title: 'Weekend Deal',
-      subtitle: 'Free delivery on selected restaurants',
-      onPress: () => navigation.navigate('SpecialOffer')
+      image: 'https://placeholder.com/banner3.jpg',
+      badge: 'HOT',
+      title: 'Flash Sale',
+      subtitle: 'Limited time offers on premium meals',
+      onPress: () => navigation.navigate('FlashSale')
     },
     { 
       id: '4', 
-      image: 'https://placeholder.com/banner2.jpg',
-      badge: 'TRENDING',
-      title: 'Weekend Deal',
-      subtitle: 'Free delivery on selected restaurants',
-      onPress: () => navigation.navigate('SpecialOffer')
+      image: 'https://placeholder.com/banner4.jpg',
+      badge: 'EXCLUSIVE',
+      title: 'Member Benefits',
+      subtitle: 'Special discounts for members',
+      onPress: () => navigation.navigate('MemberBenefits')
     },
-    // Add more banner data as needed
   ];
+
+
+  const featuredRestaurants = [
+    {
+      id: '1',
+      name: 'Golden Dragon Restaurant',
+      image: 'https://placeholder.com/restaurant1.jpg',
+      rating: 4.8,
+      reviewCount: 2450,
+      cuisine: 'Chinese',
+      deliveryTime: 25,
+      deliveryFee: 0,
+      isOpen: true,
+      featured: true,
+      promotion: '30% OFF',
+    },
+    {
+      id: '2',
+      name: 'Bella Italia',
+      image: 'https://placeholder.com/restaurant2.jpg',
+      rating: 4.6,
+      reviewCount: 1830,
+      cuisine: 'Italian',
+      deliveryTime: 35,
+      deliveryFee: 2.99,
+      isOpen: true,
+      featured: true,
+      promotion: 'Free Delivery',
+    },
+    {
+      id: '3',
+      name: 'Sushi Master',
+      image: 'https://placeholder.com/restaurant3.jpg',
+      rating: 4.9,
+      reviewCount: 3200,
+      cuisine: 'Japanese',
+      deliveryTime: 30,
+      deliveryFee: 1.99,
+      isOpen: true,
+      featured: true,
+      promotion: '20% OFF',
+    },
+  ];
+
+  // Thêm handler cho việc click vào restaurant banner
+  const handleRestaurantPress = (restaurant) => {
+    navigation.navigate('RestaurantDetail', { restaurant });
+  };
+
 
   const categories = [
     { name: "Morning", icon: "food-croissant", color: "#FF5722", badge: "NEW" },
@@ -265,6 +167,10 @@ const Home = () => {
     navigation.navigate('SearchScreen', searchParams);
   };
 
+  const handlePromotionPress = (promo) => {
+    navigation.navigate('Promotion', { id: promo.id });
+  };
+
   const DATA = [
     { 
       key: '1', 
@@ -278,7 +184,13 @@ const Home = () => {
     },
     { 
       key: '2', 
-      component: <BannerCarousel data={bannerData} /> 
+      component: (
+        <BannerAds 
+          bannerData={bannerData}
+          promotions={promotions}
+          onPromotionPress={handlePromotionPress}
+        />
+      ) 
     },
     { 
       key: '3', 
@@ -300,34 +212,6 @@ const Home = () => {
     { 
       key: '4', 
       component: (
-        <>
-          <SectionHeader 
-            title="Special Offers" 
-            onSeeAll={() => navigation.navigate('Promotions')}
-          />
-          <View style={styles.promotionsContainer}>
-            {promotions.map(promo => (
-              <PromotionCard key={promo.id} {...promo} />
-            ))}
-          </View>
-        </>
-      )
-    },
-    { 
-      key: '5', 
-      component: (
-        <>
-          <SectionHeader 
-            title="Featured Items" 
-            onSeeAll={() => navigation.navigate('Featured')}
-          />
-          <FeaturedItems items={filterData2.slice(0, 7)} />
-        </>
-      )
-    },
-    { 
-      key: '6', 
-      component: (
         <RestaurantScroll 
           title="Popular Restaurants" 
           restaurants={restaurantsData} 
@@ -337,7 +221,22 @@ const Home = () => {
       )
     },
     { 
-      key: '7', 
+      key: '5', 
+      component: (
+        <>
+          <SectionHeader 
+            title="Featured Restaurants" 
+            onSeeAll={() => navigation.navigate('FeaturedRestaurants')}
+          />
+          <RestaurantBannerAds 
+            data={featuredRestaurants}
+            onRestaurantPress={handleRestaurantPress}
+          />
+        </>
+      )
+    },
+    { 
+      key: '6', 
       component: (
         <View style={[styles.categoriesContainer2, {backgroundColor: colors.background}]}>
           <CategoryTabView 
@@ -348,7 +247,7 @@ const Home = () => {
       )
     },
     { 
-      key: '8', 
+      key: '7', 
       component: (
         <SafeAreaView style={styles.foodCategories}>
           <TabView />
@@ -365,6 +264,10 @@ const Home = () => {
         keyExtractor={item => item.key}
         showsVerticalScrollIndicator={false}
         contentContainerStyle={styles.content}
+        initialNumToRender={4}
+        maxToRenderPerBatch={4}
+        windowSize={5}
+        removeClippedSubviews={true}
       />
     </SafeAreaView>
   );
@@ -376,62 +279,6 @@ const styles = StyleSheet.create({
   },
   content: {
     padding: 16,
-  },
-  bannerContainer: {
-    width: width - 32,
-    height: 180,
-    borderRadius: 12,
-    overflow: 'hidden',
-    marginVertical: 8,
-  },
-  bannerImage: {
-    width: '100%',
-    height: '100%',
-  },
-  bannerTitleContainer: {
-    position: 'absolute',
-    bottom: 0,
-    left: 0,
-    right: 0,
-    padding: 16,
-    backgroundColor: 'rgba(0,0,0,0.6)',
-  },
-  bannerTitle: {
-    color: '#FFFFFF',
-    fontSize: 18,
-    fontWeight: 'bold',
-  },
-  bannerSubtitle: {
-    color: '#FFFFFF',
-    fontSize: 14,
-    marginTop: 4,
-  },
-  badgeContainer: {
-    position: 'absolute',
-    top: 12,
-    right: 12,
-    backgroundColor: '#FF5722',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-  },
-  badgeText: {
-    color: '#FFFFFF',
-    fontWeight: 'bold',
-    fontSize: 12,
-  },
-  paginationDots: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginTop: 8,
-    height: 16,
-  },
-  dot: {
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: '#FF5722',
-    marginHorizontal: 4,
   },
   categoriesContainer: {
     flexDirection: 'row',
@@ -484,51 +331,6 @@ const styles = StyleSheet.create({
     color: '#FF5722',
     fontSize: 14,
     fontWeight: '600',
-  },
-  promotionsContainer: {
-    marginBottom: 16,
-  },
-  promotionCard: {
-    backgroundColor: '#FFFFFF',
-    borderRadius: 12,
-    marginBottom: 12,
-    elevation: 2,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    overflow: 'hidden',
-  },
-  promotionImage: {
-    width: '100%',
-    height: 120,
-  },
-  promotionContent: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  promotionTitle: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#333333',
-  },
-  promotionDescription: {
-    fontSize: 14,
-    color: '#666666',
-    flex: 1,
-    marginHorizontal: 12,
-  },
-  discountBadge: {
-    backgroundColor: '#FF5722',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-  },
-  discountText: {
-    color: '#FFFFFF',
-    fontWeight: 'bold',
-    fontSize: 12,
   },
   foodCategories: {
     marginTop: 16,
